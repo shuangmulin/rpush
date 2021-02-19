@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package protocol;
+
+option java_package = "com.regent.rpush.dto.protocol";
+option java_outer_classname = "MessageProto";
+
+message MessageProtocol {
+  required int64 fromTo = 2;
+  required int64 sendTo = 4;
+  required string content = 1;
+  required int32 type = 3;
+
+}
+

@@ -1,0 +1,26 @@
+package com.regent.rpush.server.socket;
+
+import io.netty.channel.socket.nio.NioSocketChannel;
+
+/**
+ * 一个Socket会话
+ *
+ * @author 钟宝林
+ * @date 2021/2/11/011 14:39
+ **/
+public interface SocketSession {
+
+    /**
+     * 一个注册id一个Socket，一个Socket一个Session
+     */
+    Long getRegistrationId();
+
+    NioSocketChannel getNioSocketChannel();
+
+    Object getAttribute(String name);
+
+    void setAttribute(String name, Object value);
+
+    void removeAttribute(String name);
+
+}

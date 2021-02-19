@@ -1,0 +1,35 @@
+server:
+  port: 8121
+spring:
+  application:
+    name: rpush-route
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+
+eureka:
+  client:
+    serviceUrl:
+        defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+rpush-server:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.regent.rpush.route.loadbalancer.ServerBalancer

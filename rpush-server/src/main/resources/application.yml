@@ -1,0 +1,16 @@
+server:
+  port: 8122
+spring:
+  application:
+    name: rpush-server
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+
+rpush:
+  server:
+    port: 1111
