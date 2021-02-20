@@ -28,6 +28,12 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.regent</groupId>
             <artifactId>rpush-dto</artifactId>
             <version>0.0.1-SNAPSHOT</version>

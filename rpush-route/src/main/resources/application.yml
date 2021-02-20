@@ -14,6 +14,9 @@ spring:
     time-zone: GMT+8
     serialization:
       write-dates-as-timestamps: false
+id:
+  workerId: 1
+  datacenterId: 1
 
 mybatis-plus:
   configuration:
