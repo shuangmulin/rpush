@@ -24,10 +24,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.spring4all</groupId>
-            <artifactId>swagger-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -94,7 +90,7 @@
         </dependency>
         <dependency>
             <groupId>com.regent</groupId>
-            <artifactId>rpush-server-api</artifactId>
+            <artifactId>rpush-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

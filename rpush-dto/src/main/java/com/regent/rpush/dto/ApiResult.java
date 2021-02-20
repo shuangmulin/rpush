@@ -23,8 +23,8 @@ public class ApiResult<T> implements Serializable {
         return of(0, StatusCode.SUCCESS.getMsg(), data);
     }
 
-    public static <T> ApiResult<T> of(int code, String message) {
-        return of(code, message, null);
+    public static <T> ApiResult<T> of(StatusCode statusCode, String message) {
+        return of(statusCode.getCode(), message, null);
     }
 
     public static <T> ApiResult<T> of(StatusCode statusCode, T data) {

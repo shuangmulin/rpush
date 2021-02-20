@@ -10,7 +10,7 @@
         <module>rpush-dto</module>
         <module>rpush-server</module>
         <module>rpush-eureka</module>
-        <module>rpush-server-api</module>
+        <module>rpush-api</module>
     </modules>
 
     <groupId>com.regent</groupId>

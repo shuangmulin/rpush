@@ -60,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>com.regent</groupId>
-      <artifactId>rpush-server-api</artifactId>
+      <artifactId>rpush-api</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>

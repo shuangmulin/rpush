@@ -1,5 +1,6 @@
-package com.regent.rpush.route.mapper;
+package com.regent.rpush.route.utils;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
@@ -13,7 +14,8 @@ public class GeneratorCodeConfig {
 
     public static void main(String[] args) {
         String[] tableNames = {
-                "email_config"
+                "rpush_server_registration",
+                "rpush_server_online"
         };
 
         // 代码生成器
@@ -25,6 +27,7 @@ public class GeneratorCodeConfig {
         gc.setOutputDir(projectPath + "/rpush-route/src/main/java");
         gc.setOpen(false);
         gc.setAuthor("钟宝林");
+        gc.setIdType(IdType.NONE);
         //实体属性 Swagger2 注解
         gc.setSwagger2(true);
         gc.setDateType(DateType.ONLY_DATE);
@@ -59,7 +62,7 @@ public class GeneratorCodeConfig {
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         strategy.setSuperEntityClass("com.baomidou.mybatisplus.extension.activerecord.Model");
         strategy.setEntityLombokModel(true);
-        strategy.setRestControllerStyle(false);
+        strategy.setRestControllerStyle(true);
 
         strategy.setEntityLombokModel(true);
         strategy.setInclude(tableNames);

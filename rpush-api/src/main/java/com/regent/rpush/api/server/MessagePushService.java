@@ -1,4 +1,4 @@
-package com.regent.rpush.server.api;
+package com.regent.rpush.api.server;
 
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.message.MessagePushDTO;

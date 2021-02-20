@@ -14,9 +14,6 @@ spring:
     time-zone: GMT+8
     serialization:
       write-dates-as-timestamps: false
-id:
-  workerId: 1
-  datacenterId: 1
 
 mybatis-plus:
   configuration:
@@ -24,6 +21,11 @@ mybatis-plus:
     auto-mapping-behavior: full
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mapper/**/*Mapper.xml
+  global-config:
+    #机器 ID 部分(影响雪花ID)
+    workerId: 1
+    #数据标识 ID 部分(影响雪花ID)(workerId 和 datacenterId 一起配置才能重新初始化 Sequence)
+    datacenterId: 1
 
 eureka:
   client:

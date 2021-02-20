@@ -1,6 +1,7 @@
 package com.regent.rpush.dto;
 
-import lombok.*;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -8,9 +9,8 @@ import java.io.Serializable;
 public class BaseParam implements Serializable {
 
     private static final long serialVersionUID = 7375883597696884060L;
-    /**
-     * 请求编号（幂等）
-     */
+
+    @ApiModelProperty(value = "请求编号（幂等）")
     private String requestNo;
 
 }
