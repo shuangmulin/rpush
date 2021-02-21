@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableSwagger2Doc
 @SpringBootApplication(scanBasePackages = "com.regent.rpush")
-@EnableFeignClients(basePackages = "com.regent.rpush")
+@EnableFeignClients(basePackages = "com.regent.rpush.api.server")
 @MapperScan(basePackages = "com.regent.rpush.route.mapper")
 @EnableDiscoveryClient
 public class RouteApplication {

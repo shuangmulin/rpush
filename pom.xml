@@ -11,6 +11,7 @@
         <module>rpush-server</module>
         <module>rpush-eureka</module>
         <module>rpush-api</module>
+        <module>rpush-client</module>
     </modules>
 
     <groupId>com.regent</groupId>

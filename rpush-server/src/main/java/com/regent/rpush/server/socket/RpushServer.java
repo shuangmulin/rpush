@@ -38,7 +38,6 @@ public class RpushServer {
      */
     @PostConstruct
     public void start() throws InterruptedException {
-
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(boss, work)
                 .channel(NioServerSocketChannel.class)

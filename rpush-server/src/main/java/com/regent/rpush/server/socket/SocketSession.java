@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket;
 
-import io.netty.channel.socket.nio.NioSocketChannel;
+import com.regent.rpush.server.socket.client.RpushClient;
 
 /**
  * 一个Socket会话
@@ -15,7 +15,7 @@ public interface SocketSession {
      */
     Long getRegistrationId();
 
-    NioSocketChannel getNioSocketChannel();
+    RpushClient getClient();
 
     Object getAttribute(String name);
 

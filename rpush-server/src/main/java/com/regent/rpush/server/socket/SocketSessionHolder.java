@@ -1,6 +1,10 @@
 package com.regent.rpush.server.socket;
 
-import io.netty.channel.socket.nio.NioSocketChannel;
+import com.regent.rpush.api.route.RpushServerOnlineService;
+import com.regent.rpush.dto.rpushserver.LoginDTO;
+import com.regent.rpush.dto.rpushserver.OfflineDTO;
+import com.regent.rpush.server.socket.client.RpushClient;
+import com.regent.rpush.server.utils.SpringBeanFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,35 +20,39 @@ public final class SocketSessionHolder {
     /**
      * session持有
      */
-    private static final Map<NioSocketChannel, SocketSession> CHANNEL_SESSION_MAP = new ConcurrentHashMap<>();
+    private static final Map<RpushClient, SocketSession> CHANNEL_SESSION_MAP = new ConcurrentHashMap<>();
     private static final Map<Long, SocketSession> REGISTRATION_ID_SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
      * 根据通道添加session
      */
-    public static void add(NioSocketChannel nioSocketChannel) {
-        SocketSession socketSession = CHANNEL_SESSION_MAP.get(nioSocketChannel);
+    public static void add(RpushClient client) {
+        SocketSession socketSession = CHANNEL_SESSION_MAP.get(client);
         if (socketSession == null) {
-            socketSession = new SocketSessionImpl(nioSocketChannel);
-            CHANNEL_SESSION_MAP.put(nioSocketChannel, socketSession);
+            socketSession = new SocketSessionImpl(client);
+            CHANNEL_SESSION_MAP.put(client, socketSession);
         }
     }
 
     /**
      * 根据通道获取session
      */
-    public static SocketSession get(NioSocketChannel nioSocketChannel) {
-        add(nioSocketChannel);
-        return CHANNEL_SESSION_MAP.get(nioSocketChannel);
+    public static SocketSession get(RpushClient Client) {
+        add(Client);
+        return CHANNEL_SESSION_MAP.get(Client);
     }
 
     /**
      * 登录
      */
-    public static void login(Long registrationId, NioSocketChannel nioSocketChannel) {
-        SocketSessionImpl socketSession = (SocketSessionImpl) get(nioSocketChannel);
+    public static void login(Long registrationId, RpushClient Client) {
+        SocketSessionImpl socketSession = (SocketSessionImpl) get(Client);
         socketSession.setRegistrationId(registrationId);
         REGISTRATION_ID_SESSION_MAP.put(registrationId, socketSession);
+
+        // 持久化登录信息
+        RpushServerOnlineService rpushServerOnlineService = SpringBeanFactory.getBean(RpushServerOnlineService.class);
+        rpushServerOnlineService.login(LoginDTO.builder().registrationId(registrationId).build());
     }
 
     /**
@@ -60,22 +68,26 @@ public final class SocketSessionHolder {
             // 没登录过，不管
             return;
         }
-        CHANNEL_SESSION_MAP.remove(socketSession.getNioSocketChannel());
-        REGISTRATION_ID_SESSION_MAP.remove(registrationId);
+        offLine(socketSession.getClient());
     }
 
-    public static void offLine(NioSocketChannel nioSocketChannel) {
-        SocketSession socketSession = get(nioSocketChannel);
+    public static void offLine(RpushClient Client) {
+        SocketSession socketSession = get(Client);
         if (socketSession == null) {
+            // 没登录过，不管
             return;
         }
 
         Long registrationId = socketSession.getRegistrationId();
         if (registrationId != null) {
             REGISTRATION_ID_SESSION_MAP.remove(registrationId);
+
+            // 清除登录信息
+            RpushServerOnlineService rpushServerOnlineService = SpringBeanFactory.getBean(RpushServerOnlineService.class);
+            rpushServerOnlineService.offline(OfflineDTO.builder().registrationId(registrationId).build());
         }
 
-        CHANNEL_SESSION_MAP.remove(nioSocketChannel);
+        CHANNEL_SESSION_MAP.remove(Client);
     }
 
 }

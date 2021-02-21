@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket;
 
-import io.netty.channel.socket.nio.NioSocketChannel;
+import com.regent.rpush.server.socket.client.RpushClient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,11 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketSessionImpl implements SocketSession {
 
     private Long registrationId;
-    private NioSocketChannel nioSocketChannel;
+    private RpushClient client;
     private final Map<String, Object> attributeMap = new ConcurrentHashMap<>();
 
-    public SocketSessionImpl(NioSocketChannel nioSocketChannel) {
-        this.nioSocketChannel = nioSocketChannel;
+    public SocketSessionImpl(RpushClient client) {
+        this.client = client;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class SocketSessionImpl implements SocketSession {
     }
 
     @Override
-    public NioSocketChannel getNioSocketChannel() {
-        return nioSocketChannel;
+    public RpushClient getClient() {
+        return client;
     }
 
-    public void setNioSocketChannel(NioSocketChannel nioSocketChannel) {
-        this.nioSocketChannel = nioSocketChannel;
+    public void setClient(RpushClient Client) {
+        this.client = Client;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.regent.rpush.common.protocol;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.regent.rpush.dto.protocol.MessageProto;
 
 public class ProtocolUtil {
 

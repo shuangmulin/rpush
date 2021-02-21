@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author 钟宝林
  * @since 2021/2/20/020 17:32
  **/
-@FeignClient(name = "rpush-route")
+@FeignClient(name = "rpush-route", contextId = "RpushServerOnlineService")
 @RequestMapping("/rpush-server-online")
 public interface RpushServerOnlineService {
 

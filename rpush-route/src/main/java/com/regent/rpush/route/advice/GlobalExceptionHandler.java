@@ -1,4 +1,4 @@
-package com.regent.rpush.common.advice;
+package com.regent.rpush.route.advice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,7 @@
 package com.regent.rpush.server.socket;
 
 import com.regent.rpush.dto.protocol.MessageProto;
+import com.regent.rpush.server.socket.client.NioSocketChannelClient;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -19,22 +20,8 @@ public class RpushServerHandler extends SimpleChannelInboundHandler<MessageProto
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // 清除相关数据
-        SocketSessionHolder.offLine((NioSocketChannel) ctx.channel());
-        // 向路由服务发送下线通知 TODO
-
+        SocketSessionHolder.offLine(NioSocketChannelClient.getInstance((NioSocketChannel) ctx.channel()));
         ctx.channel().close();
-
-        // 可能出现业务判断离线后再次触发 channelInactive
-//        CIMUserInfo userInfo = SessionSocketHolder.getUserId((NioSocketChannel) ctx.channel());
-//        if (userInfo != null){
-//            LOGGER.warn("[{}] trigger channelInactive offline!",userInfo.getUserName());
-//
-//            //Clear route info and offline.
-//            RouteHandler routeHandler = SpringBeanFactory.getBean(RouteHandler.class);
-//            routeHandler.userOffLine(userInfo,(NioSocketChannel) ctx.channel());
-//
-//            ctx.channel().close();
-//        }
     }
 
     @Override

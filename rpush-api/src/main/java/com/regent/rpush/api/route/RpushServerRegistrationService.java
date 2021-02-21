@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author 钟宝林
  * @since 2021/2/20/020 17:45
  **/
-@FeignClient(name = "rpush-route")
+@FeignClient(name = "rpush-route", contextId = "RpushServerRegistrationService")
 @RequestMapping("/rpush-server-registration")
 public interface RpushServerRegistrationService {
 
