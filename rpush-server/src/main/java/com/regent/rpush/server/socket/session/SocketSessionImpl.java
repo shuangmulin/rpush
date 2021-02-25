@@ -1,4 +1,4 @@
-package com.regent.rpush.server.socket;
+package com.regent.rpush.server.socket.session;
 
 import com.regent.rpush.server.socket.client.RpushClient;
 

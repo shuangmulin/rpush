@@ -1,10 +1,12 @@
-package com.regent.rpush.server.socket;
+package com.regent.rpush.server.socket.session;
 
 import com.regent.rpush.api.route.RpushServerOnlineService;
 import com.regent.rpush.dto.rpushserver.LoginDTO;
 import com.regent.rpush.dto.rpushserver.OfflineDTO;
 import com.regent.rpush.server.socket.client.RpushClient;
 import com.regent.rpush.server.utils.SpringBeanFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2021/2/11/011 14:32
  **/
 public final class SocketSessionHolder {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(SocketSessionHolder.class);
 
     /**
      * session持有
@@ -71,8 +75,8 @@ public final class SocketSessionHolder {
         offLine(socketSession.getClient());
     }
 
-    public static void offLine(RpushClient Client) {
-        SocketSession socketSession = get(Client);
+    public static void offLine(RpushClient client) {
+        SocketSession socketSession = get(client);
         if (socketSession == null) {
             // 没登录过，不管
             return;
@@ -87,7 +91,13 @@ public final class SocketSessionHolder {
             rpushServerOnlineService.offline(OfflineDTO.builder().registrationId(registrationId).build());
         }
 
-        CHANNEL_SESSION_MAP.remove(Client);
+        CHANNEL_SESSION_MAP.remove(client);
+
+        try {
+            client.close();
+        } catch (Exception e) {
+            LOGGER.error("客户端[{}]关闭异常", registrationId);
+        }
     }
 
 }

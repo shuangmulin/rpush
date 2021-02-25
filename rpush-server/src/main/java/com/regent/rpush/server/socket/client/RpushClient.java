@@ -6,8 +6,6 @@ package com.regent.rpush.server.socket.client;
  * @author 钟宝林
  * @since 2021/2/20/020 20:35
  **/
-public interface RpushClient {
-
-
+public interface RpushClient extends AutoCloseable {
 
 }

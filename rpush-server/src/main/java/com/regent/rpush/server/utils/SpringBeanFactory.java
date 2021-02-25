@@ -13,6 +13,9 @@ public final class SpringBeanFactory implements ApplicationContextAware {
         return context.getBean(c);
     }
 
+    public static ApplicationContext getContext() {
+        return context;
+    }
 
     public static <T> T getBean(String name, Class<T> clazz) {
         return context.getBean(name, clazz);

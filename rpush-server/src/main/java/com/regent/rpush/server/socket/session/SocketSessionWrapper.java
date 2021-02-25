@@ -1,4 +1,4 @@
-package com.regent.rpush.server.socket;
+package com.regent.rpush.server.socket.session;
 
 /**
  * SocketSession包装类

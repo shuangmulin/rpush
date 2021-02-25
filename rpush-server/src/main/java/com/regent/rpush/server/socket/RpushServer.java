@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket;
 
-import com.regent.rpush.dto.protocol.MessageProto;
+import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.dto.socket.SendMsgDTO;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -48,7 +48,7 @@ public class RpushServer {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
                         channel.pipeline()
-                                // 11 秒没有向客户端发送消息就发送心跳
+                                // 11 秒和客户端没交互就check一下客户端是否连接正常
                                 .addLast(new IdleStateHandler(11, 0, 0))
                                 // google Protobuf 编解码
                                 .addLast(new ProtobufVarint32FrameDecoder())

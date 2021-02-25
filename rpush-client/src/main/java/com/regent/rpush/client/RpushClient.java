@@ -1,5 +1,22 @@
 package com.regent.rpush.client;
 
+import com.regent.rpush.common.protocol.MessageProto;
+import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
+
 /**
  * Function:
  *
@@ -8,6 +25,66 @@ package com.regent.rpush.client;
  * @since JDK 1.8
  */
 public class RpushClient {
+    private final EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("rpush-work"));
+
+    private SocketChannel channel;
+
+    /**
+     * 重试次数
+     */
+    private int errorCount;
+
+    public void start() throws Exception {
+        //登录 + 获取可以使用的服务器 ip+port TODO
+        ServerInfoDTO serverInfoDTO = ServerInfoDTO.builder().ip("localhost").socketPort(1111).build();
+
+        //启动客户端
+        startClient(serverInfoDTO);
+
+        //向服务端注册 TODO
+
+    }
+
+    /**
+     * 启动客户端
+     */
+    private void startClient(ServerInfoDTO server) {
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(group)
+                .channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<Channel>() {
+                    @Override
+                    protected void initChannel(Channel channel) throws Exception {
+                        channel.pipeline()
+                                //10 秒没发送消息 将IdleStateHandler 添加到 ChannelPipeline 中
+                                .addLast(new IdleStateHandler(0, 10, 0))
+                                // google Protobuf 编解码
+                                //拆包解码
+                                .addLast(new ProtobufVarint32FrameDecoder())
+                                .addLast(new ProtobufDecoder(MessageProto.MessageProtocol.getDefaultInstance()))
+                                .addLast(new ProtobufVarint32LengthFieldPrepender())
+                                .addLast(new ProtobufEncoder())
+                                .addLast(new RpushClientHandler())
+                        ;
+                    }
+                })
+        ;
+
+        ChannelFuture future = null;
+        try {
+            future = bootstrap.connect(server.getIp(), server.getSocketPort()).sync();
+        } catch (Exception e) {
+            errorCount++;
+            if (errorCount >= 10) {
+                System.out.println("连接失败次数达到上限[" + errorCount + "]次");
+                System.exit(0);
+            }
+        }
+        if (future.isSuccess()) {
+            System.out.println("Start cim client success!");
+        }
+        channel = (SocketChannel) future.channel();
+    }
 
 //    private EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("rpush-work"));
 //

@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket.client;
 
-import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.channel.Channel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,15 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class NioSocketChannelClient implements RpushClient {
 
-    private static final Map<NioSocketChannel, NioSocketChannelClient> INSTANCE_MAP = new ConcurrentHashMap<>();
+    private static final Map<Channel, NioSocketChannelClient> INSTANCE_MAP = new ConcurrentHashMap<>();
 
-    private NioSocketChannel nioSocketChannel;
+    private final Channel channel;
 
-    private NioSocketChannelClient(NioSocketChannel nioSocketChannel) {
-        this.nioSocketChannel = nioSocketChannel;
+    private NioSocketChannelClient(Channel channel) {
+        this.channel = channel;
     }
 
-    public static NioSocketChannelClient getInstance(NioSocketChannel nioSocketChannel) {
+    public static RpushClient getInstance(Channel nioSocketChannel) {
         NioSocketChannelClient client = INSTANCE_MAP.get(nioSocketChannel);
         if (client != null) {
             return client;
@@ -34,4 +34,10 @@ public class NioSocketChannelClient implements RpushClient {
         return INSTANCE_MAP.get(nioSocketChannel);
     }
 
+    @Override
+    public void close() throws Exception {
+        if (channel.isOpen()) {
+            channel.close();
+        }
+    }
 }
