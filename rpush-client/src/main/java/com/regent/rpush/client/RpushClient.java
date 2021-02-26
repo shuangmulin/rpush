@@ -1,12 +1,11 @@
 package com.regent.rpush.client;
 
+import com.regent.rpush.client.api.RouteApi;
+import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -35,14 +34,30 @@ public class RpushClient {
     private int errorCount;
 
     public void start() throws Exception {
-        //登录 + 获取可以使用的服务器 ip+port TODO
-        ServerInfoDTO serverInfoDTO = ServerInfoDTO.builder().host("localhost").socketPort(1111).build();
+        // 获取可以使用的服务器 ip+port
+        ServerInfoDTO serverInfoDTO = RouteApi.route().getData();
 
-        //启动客户端
+        // 启动客户端
         startClient(serverInfoDTO);
 
-        //向服务端注册 TODO
+        // 向服务端发送登录
+        login();
+    }
 
+    /**
+     * 向服务端发送登录
+     */
+    private void login() {
+        MessageProto.MessageProtocol login = MessageProto.MessageProtocol.newBuilder()
+                .setSendTo(-1)
+                .setFromTo(Config.getRegistrationId())
+                .setContent("login")
+                .setType(Constants.MessageType.LOGIN)
+                .build();
+        ChannelFuture future = channel.writeAndFlush(login);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                System.out.println("登录成功")
+        );
     }
 
     /**

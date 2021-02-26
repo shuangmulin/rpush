@@ -62,13 +62,13 @@ public class RpushServerHandler extends SimpleChannelInboundHandler<MessageProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MessageProto.MessageProtocol msg) throws Exception {
-//        if (msg.getType() == Constants.CommandType.LOGIN) {
-//            //保存客户端与 Channel 之间的关系
-//            SessionSocketHolder.put(msg.getRequestId(), (NioSocketChannel) ctx.channel());
-//            SessionSocketHolder.saveSession(msg.getRequestId(), msg.getReqMsg());
-//            LOGGER.info("client [{}] online success!!", msg.getReqMsg());
-//        }
-//
+        if (msg.getType() == Constants.MessageType.LOGIN) {
+            // 收到客户端登录请求
+            SocketSessionHolder.login(msg.getFromTo(), NioSocketChannelClient.getInstance(ctx.channel()));
+
+            LOGGER.info("client [{}] online success!!", msg.getFromTo());
+        }
+
         // 收到客户端心跳，更新对应客户端最新心跳时间
         if (msg.getType() == Constants.MessageType.PING) {
             SocketSession socketSession = SocketSessionHolder.get(NioSocketChannelClient.getInstance(ctx.channel()));

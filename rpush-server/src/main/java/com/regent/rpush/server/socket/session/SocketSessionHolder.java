@@ -50,6 +50,7 @@ public final class SocketSessionHolder {
      * 登录
      */
     public static void login(Long registrationId, RpushClient Client) {
+        // 建立SocketSession
         SocketSessionImpl socketSession = (SocketSessionImpl) get(Client);
         socketSession.setRegistrationId(registrationId);
         REGISTRATION_ID_SESSION_MAP.put(registrationId, socketSession);
