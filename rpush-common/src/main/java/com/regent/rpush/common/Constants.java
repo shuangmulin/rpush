@@ -9,6 +9,8 @@ package com.regent.rpush.common;
  */
 public class Constants {
 
+    public static final String RPUSH_SERVER_NAME = "RPUSH-SERVER";
+
     /**
      * 自定义报文类型
      */

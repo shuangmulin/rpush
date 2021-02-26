@@ -36,7 +36,7 @@ public class RpushClient {
 
     public void start() throws Exception {
         //登录 + 获取可以使用的服务器 ip+port TODO
-        ServerInfoDTO serverInfoDTO = ServerInfoDTO.builder().ip("localhost").socketPort(1111).build();
+        ServerInfoDTO serverInfoDTO = ServerInfoDTO.builder().host("localhost").socketPort(1111).build();
 
         //启动客户端
         startClient(serverInfoDTO);
@@ -72,7 +72,7 @@ public class RpushClient {
 
         ChannelFuture future = null;
         try {
-            future = bootstrap.connect(server.getIp(), server.getSocketPort()).sync();
+            future = bootstrap.connect(server.getHost(), server.getSocketPort()).sync();
         } catch (Exception e) {
             errorCount++;
             if (errorCount >= 10) {

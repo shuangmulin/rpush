@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class ServerInfoDTO implements Serializable {
     private static final long serialVersionUID = 9222803955924359317L;
 
-    private String ip;
+    private String host;
     private int socketPort;
     private int httpPort;
 
