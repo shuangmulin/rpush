@@ -4,12 +4,10 @@ import com.regent.rpush.api.server.ServerInfoService;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.InetAddress;
 
 /**
  * 服务器信息
@@ -21,17 +19,13 @@ import java.net.InetAddress;
 @RequestMapping("/server-info")
 public class ServerInfoController implements ServerInfoService {
 
-    @Value("${server.port}")
-    private int httpPort;
-
-    @Value("${rpush.server.port}")
-    private int socketPort;
+    @Autowired
+    private ServerInfoDTO serverInfo;
 
     @SneakyThrows
     @GetMapping
     public ApiResult<ServerInfoDTO> serverInfo() {
-        String host = InetAddress.getLocalHost().getHostAddress();
-        return ApiResult.of(ServerInfoDTO.builder().httpPort(httpPort).socketPort(socketPort).host(host).build());
+        return ApiResult.of(serverInfo);
     }
 
 }

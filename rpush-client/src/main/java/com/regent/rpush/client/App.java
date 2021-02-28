@@ -6,9 +6,19 @@ package com.regent.rpush.client;
  **/
 public class App {
 
-    public static void main(String[] args) throws Exception {
-        RpushClient rpushClient = new RpushClient();
+    private static final RpushClient rpushClient = new RpushClient();
+
+    public static void start() throws Exception {
         rpushClient.start();
+    }
+
+    public static void reconnect() {
+        rpushClient.reconnect();
+    }
+
+    public static void main(String[] args) throws Exception {
+        start();
+        System.out.println("结束");
     }
 
 }

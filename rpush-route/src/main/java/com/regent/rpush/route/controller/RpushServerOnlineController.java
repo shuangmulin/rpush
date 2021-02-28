@@ -9,6 +9,7 @@ import com.regent.rpush.dto.StatusCode;
 import com.regent.rpush.dto.rpushserver.LoginDTO;
 import com.regent.rpush.dto.rpushserver.OfflineDTO;
 import com.regent.rpush.dto.rpushserver.RpushServerRegistrationDTO;
+import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 import com.regent.rpush.route.model.RpushServerOnline;
 import com.regent.rpush.route.model.RpushServerRegistration;
 import com.regent.rpush.route.service.IRpushServerOnlineService;
@@ -49,6 +50,14 @@ public class RpushServerOnlineController implements RpushServerOnlineService {
         // 保存登录信息
         RpushServerOnline rpushServerOnline = new RpushServerOnline();
         rpushServerOnline.setRegistrationId(loginParam.getRegistrationId());
+        ServerInfoDTO serverInfo = loginParam.getServerInfo();
+        if (serverInfo == null) {
+            throw new IllegalArgumentException("登录的服务端信息不全");
+        }
+        rpushServerOnline.setServerId(serverInfo.getHost() + ":" + serverInfo.getHttpPort());
+        rpushServerOnline.setServerHost(serverInfo.getHost());
+        rpushServerOnline.setServerHttpPort(serverInfo.getHttpPort());
+        rpushServerOnline.setServerSocketPort(serverInfo.getSocketPort());
         rpushServerOnlineService.save(rpushServerOnline);
         RpushServerRegistrationDTO registrationDTO = new RpushServerRegistrationDTO();
         BeanUtil.copyProperties(rpushServerRegistration, registrationDTO);

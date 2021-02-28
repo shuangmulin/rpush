@@ -34,11 +34,11 @@ public class RpushServerHandler extends SimpleChannelInboundHandler<MessageProto
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // 清除相关数据
         SocketSessionHolder.offLine(NioSocketChannelClient.getInstance(ctx.channel()));
+        super.channelInactive(ctx);
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        super.userEventTriggered(ctx, evt);
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
             if (idleStateEvent.state() == IdleState.READER_IDLE) {
@@ -57,6 +57,7 @@ public class RpushServerHandler extends SimpleChannelInboundHandler<MessageProto
                 }
             }
         }
+        super.userEventTriggered(ctx, evt);
     }
 
 
@@ -65,7 +66,6 @@ public class RpushServerHandler extends SimpleChannelInboundHandler<MessageProto
         if (msg.getType() == Constants.MessageType.LOGIN) {
             // 收到客户端登录请求
             SocketSessionHolder.login(msg.getFromTo(), NioSocketChannelClient.getInstance(ctx.channel()));
-
             LOGGER.info("client [{}] online success!!", msg.getFromTo());
         }
 

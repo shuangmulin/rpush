@@ -43,5 +43,16 @@ public class RpushServerOnline extends Model {
     @ApiModelProperty(value = "注册设备id")
     private Long registrationId;
 
+    @ApiModelProperty(value = "服务端id")
+    private String serverId;
+
+    @ApiModelProperty(value = "服务端host")
+    private String serverHost;
+
+    @ApiModelProperty(value = "服务端socket端口")
+    private int serverSocketPort;
+
+    @ApiModelProperty(value = "服务端端口")
+    private int serverHttpPort;
 
 }

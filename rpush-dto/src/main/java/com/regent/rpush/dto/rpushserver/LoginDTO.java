@@ -20,5 +20,9 @@ public class LoginDTO extends BaseParam {
 
     @ApiModelProperty("设备ID")
     private long registrationId;
+    /**
+     * 服务器信息
+     */
+    private ServerInfoDTO serverInfo;
 
 }

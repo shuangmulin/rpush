@@ -3,6 +3,7 @@ package com.regent.rpush.server.socket.session;
 import com.regent.rpush.api.route.RpushServerOnlineService;
 import com.regent.rpush.dto.rpushserver.LoginDTO;
 import com.regent.rpush.dto.rpushserver.OfflineDTO;
+import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 import com.regent.rpush.server.socket.client.RpushClient;
 import com.regent.rpush.server.utils.SpringBeanFactory;
 import org.slf4j.Logger;
@@ -57,7 +58,8 @@ public final class SocketSessionHolder {
 
         // 持久化登录信息
         RpushServerOnlineService rpushServerOnlineService = SpringBeanFactory.getBean(RpushServerOnlineService.class);
-        rpushServerOnlineService.login(LoginDTO.builder().registrationId(registrationId).build());
+        ServerInfoDTO serverInfo = SpringBeanFactory.getBean(ServerInfoDTO.class);
+        rpushServerOnlineService.login(LoginDTO.builder().registrationId(registrationId).serverInfo(serverInfo).build());
     }
 
     /**

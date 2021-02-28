@@ -17,8 +17,13 @@ import io.netty.handler.timeout.IdleStateEvent;
 public class RpushClientHandler extends SimpleChannelInboundHandler<MessageProto.MessageProtocol> {
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        // 尝试重连
+        App.reconnect();
+    }
+
+    @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        super.userEventTriggered(ctx, evt);
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent idleStateEvent = (IdleStateEvent) evt;
 
@@ -31,8 +36,6 @@ public class RpushClientHandler extends SimpleChannelInboundHandler<MessageProto
                 });
             }
         }
-
-        super.userEventTriggered(ctx, evt);
     }
 
     @Override
