@@ -16,7 +16,7 @@ import java.util.List;
  * @since 2021/2/28/028 21:27
  **/
 @Component
-public class SocketMessageHandle extends MessageHandler<SocketMessageDTO> {
+public class SocketMessageHandler extends MessageHandler<SocketMessageDTO> {
 
     @Autowired
     private MessagePushService messagePushService;
