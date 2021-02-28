@@ -20,9 +20,9 @@ public enum MessagePlatformEnum {
 //     * 钉钉
 //     **/
 //    DING_TALK,
-//    /**
-//     * rpush服务
-//     **/
-//    RPUSH_SERVER
+    /**
+     * rpush服务
+     **/
+    RPUSH_SERVER
 
 }

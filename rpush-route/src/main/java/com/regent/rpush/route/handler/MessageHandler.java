@@ -30,7 +30,8 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
             // 不处理
             return;
         }
-        JSONObject param = platformParamMap.get(platform());
+        MessagePlatformEnum platform = platform();
+        JSONObject param = platformParamMap.get(platform);
         if (param == null) {
             return;
         }

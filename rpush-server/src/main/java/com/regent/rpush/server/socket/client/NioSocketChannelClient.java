@@ -1,6 +1,13 @@
 package com.regent.rpush.server.socket.client;
 
+import com.regent.rpush.common.Constants;
+import com.regent.rpush.common.protocol.MessageProto;
+import com.regent.rpush.dto.message.NormalMessageDTO;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 2021/2/20/020 20:37
  **/
 public class NioSocketChannelClient implements RpushClient {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(NioSocketChannelClient.class);
 
     private static final Map<Channel, NioSocketChannelClient> INSTANCE_MAP = new ConcurrentHashMap<>();
 
@@ -39,5 +48,18 @@ public class NioSocketChannelClient implements RpushClient {
         if (channel.isOpen()) {
             channel.close();
         }
+    }
+
+    @Override
+    public void pushMessage(NormalMessageDTO message) {
+        MessageProto.MessageProtocol messageProtocol = MessageProto.MessageProtocol.newBuilder()
+                .setContent(message.getContent())
+                .setFromTo(message.getFromTo())
+                .setSendTo(message.getSendTo())
+                .setType(Constants.MessageType.MSG)
+                .build();
+        ChannelFuture future = channel.writeAndFlush(messageProtocol);
+        future.addListener((ChannelFutureListener) channelFuture ->
+                LOGGER.info("server push msg:[{}]", message.toString()));
     }
 }

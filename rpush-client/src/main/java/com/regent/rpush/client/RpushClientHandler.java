@@ -1,5 +1,6 @@
 package com.regent.rpush.client;
 
+import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.common.protocol.PingPong;
 import io.netty.channel.ChannelFutureListener;
@@ -40,6 +41,11 @@ public class RpushClientHandler extends SimpleChannelInboundHandler<MessageProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MessageProto.MessageProtocol messageProtocol) throws Exception {
-        System.out.println(messageProtocol);
+        if (messageProtocol.getType() == Constants.MessageType.PING) {
+            System.out.println(messageProtocol);
+            return;
+        }
+
+        System.out.println(messageProtocol.getContent());
     }
 }
