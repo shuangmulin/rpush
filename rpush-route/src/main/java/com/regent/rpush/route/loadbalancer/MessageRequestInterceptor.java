@@ -26,7 +26,7 @@ public class MessageRequestInterceptor implements RequestInterceptor {
             return;
         }
 
-        // 如果是消息推送，需要给接收端连接的服务端投放消息
+        // 如果是消息推送，需要给接收端连接的服务端投放消息，在服务端集群的情况下，要找到对应的服务端
         String body = new String(requestTemplate.body());
         JSONObject jsonObject = new JSONObject(body);
         QueryWrapper<RpushServerOnline> wrapper = new QueryWrapper<>();

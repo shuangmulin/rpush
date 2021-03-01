@@ -35,13 +35,13 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
         if (param == null) {
             return;
         }
-        // 处理参数
-        ParameterizedType superclass = (ParameterizedType) this.getClass().getGenericSuperclass();
-        Type actualTypeArgument = superclass.getActualTypeArguments()[0];
-        BaseMessage baseMessage = param.toBean(actualTypeArgument);
-        baseMessage.setContent(event.getContent());
-        baseMessage.setRequestNo(event.getRequestNo());
         try {
+            // 处理参数
+            ParameterizedType superclass = (ParameterizedType) this.getClass().getGenericSuperclass();
+            Type actualTypeArgument = superclass.getActualTypeArguments()[0];
+            BaseMessage baseMessage = param.toBean(actualTypeArgument);
+            baseMessage.setContent(event.getContent());
+            baseMessage.setRequestNo(event.getRequestNo());
             handle((T) baseMessage);
         } catch (Exception e) {
             LOGGER.error("消息处理异常", e);
