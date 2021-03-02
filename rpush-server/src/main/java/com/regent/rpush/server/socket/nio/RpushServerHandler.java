@@ -1,13 +1,11 @@
-package com.regent.rpush.server.socket;
+package com.regent.rpush.server.socket.nio;
 
 import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.common.protocol.PingPong;
-import com.regent.rpush.server.socket.client.NioSocketChannelClient;
-import com.regent.rpush.server.socket.client.RpushClient;
+import com.regent.rpush.server.socket.RpushClient;
 import com.regent.rpush.server.socket.session.SocketSession;
 import com.regent.rpush.server.socket.session.SocketSessionHolder;
-import com.regent.rpush.server.socket.session.SocketSessionKey;
 import com.regent.rpush.server.utils.SpringConfig;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;

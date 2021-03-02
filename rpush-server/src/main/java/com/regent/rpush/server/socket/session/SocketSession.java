@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket.session;
 
-import com.regent.rpush.server.socket.client.RpushClient;
+import com.regent.rpush.server.socket.RpushClient;
 
 /**
  * 一个Socket会话

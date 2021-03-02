@@ -1,8 +1,9 @@
-package com.regent.rpush.server.socket.client;
+package com.regent.rpush.server.socket.nio;
 
 import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.dto.message.NormalMessageDTO;
+import com.regent.rpush.server.socket.RpushClient;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -44,7 +45,7 @@ public class NioSocketChannelClient implements RpushClient {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (channel.isOpen()) {
             channel.close();
         }

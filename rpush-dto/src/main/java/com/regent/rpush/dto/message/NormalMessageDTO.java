@@ -29,4 +29,6 @@ public class NormalMessageDTO extends BaseMessage{
     @NotNull
     private Long sendTo;
 
+    private String content;
+
 }

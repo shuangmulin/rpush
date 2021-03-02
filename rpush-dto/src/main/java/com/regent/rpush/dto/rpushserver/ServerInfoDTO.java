@@ -19,6 +19,7 @@ public class ServerInfoDTO implements Serializable {
 
     private String host;
     private int socketPort;
+    private int webSocketPort;
     private int httpPort;
 
 }

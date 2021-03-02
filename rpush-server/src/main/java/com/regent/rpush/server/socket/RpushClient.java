@@ -1,4 +1,4 @@
-package com.regent.rpush.server.socket.client;
+package com.regent.rpush.server.socket;
 
 import com.regent.rpush.dto.message.NormalMessageDTO;
 
@@ -8,10 +8,12 @@ import com.regent.rpush.dto.message.NormalMessageDTO;
  * @author 钟宝林
  * @since 2021/2/20/020 20:35
  **/
-public interface RpushClient extends AutoCloseable {
+public interface RpushClient {
 
     /**
      * 推送消息
      */
     void pushMessage(NormalMessageDTO message);
+
+    void close();
 }

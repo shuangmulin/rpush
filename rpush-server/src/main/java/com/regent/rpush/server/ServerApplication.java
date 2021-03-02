@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -25,14 +24,11 @@ public class ServerApplication {
     @Value("${rpush.server.port}")
     private int socketPort;
 
-    @Value("${spring.application.name}")
-    private String serviceId;
+    @Value("${rpush.web-socket.port}")
+    private int webSocketPort;
 
     @Autowired
     private InetUtils inetUtils;
-
-    @Autowired
-    private DiscoveryClient discoveryClient;
 
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
@@ -43,7 +39,7 @@ public class ServerApplication {
     public ServerInfoDTO serverInfo() {
         InetUtils.HostInfo hostInfo = inetUtils.findFirstNonLoopbackHostInfo();
         String host = hostInfo.getIpAddress();
-        return ServerInfoDTO.builder().httpPort(httpPort).socketPort(socketPort).host(host).build();
+        return ServerInfoDTO.builder().httpPort(httpPort).socketPort(socketPort).webSocketPort(webSocketPort).host(host).build();
     }
 
 }

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>websocket-java-socketio</title>
+    <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+</head>
+<body>
+<h1>Socket.io Test</h1>
+<div><p id="status">Waiting for input</p></div>
+<div><p id="message">hello world!</p></div>
+<button id="connect" onClick='connect()'/>Connect</button>
+<button id="disconnect" onClick='disconnect()'>Disconnect</button>
+<button id="send" onClick='send()'/>Send Message</button>
+</body>
+
+<script type="text/javascript">
+
+    /**
+     * 前端js的 socket.emit("事件名","参数数据")方法，是触发后端自定义消息事件的时候使用的,
+     * 前端js的 socket.on("事件名",匿名函数(服务器向客户端发送的数据))为监听服务器端的事件
+     **/
+    var socket = io.connect("http://localhost:9092?registrationId=1363044308899532803");
+    var firstconnect = true;
+
+    function connect() {
+        if(firstconnect) {
+
+            //socket.on('reconnect', function(){ status_update("Reconnected to Server"); });
+            //socket.on('reconnecting', function( nextRetry ){ status_update("Reconnecting in "
+            //+ nextRetry + " seconds"); });
+            //socket.on('reconnect_failed', function(){ message("Reconnect Failed"); });
+            //firstconnect = false;
+        } else {
+            socket.socket.reconnect();
+        }
+    }
+
+    //监听服务器连接事件
+    socket.on('connect', function(){ status_update("Connected to Server"); });
+    //监听服务器关闭服务事件
+    socket.on('disconnect', function(){ status_update("Disconnected from Server"); });
+    //监听服务器端发送消息事件
+    socket.on('messageEvent', function(data) {
+        message(data)
+        //console.log("服务器发送的消息是："+data);
+    });
+
+    //断开连接
+    function disconnect() {
+        socket.disconnect();
+    }
+
+    function message(data) {
+        document.getElementById('message').innerHTML = "Server says: " + data;
+    }
+
+    function status_update(txt){
+        document.getElementById('status').innerHTML = txt;
+    }
+
+    function esc(msg){
+        return msg.replace(/</g, '<').replace(/>/g, '>');
+    }
+    //点击发送消息触发
+    function send() {
+        console.log("点击了发送消息，开始向服务器发送消息")
+        var msg = "我很好的,是的．";
+        socket.emit('messageEvent', {msgContent: msg});
+    };
+</script>
+</html>

@@ -1,7 +1,6 @@
-package com.regent.rpush.server.socket;
+package com.regent.rpush.server.socket.nio;
 
 import com.regent.rpush.common.protocol.MessageProto;
-import com.regent.rpush.dto.socket.SendMsgDTO;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -31,7 +30,6 @@ public class RpushServer {
 
     @Value("${rpush.server.port}")
     private int nettyPort;
-
 
     /**
      * 启动 server
@@ -65,7 +63,6 @@ public class RpushServer {
         }
     }
 
-
     /**
      * 销毁
      */
@@ -74,27 +71,5 @@ public class RpushServer {
         boss.shutdownGracefully().syncUninterruptibly();
         work.shutdownGracefully().syncUninterruptibly();
         LOGGER.info("Socket服务端关闭成功!!!");
-    }
-
-
-    /**
-     * 向客户端发送消息
-     */
-    public void sendMsg(SendMsgDTO sendMsgDTO) {
-//        NioSocketChannel socketChannel = SessionSocketHolder.get(sendMsgReqVO.getUserId());
-//
-//        if (null == socketChannel) {
-//            LOGGER.error("client {} offline!", sendMsgReqVO.getUserId());
-//            return;
-//        }
-//        CIMRequestProto.CIMReqProtocol protocol = CIMRequestProto.CIMReqProtocol.newBuilder()
-//                .setRequestId(sendMsgReqVO.getUserId())
-//                .setReqMsg(sendMsgReqVO.getMsg())
-//                .setType(Constants.CommandType.MSG)
-//                .build();
-//
-//        ChannelFuture future = socketChannel.writeAndFlush(protocol);
-//        future.addListener((ChannelFutureListener) channelFuture ->
-//                LOGGER.info("server push msg:[{}]", sendMsgReqVO.toString()));
     }
 }

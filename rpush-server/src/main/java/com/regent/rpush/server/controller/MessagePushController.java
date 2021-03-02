@@ -4,7 +4,7 @@ import com.regent.rpush.api.server.MessagePushService;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.StatusCode;
 import com.regent.rpush.dto.message.NormalMessageDTO;
-import com.regent.rpush.server.socket.client.RpushClient;
+import com.regent.rpush.server.socket.RpushClient;
 import com.regent.rpush.server.socket.session.SocketSession;
 import com.regent.rpush.server.socket.session.SocketSessionHolder;
 import io.swagger.annotations.ApiOperation;

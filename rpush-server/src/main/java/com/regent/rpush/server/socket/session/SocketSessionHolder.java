@@ -4,7 +4,7 @@ import com.regent.rpush.api.route.RpushServerOnlineService;
 import com.regent.rpush.dto.rpushserver.LoginDTO;
 import com.regent.rpush.dto.rpushserver.OfflineDTO;
 import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
-import com.regent.rpush.server.socket.client.RpushClient;
+import com.regent.rpush.server.socket.RpushClient;
 import com.regent.rpush.server.utils.SpringBeanFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,11 +78,11 @@ public final class SocketSessionHolder {
         offLine(socketSession.getClient());
     }
 
-    public static void offLine(RpushClient client) {
+    public static long offLine(RpushClient client) {
         SocketSession socketSession = get(client);
         if (socketSession == null) {
             // 没登录过，不管
-            return;
+            return -1;
         }
 
         Long registrationId = socketSession.getRegistrationId();
@@ -101,6 +101,8 @@ public final class SocketSessionHolder {
         } catch (Exception e) {
             LOGGER.error("客户端[{}]关闭异常", registrationId);
         }
+
+        return registrationId == null ? -1 : registrationId;
     }
 
 }
