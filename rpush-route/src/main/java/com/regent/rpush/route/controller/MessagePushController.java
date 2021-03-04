@@ -1,6 +1,7 @@
 package com.regent.rpush.route.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -8,6 +9,7 @@ import com.regent.rpush.api.server.MessagePushService;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.MessagePushDTO;
+import com.regent.rpush.dto.message.config.PlatformMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
@@ -15,8 +17,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -59,7 +60,13 @@ public class MessagePushController {
         JSONObject platformParam = json.getJSONObject("platformParam");
         MessagePlatformEnum[] values = MessagePlatformEnum.values();
         for (MessagePlatformEnum value : values) {
-            messagePushDTO.getPlatformParam().put(value, platformParam.getJSONObject(value.name()));
+            JSONObject jsonObject = platformParam.getJSONObject(value.name());
+            JSONArray configIds = jsonObject.getJSONArray("configIds");
+            PlatformMessageDTO platformMessageDTO = PlatformMessageDTO.builder()
+                    .configIds(configIds == null ? Collections.EMPTY_LIST : configIds.toList(Long.TYPE))
+                    .param(jsonObject.getJSONObject("param"))
+                    .build();
+            messagePushDTO.getPlatformParam().put(value, platformMessageDTO);
         }
         // 往队列里扔
         RingBuffer<MessagePushDTO> ringBuffer = getDisruptor().getRingBuffer();

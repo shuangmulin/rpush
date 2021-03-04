@@ -1,5 +1,6 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.message.config.EmailConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailMessageDTO extends BaseMessage {
+public class EmailMessageDTO extends BaseMessage<EmailConfig> {
     private static final long serialVersionUID = 2692273549631779696L;
 
     private List<String> sendTo;

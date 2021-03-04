@@ -23,6 +23,12 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
     @Autowired
     private IEmailConfigService emailConfigService;
 
+    private String host;
+    private int port;
+    private String from;
+    private String user;
+    private String password;
+
     @Override
     public MessagePlatformEnum platform() {
         return MessagePlatformEnum.EMAIL;
@@ -35,12 +41,12 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
         EmailConfig emailConfig = emailConfigService.getOne(queryWrapper);
 
         MailAccount account = new MailAccount();
-        account.setHost(emailConfig.getHost());
-        account.setPort(emailConfig.getPort());
+        account.setHost(host);
+        account.setPort(port);
         account.setAuth(true);
-        account.setFrom(emailConfig.getFrom());
-        account.setUser(emailConfig.getUser());
-        account.setPass(emailConfig.getPassword());
+        account.setFrom(from);
+        account.setUser(user);
+        account.setPass(password);
         MailUtil.send(account, CollUtil.newArrayList(param.getSendTo()), "测试", "邮件来自baolin测试", false);
     }
 }

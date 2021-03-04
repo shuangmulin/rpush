@@ -8,21 +8,24 @@ package com.regent.rpush.dto.enumration;
  **/
 public enum MessagePlatformEnum {
 
-    /**
-     * 邮箱
-     **/
-    EMAIL,
-//    /**
-//     * 企业微信
-//     **/
-//    WECHAT_WORK,
-//    /**
-//     * 钉钉
-//     **/
-//    DING_TALK,
-    /**
-     * rpush服务
-     **/
-    RPUSH_SERVER
+    EMAIL("邮箱", ""),
+    //    WECHAT_WORK("企业微信", "),
+    //    DING_TALK("钉钉", "),
+    RPUSH_SERVER("rpush服务", "");
 
+    private final String alias;
+    private final String description;
+
+    MessagePlatformEnum(String alias, String description) {
+        this.alias = alias;
+        this.description = description;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
