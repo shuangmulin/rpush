@@ -61,6 +61,9 @@ public class MessagePushController {
         MessagePlatformEnum[] values = MessagePlatformEnum.values();
         for (MessagePlatformEnum value : values) {
             JSONObject jsonObject = platformParam.getJSONObject(value.name());
+            if (jsonObject == null) {
+                continue;
+            }
             JSONArray configIds = jsonObject.getJSONArray("configIds");
             PlatformMessageDTO platformMessageDTO = PlatformMessageDTO.builder()
                     .configIds(configIds == null ? Collections.EMPTY_LIST : configIds.toList(Long.TYPE))

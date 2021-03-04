@@ -2,10 +2,6 @@ package com.regent.rpush.dto.message;
 
 import com.regent.rpush.dto.BaseParam;
 import com.regent.rpush.dto.message.config.Config;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -15,10 +11,6 @@ import java.util.List;
  * @author 钟宝林
  * @date 2021/2/8 21:02
  **/
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class BaseMessage<config extends Config> extends BaseParam {
     private static final long serialVersionUID = 437493036483567460L;
 
@@ -28,4 +20,20 @@ public class BaseMessage<config extends Config> extends BaseParam {
      */
     private List<config> configs;
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setConfigs(List<Config> configs) {
+        this.configs = (List<config>) configs;
+    }
+
+    public List<config> getConfigs() {
+        return configs;
+    }
 }

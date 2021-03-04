@@ -11,9 +11,6 @@ import java.io.Serializable;
  * @since 2021/3/4/004 20:24
  **/
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public abstract class Config implements Serializable {
     private static final long serialVersionUID = 2765017560754006377L;
 

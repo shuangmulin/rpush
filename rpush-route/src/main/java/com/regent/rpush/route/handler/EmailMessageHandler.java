@@ -3,13 +3,12 @@ package com.regent.rpush.route.handler;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.EmailMessageDTO;
-import com.regent.rpush.route.model.EmailConfig;
-import com.regent.rpush.route.service.IEmailConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.regent.rpush.dto.message.config.EmailConfig;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 邮件消息处理器
@@ -20,15 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
 
-    @Autowired
-    private IEmailConfigService emailConfigService;
-
-    private String host;
-    private int port;
-    private String from;
-    private String user;
-    private String password;
-
     @Override
     public MessagePlatformEnum platform() {
         return MessagePlatformEnum.EMAIL;
@@ -36,17 +26,16 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
 
     @Override
     public void handle(EmailMessageDTO param) {
-        QueryWrapper<EmailConfig> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("is_default", true);
-        EmailConfig emailConfig = emailConfigService.getOne(queryWrapper);
-
-        MailAccount account = new MailAccount();
-        account.setHost(host);
-        account.setPort(port);
-        account.setAuth(true);
-        account.setFrom(from);
-        account.setUser(user);
-        account.setPass(password);
-        MailUtil.send(account, CollUtil.newArrayList(param.getSendTo()), "测试", "邮件来自baolin测试", false);
+        List<EmailConfig> configs = param.getConfigs();
+        for (EmailConfig config : configs) {
+            MailAccount account = new MailAccount();
+            account.setHost(config.getHost());
+            account.setPort(config.getPort());
+            account.setAuth(true);
+            account.setFrom(config.getFrom());
+            account.setUser(config.getUser());
+            account.setPass(config.getPassword());
+            MailUtil.send(account, CollUtil.newArrayList(param.getSendTo()), "测试", "测试邮件？", false);
+        }
     }
 }
