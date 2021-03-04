@@ -1,6 +1,6 @@
 package com.regent.rpush.dto.message;
 
-import com.regent.rpush.dto.message.config.SocketConfig;
+import com.regent.rpush.dto.message.config.EmptyConfig;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SocketMessageDTO extends BaseMessage<SocketConfig> {
+public class SocketMessageDTO extends BaseMessage<EmptyConfig> {
     private static final long serialVersionUID = -3289428483627765265L;
 
     @NotNull
