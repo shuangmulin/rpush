@@ -10,12 +10,11 @@ import javax.validation.constraints.NotNull;
  * @author 钟宝林
  * @since 2021/2/28/028 21:13
  **/
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NormalMessageDTO extends BaseMessage{
+public class NormalMessageDTO {
     private static final long serialVersionUID = -8824134072189443062L;
 
     /**

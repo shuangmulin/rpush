@@ -5,10 +5,10 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.EventHandler;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
-import com.regent.rpush.dto.message.BaseMessage;
-import com.regent.rpush.dto.message.MessagePushDTO;
+import com.regent.rpush.dto.message.base.BaseMessage;
+import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.config.Config;
-import com.regent.rpush.dto.message.config.PlatformMessageDTO;
+import com.regent.rpush.dto.message.base.PlatformMessageDTO;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +66,9 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
         }
     }
 
+    /**
+     * 根据参数传入的配置id，转换成具体的配置数据，提供给下游具体的消息处理器使用
+     */
     private void processPlatformConfig(PlatformMessageDTO platformMessageDTO, BaseMessage<?> baseMessage) throws InstantiationException, IllegalAccessException, NoSuchFieldException {
         List<Long> configIds = platformMessageDTO.getConfigIds();
         Map<Long, Map<String, String>> configMap = rpushPlatformConfigService.queryConfig(configIds); // 键为配置id，值为：具体的配置键值
@@ -81,6 +84,9 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
             Config configObj = (Config) configType.newInstance();
             configObj.setConfigId(configId);
             for (String key : valueMap.keySet()) {
+                if (!ReflectUtil.hasField(configType, key)) {
+                    continue;
+                }
                 Field declaredField = configType.getDeclaredField(key);
                 Class<?> fieldType = declaredField.getType();
                 ReflectUtil.setFieldValue(configObj, key, MapUtil.get(valueMap, key, fieldType));
@@ -90,8 +96,14 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
         baseMessage.setConfigs(configs);
     }
 
+    /**
+     * 所有消息处理器必须实现这个接口，标识自己处理的是哪个平台的消息
+     */
     public abstract MessagePlatformEnum platform();
 
+    /**
+     * 实现这个接口来处理消息，再正式调用这个方法之前会处理好需要的参数和需要的配置
+     */
     public abstract void handle(T param);
 
 }

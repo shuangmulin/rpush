@@ -19,5 +19,7 @@ public class EmailConfig extends Config {
     private String from;
     private String user;
     private String password;
+    @ConfigValue(type = ConfigValueType.RPUSH_TEMPLATE)
+    private Long templateId;
 
 }

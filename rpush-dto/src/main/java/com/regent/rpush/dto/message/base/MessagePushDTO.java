@@ -1,8 +1,7 @@
-package com.regent.rpush.dto.message;
+package com.regent.rpush.dto.message.base;
 
 import com.regent.rpush.dto.BaseParam;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
-import com.regent.rpush.dto.message.config.PlatformMessageDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

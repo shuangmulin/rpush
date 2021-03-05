@@ -1,4 +1,4 @@
-package com.regent.rpush.dto.message.config;
+package com.regent.rpush.dto.message.base;
 
 import cn.hutool.json.JSONObject;
 import lombok.AllArgsConstructor;

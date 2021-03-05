@@ -1,5 +1,6 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.message.config.EmailConfig;
 import lombok.AllArgsConstructor;
 import lombok.Data;

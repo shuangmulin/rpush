@@ -1,5 +1,6 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.message.config.EmptyConfig;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

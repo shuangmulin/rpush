@@ -1,4 +1,4 @@
-package com.regent.rpush.dto.message;
+package com.regent.rpush.dto.message.base;
 
 import com.regent.rpush.dto.BaseParam;
 import com.regent.rpush.dto.message.config.Config;
