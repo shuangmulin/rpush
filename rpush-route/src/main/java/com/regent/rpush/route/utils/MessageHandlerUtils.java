@@ -79,7 +79,7 @@ public final class MessageHandlerUtils {
     public static List<ConfigFieldVO> listConfigFieldName(MessageHandler<?> messageHandler) {
         return SingletonUtil.get("config-field-names-" + messageHandler.getClass().getName(), () -> {
             Class<?> configType = getConfigType(messageHandler);
-            Field[] fields = ReflectUtil.getFields(configType); // 只有打了ConfigValue注解的字段才有效
+            Field[] fields = ReflectUtil.getFieldsDirectly(configType, false); // 只有打了ConfigValue注解的字段才有效
             if (fields == null || fields.length <= 0) {
                 return Collections.emptyList();
             }
@@ -131,8 +131,9 @@ public final class MessageHandlerUtils {
 
                 Config configObj = (Config) configType.newInstance();
                 configObj.setConfigId(configId);
+                configObj.setDefaultFlag(Boolean.parseBoolean(valueMap.get("defaultFlag")));
                 for (String key : valueMap.keySet()) {
-                    if (!ReflectUtil.hasField(configType, key)) {
+                    if (!ReflectUtil.hasField(configType, key) || "defaultFlag".equals(key)) {
                         continue;
                     }
                     Field declaredField = configType.getDeclaredField(key);

@@ -15,5 +15,6 @@ public abstract class Config implements Serializable {
     private static final long serialVersionUID = 2765017560754006377L;
 
     private long configId;
+    private boolean defaultFlag;
 
 }
