@@ -1,7 +1,9 @@
 package com.regent.rpush.route.service;
 
-import com.regent.rpush.route.model.RpushPlatformConfig;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.route.config.ConfigTableDTO;
+import com.regent.rpush.route.model.RpushPlatformConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +25,11 @@ public interface IRpushPlatformConfigService extends IService<RpushPlatformConfi
      * @return 键为配置id，值为：具体的配置键值
      */
     Map<Long, Map<String, String>> queryConfig(List<Long> configIds);
+
+    /**
+     * 查询配置分页数据
+     *
+     * @param platform 平台
+     */
+    ConfigTableDTO pageConfig(MessagePlatformEnum platform, Integer pageNum, Integer pageSize);
 }

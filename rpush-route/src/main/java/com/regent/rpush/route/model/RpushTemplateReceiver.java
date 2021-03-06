@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author 钟宝林
- * @since 2021-03-04
+ * @since 2021-03-06
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -39,8 +39,8 @@ public class RpushTemplateReceiver extends Model {
     @ApiModelProperty(value = "更新时间")
     private Date dateUpdated;
 
-    @ApiModelProperty(value = "模板id")
-    private Long rpushTemplateId;
+    @ApiModelProperty(value = "所属分组id")
+    private Long groupId;
 
     @ApiModelProperty(value = "接收人，用来发消息的id性质的字段，如果是邮箱就是要发送的邮箱，如果是企业微信就是企业微信对应用户的id，如果是rpush就是registrationId")
     private String receiverId;

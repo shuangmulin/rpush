@@ -14,10 +14,9 @@ public class GeneratorCodeConfig {
 
     public static void main(String[] args) {
         String[] tableNames = {
-                "rpush_platform_config",
-                "rpush_platform_config_value",
                 "rpush_template",
                 "rpush_template_receiver",
+                "rpush_template_receiver_group",
         };
 
         // 代码生成器

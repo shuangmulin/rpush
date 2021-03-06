@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author 钟宝林
- * @since 2021-03-04
+ * @since 2021-03-06
  */
 public interface IRpushTemplateReceiverService extends IService<RpushTemplateReceiver> {
 

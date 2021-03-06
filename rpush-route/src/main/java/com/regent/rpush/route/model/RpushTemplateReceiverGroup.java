@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 消息模板表
+ * 消息模板-接收人分组表
  * </p>
  *
  * @author 钟宝林
@@ -21,8 +21,8 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="RpushTemplate对象", description="消息模板表")
-public class RpushTemplate extends Model {
+@ApiModel(value="RpushTemplateReceiverGroup对象", description="消息模板-接收人分组表")
+public class RpushTemplateReceiverGroup extends Model {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,17 +39,11 @@ public class RpushTemplate extends Model {
     @ApiModelProperty(value = "更新时间")
     private Date dateUpdated;
 
-    @ApiModelProperty(value = "平台")
+    @ApiModelProperty(value = "所属平台")
     private String platform;
 
-    @ApiModelProperty(value = "模板内容")
-    private String content;
-
-    @ApiModelProperty(value = "预设接收人，多个用;隔开。（对应的是rpush_template_receiver表的receiver_id）")
-    private String receiverIds;
-
-    @ApiModelProperty(value = "接收人分组id，可以为空（rpush_template_receiver_group表的id）")
-    private Long receiverGroupId;
+    @ApiModelProperty(value = "分组名称")
+    private String groupName;
 
 
 }

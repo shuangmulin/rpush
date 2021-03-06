@@ -5,19 +5,20 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.regent.rpush.api.server.MessagePushService;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.base.PlatformMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
+import com.regent.rpush.route.utils.MessageHandlerHolder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.Collections;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -26,30 +27,13 @@ import java.util.concurrent.Executors;
 @RequestMapping("/message/push")
 public class MessagePushController {
 
-//    @Autowired
-//    private RestTemplate restTemplate;
-
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Autowired
-    private LoadBalancerClient loadBalancer;
-
-    @Autowired
-    private MessagePushService messagePushService;
 
     /**
      * 队列
      */
     private volatile Disruptor<MessagePushDTO> disruptor;
-
-    @GetMapping("/choose")
-    public Object chooseUrl() {
-        ServiceInstance instance = loadBalancer.choose("RPUSH-SERVER");
-//        List<ClientHttpRequestInterceptor> interceptors = restTemplate.getInterceptors();
-//        System.out.println(interceptors);
-        return instance;
-    }
 
     @PostMapping
     public ApiResult<String> push(@RequestBody String param) {
@@ -93,21 +77,10 @@ public class MessagePushController {
                 return disruptor;
             }
             // 项目启动同时启动消息处理队列
-            Map<MessagePlatformEnum, MessageHandler> resultMap = new LinkedHashMap<>();
-            Map<String, MessageHandler> springMap = applicationContext.getBeansOfType(MessageHandler.class);
-            for (MessageHandler messageHandler : springMap.values()) {
-                MessagePlatformEnum platform = messageHandler.platform();
-                if (resultMap.containsKey(platform)) {
-                    // 一种消息平台只接受一个消息处理器（如果接受多个会有处理器执行的顺序问题，会变复杂，暂时不处理这种情况）
-                    throw new IllegalStateException("存在重复消息处理器");
-                }
-                resultMap.put(platform, messageHandler);
-            }
-
             Executor executor = Executors.newCachedThreadPool();
             int bufferSize = 1024;
             disruptor = new Disruptor<>(MessagePushDTO::new, bufferSize, executor);
-            disruptor.handleEventsWith(springMap.values().toArray(new MessageHandler[0]));
+            disruptor.handleEventsWith(MessageHandlerHolder.values().toArray(new MessageHandler[0]));
             disruptor.start();
             return disruptor;
         }

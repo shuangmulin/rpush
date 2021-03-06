@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author 钟宝林
- * @since 2021-03-04
+ * @since 2021-03-06
  */
 @Service
 public class RpushTemplateReceiverServiceImpl extends ServiceImpl<RpushTemplateReceiverMapper, RpushTemplateReceiver> implements IRpushTemplateReceiverService {

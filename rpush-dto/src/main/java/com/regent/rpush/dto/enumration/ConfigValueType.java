@@ -1,4 +1,4 @@
-package com.regent.rpush.dto.message.config;
+package com.regent.rpush.dto.enumration;
 
 /**
  * 配置值类型
@@ -8,13 +8,14 @@ package com.regent.rpush.dto.message.config;
  **/
 public enum ConfigValueType {
 
-    /**
-     * 默认，这个表示直接用Java默认的类型
-     */
-    DEFAULT,
+    INTEGER,
+    DECIMAL,
+    STRING,
     /**
      * 模板类型
      */
-    RPUSH_TEMPLATE
+    RPUSH_TEMPLATE,
+    BOOLEAN,
+    ;
 
 }
