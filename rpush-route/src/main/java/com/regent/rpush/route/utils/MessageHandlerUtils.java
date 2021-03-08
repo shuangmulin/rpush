@@ -4,6 +4,7 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.ConfigValueType;
+import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigValue;
@@ -71,6 +72,13 @@ public final class MessageHandlerUtils {
             ParameterizedType messageSupperClass = (ParameterizedType) paramType.getGenericSuperclass();
             return (Class<?>) messageSupperClass.getActualTypeArguments()[0];
         });
+    }
+
+    /**
+     * 获取消息处理的的配置的所有字段名称
+     */
+    public static List<ConfigFieldVO> listConfigFieldName(MessagePlatformEnum platform) {
+        return listConfigFieldName(MessageHandlerHolder.get(platform));
     }
 
     /**

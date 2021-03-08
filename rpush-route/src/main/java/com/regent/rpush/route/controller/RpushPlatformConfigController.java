@@ -4,8 +4,10 @@ package com.regent.rpush.route.controller;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.route.PlatformDTO;
+import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
+import com.regent.rpush.route.utils.MessageHandlerUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,11 @@ public class RpushPlatformConfigController {
                                                 Integer pageSize) {
         ConfigTableDTO table = rpushPlatformConfigService.pageConfig(platform, pageNum, pageSize);
         return ApiResult.of(table);
+    }
+
+    @GetMapping("/{platform}/config/field")
+    public ApiResult<List<ConfigFieldVO>> configField(@PathVariable("platform") MessagePlatformEnum platform) {
+        return ApiResult.of(MessageHandlerUtils.listConfigFieldName(platform));
     }
 
 }
