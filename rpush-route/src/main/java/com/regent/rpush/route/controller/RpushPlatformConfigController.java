@@ -7,6 +7,7 @@ import com.regent.rpush.dto.route.PlatformDTO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +34,13 @@ public class RpushPlatformConfigController {
 
     @ApiOperation(value = "获取所有平台")
     @GetMapping("/platform")
-    public ApiResult<List<PlatformDTO>> platforms() {
+    public ApiResult<List<PlatformDTO>> platforms(String keyword) {
         List<PlatformDTO> platforms = new ArrayList<>();
         for (MessagePlatformEnum platformEnum : MessagePlatformEnum.values()) {
+            String name = platformEnum.getName();
+            if (StringUtils.isNotBlank(keyword) && !name.contains(keyword)) {
+                continue;
+            }
             platforms.add(PlatformDTO.builder()
                     .id(platformEnum.name())
                     .name(platformEnum.getName())

@@ -1,5 +1,6 @@
 package com.regent.rpush.route;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -34,6 +35,13 @@ public class RouteApplication {
                         .allowedHeaders("*");
             }
         };
+    }
+
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor page = new PaginationInterceptor();
+        page.setDialectType("mysql");
+        return page;
     }
 
 }

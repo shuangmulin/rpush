@@ -88,7 +88,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         Page<RpushPlatformConfig> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushPlatformConfig> wrapper = new QueryWrapper<>();
         wrapper.eq("platform", platform.name());
-        page(page, wrapper);
+        page = (Page<RpushPlatformConfig>) page(page, wrapper);
         List<RpushPlatformConfig> configs = page.getRecords();
         List<Long> configIds = configs.stream().map(RpushPlatformConfig::getId).collect(Collectors.toList());
 
@@ -98,6 +98,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         Pagination<Config> pagination = tableDTO.getPagination();
         pagination.setPageNum(pageNum);
         pagination.setDataList(dataList);
+        pagination.setTotal((int) page.getTotal());
         return tableDTO;
     }
 
