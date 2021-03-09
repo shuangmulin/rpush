@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRpushTemplateReceiverGroupService extends IService<RpushTemplateReceiverGroup> {
 
+    /**
+     * 更新或保存分组
+     */
+    void updateGroup(RpushTemplateReceiverGroup group);
 }

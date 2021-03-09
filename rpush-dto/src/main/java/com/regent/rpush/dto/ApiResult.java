@@ -19,6 +19,10 @@ public class ApiResult<T> implements Serializable {
     private String requestNo;
     private T data;
 
+    public static <T> ApiResult<T> success() {
+        return of(StatusCode.SUCCESS.getCode(), StatusCode.SUCCESS.getMsg(), null);
+    }
+
     public static <T> ApiResult<T> of(T data) {
         return of(0, StatusCode.SUCCESS.getMsg(), data);
     }

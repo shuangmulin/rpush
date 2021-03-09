@@ -16,5 +16,6 @@ public abstract class Config implements Serializable {
 
     private long configId;
     private boolean defaultFlag;
+    private String configName;
 
 }

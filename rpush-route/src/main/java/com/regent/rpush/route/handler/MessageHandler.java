@@ -1,12 +1,14 @@
 package com.regent.rpush.route.handler;
 
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lmax.disruptor.EventHandler;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.base.PlatformMessageDTO;
 import com.regent.rpush.dto.message.config.Config;
+import com.regent.rpush.route.model.RpushPlatformConfig;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +69,15 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
      */
     private void processPlatformConfig(PlatformMessageDTO platformMessageDTO, BaseMessage<?> baseMessage) {
         List<Long> configIds = platformMessageDTO.getConfigIds();
+        if (configIds == null || configIds.size() <= 0) {
+            // 查一个默认配置出来用
+            QueryWrapper<RpushPlatformConfig> queryWrapper = new QueryWrapper<>();
+            RpushPlatformConfig config = rpushPlatformConfigService.getOne(queryWrapper);
+            if (config == null) {
+                return;
+            }
+            configIds = Collections.singletonList(config.getId());
+        }
         Map<Long, Map<String, String>> configMap = rpushPlatformConfigService.queryConfig(configIds); // 键为配置id，值为：具体的配置键值
         List<Config> configs = MessageHandlerUtils.convertConfig(this, configMap); // 转成具体的配置实体类
         baseMessage.setConfigs(configs);

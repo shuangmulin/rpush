@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.StatusCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    private final static Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(BindException.class)
     @ResponseBody
@@ -30,5 +33,19 @@ public class GlobalExceptionHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(message);
         return ApiResult.of(StatusCode.VALIDATE_FAIL, json);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseBody
+    public ApiResult<String> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
+        LOGGER.warn(ex.getMessage(), ex);
+        return ApiResult.of(StatusCode.VALIDATE_FAIL, ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public ApiResult<String> validationErrorHandler(Exception ex) {
+        LOGGER.error(ex.getMessage(), ex);
+        return ApiResult.of(StatusCode.FAILURE, ex.getMessage());
     }
 }

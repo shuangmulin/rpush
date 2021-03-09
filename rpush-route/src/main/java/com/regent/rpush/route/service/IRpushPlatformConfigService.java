@@ -3,6 +3,7 @@ package com.regent.rpush.route.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
+import com.regent.rpush.dto.route.config.UpdateConfigDTO;
 import com.regent.rpush.route.model.RpushPlatformConfig;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IRpushPlatformConfigService extends IService<RpushPlatformConfi
     /**
      * 批量查询配置
      *
-     * @param configIds 配置id列表，可以传空，传空回返回默认的配置
+     * @param configIds 配置id列表，传空会返回空map
      * @return 键为配置id，值为：具体的配置键值
      */
     Map<Long, Map<String, String>> queryConfig(List<Long> configIds);
@@ -31,5 +32,25 @@ public interface IRpushPlatformConfigService extends IService<RpushPlatformConfi
      *
      * @param platform 平台
      */
-    ConfigTableDTO pageConfig(MessagePlatformEnum platform, Integer pageNum, Integer pageSize);
+    ConfigTableDTO pageConfig(MessagePlatformEnum platform, Long configId, String configName, Integer pageNum, Integer pageSize);
+
+    /**
+     * 更新配置
+     */
+    void updateConfig(UpdateConfigDTO updateConfigDTO);
+
+    /**
+     * 设为默认
+     *
+     * @param configId    配置id
+     * @param defaultFlag true 或者 false
+     */
+    void setDefault(String configId, boolean defaultFlag);
+
+    /**
+     * 删除某个配置
+     *
+     * @param configId 配置id
+     */
+    void delete(Long configId);
 }

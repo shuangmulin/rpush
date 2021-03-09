@@ -140,8 +140,9 @@ public final class MessageHandlerUtils {
                 Config configObj = (Config) configType.newInstance();
                 configObj.setConfigId(configId);
                 configObj.setDefaultFlag(Boolean.parseBoolean(valueMap.get("defaultFlag")));
+                configObj.setConfigName(valueMap.get("configName"));
                 for (String key : valueMap.keySet()) {
-                    if (!ReflectUtil.hasField(configType, key) || "defaultFlag".equals(key)) {
+                    if (!ReflectUtil.hasField(configType, key) || "defaultFlag".equals(key) || "configName".equals(key)) {
                         continue;
                     }
                     Field declaredField = configType.getDeclaredField(key);
