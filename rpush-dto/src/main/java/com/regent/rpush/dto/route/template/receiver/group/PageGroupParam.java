@@ -1,4 +1,4 @@
-package com.regent.rpush.dto.route.receiver.group;
+package com.regent.rpush.dto.route.template.receiver.group;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

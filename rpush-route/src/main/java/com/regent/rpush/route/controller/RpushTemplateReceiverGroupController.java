@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.regent.rpush.common.PageUtil;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
-import com.regent.rpush.dto.route.receiver.group.PageGroupParam;
+import com.regent.rpush.dto.route.template.receiver.group.PageGroupParam;
 import com.regent.rpush.dto.table.Pagination;
 import com.regent.rpush.route.model.RpushTemplateReceiverGroup;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
