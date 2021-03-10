@@ -65,7 +65,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         Map<Long, Map<String, Object>> configMap = new HashMap<>(); // 键为配置id，值为：具体的配置键值
         for (RpushPlatformConfig config : configs) {
             Map<String, Object> valueMap = configMap.computeIfAbsent(config.getId(), k -> new HashMap<>());
-            valueMap.put("defaultFlag", String.valueOf(config.getDefaultFlag()));
+            valueMap.put("defaultFlag", config.getDefaultFlag());
             valueMap.put("configName", config.getConfigName());
             List<RpushPlatformConfigValue> values = configValueMap.get(config.getId());
             if (values == null || values.size() <= 0) {
