@@ -78,7 +78,7 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
             }
             configIds = Collections.singletonList(config.getId());
         }
-        Map<Long, Map<String, String>> configMap = rpushPlatformConfigService.queryConfig(configIds); // 键为配置id，值为：具体的配置键值
+        Map<Long, Map<String, Object>> configMap = rpushPlatformConfigService.queryConfig(configIds); // 键为配置id，值为：具体的配置键值
         List<Config> configs = MessageHandlerUtils.convertConfig(this, configMap); // 转成具体的配置实体类
         baseMessage.setConfigs(configs);
     }

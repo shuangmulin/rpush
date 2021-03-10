@@ -129,18 +129,18 @@ public final class MessageHandlerUtils {
      * @param messageHandler 对应的消息处理器
      * @param configMap      数据库里的配置数据，这个方法可以查{@link IRpushPlatformConfigService#queryConfig(java.util.List)}
      */
-    public static List<Config> convertConfig(MessageHandler<?> messageHandler, Map<Long, Map<String, String>> configMap) {
+    public static List<Config> convertConfig(MessageHandler<?> messageHandler, Map<Long, Map<String, Object>> configMap) {
         try {
             Class<?> configType = MessageHandlerUtils.getConfigType(messageHandler); // 拿到配置的类型
             List<Config> configs = new ArrayList<>();
-            for (Map.Entry<Long, Map<String, String>> entry : configMap.entrySet()) {
+            for (Map.Entry<Long, Map<String, Object>> entry : configMap.entrySet()) {
                 Long configId = entry.getKey();
-                Map<String, String> valueMap = entry.getValue();
+                Map<String, Object> valueMap = entry.getValue();
 
                 Config configObj = (Config) configType.newInstance();
                 configObj.setConfigId(configId);
-                configObj.setDefaultFlag(Boolean.parseBoolean(valueMap.get("defaultFlag")));
-                configObj.setConfigName(valueMap.get("configName"));
+                configObj.setDefaultFlag(Boolean.parseBoolean((String) valueMap.get("defaultFlag")));
+                configObj.setConfigName((String) valueMap.get("configName"));
                 for (String key : valueMap.keySet()) {
                     if (!ReflectUtil.hasField(configType, key) || "defaultFlag".equals(key) || "configName".equals(key)) {
                         continue;

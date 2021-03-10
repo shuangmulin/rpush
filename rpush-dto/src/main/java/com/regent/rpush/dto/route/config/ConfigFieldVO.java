@@ -1,5 +1,6 @@
 package com.regent.rpush.dto.route.config;
 
+import com.regent.rpush.dto.common.IdStrAndName;
 import com.regent.rpush.dto.enumration.ConfigValueType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 配置的字段
@@ -33,5 +36,9 @@ public class ConfigFieldVO implements Serializable {
      * 字段类型
      */
     private ConfigValueType type;
+    /**
+     * 选项（如果是选择型字段）
+     */
+    private List<IdStrAndName> options = new ArrayList<>();
 
 }

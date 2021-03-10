@@ -2,15 +2,19 @@ package com.regent.rpush.route.controller;
 
 
 import com.regent.rpush.dto.ApiResult;
+import com.regent.rpush.dto.common.IdStrAndName;
+import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.PlatformDTO;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.dto.route.config.UpdateConfigDTO;
 import com.regent.rpush.dto.table.Pagination;
+import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
+import com.regent.rpush.route.service.IRpushTemplateService;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
+import com.regent.rpush.route.utils.Qw;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,6 +39,8 @@ public class RpushPlatformConfigController {
 
     @Autowired
     private IRpushPlatformConfigService rpushPlatformConfigService;
+    @Autowired
+    private IRpushTemplateService rpushTemplateService;
 
     @ApiOperation(value = "获取所有平台")
     @GetMapping("/platform")
@@ -66,7 +73,7 @@ public class RpushPlatformConfigController {
 
     @ApiOperation("获取某个配置的数据")
     @GetMapping("/{platform}/config/{configId}")
-    public ApiResult<Config> getConfig(@PathVariable("platform") MessagePlatformEnum platform,
+    public ApiResult<Map<String, Object>> getConfig(@PathVariable("platform") MessagePlatformEnum platform,
                                        @PathVariable("configId") Long configId) {
         if (configId == null || platform == null) {
             return ApiResult.of(null);
@@ -75,18 +82,31 @@ public class RpushPlatformConfigController {
         if (configTableDTO == null) {
             return ApiResult.of(null);
         }
-        Pagination<Config> pagination = configTableDTO.getPagination();
+        Pagination<Map<String, Object>> pagination = configTableDTO.getPagination();
         if (pagination == null || pagination.getDataList() == null || pagination.getDataList().size() <= 0) {
             return ApiResult.of(null);
         }
-        Config table = pagination.getDataList().get(0);
-        return ApiResult.of(table);
+        return ApiResult.of(pagination.getDataList().get(0));
     }
 
     @ApiOperation("获取某个平台的配置字段")
     @GetMapping("/{platform}/config/field")
     public ApiResult<List<ConfigFieldVO>> configField(@PathVariable("platform") MessagePlatformEnum platform) {
-        return ApiResult.of(MessageHandlerUtils.listConfigFieldName(platform));
+        List<ConfigFieldVO> configFieldVOS = MessageHandlerUtils.listConfigFieldName(platform);
+        for (ConfigFieldVO configFieldVO : configFieldVOS) {
+            ConfigValueType type = configFieldVO.getType();
+            switch (type) {
+                case RPUSH_TEMPLATE:
+                    List<RpushTemplate> rpushTemplates = rpushTemplateService.list(Qw.newInstance(RpushTemplate.class).eq("platform", platform));
+                    List<IdStrAndName> options = new ArrayList<>();
+                    for (RpushTemplate rpushTemplate : rpushTemplates) {
+                        options.add(IdStrAndName.builder().id(String.valueOf(rpushTemplate.getId())).name(rpushTemplate.getTemplateName()).build());
+                    }
+                    configFieldVO.setOptions(options);
+                    break;
+            }
+        }
+        return ApiResult.of(configFieldVOS);
     }
 
     @ApiOperation("更新配置")

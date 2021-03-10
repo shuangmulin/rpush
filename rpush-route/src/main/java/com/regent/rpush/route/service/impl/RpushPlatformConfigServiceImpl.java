@@ -1,13 +1,14 @@
 package com.regent.rpush.route.service.impl;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.regent.rpush.common.PageUtil;
+import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.dto.route.config.UpdateConfigDTO;
@@ -16,8 +17,10 @@ import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.mapper.RpushPlatformConfigMapper;
 import com.regent.rpush.route.model.RpushPlatformConfig;
 import com.regent.rpush.route.model.RpushPlatformConfigValue;
+import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import com.regent.rpush.route.service.IRpushPlatformConfigValueService;
+import com.regent.rpush.route.service.IRpushTemplateService;
 import com.regent.rpush.route.utils.MessageHandlerHolder;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import com.regent.rpush.route.utils.Qw;
@@ -42,9 +45,11 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
 
     @Autowired
     private IRpushPlatformConfigValueService rpushPlatformConfigValueService;
+    @Autowired
+    private IRpushTemplateService rpushTemplateService;
 
     @Override
-    public Map<Long, Map<String, String>> queryConfig(List<Long> configIds) {
+    public Map<Long, Map<String, Object>> queryConfig(List<Long> configIds) {
         if (configIds == null || configIds.size() <= 0) {
             return new HashMap<>();
         }
@@ -57,9 +62,9 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
             configValueMap.computeIfAbsent(configValue.getConfigId(), k -> new ArrayList<>()).add(configValue);
         }
 
-        Map<Long, Map<String, String>> configMap = new HashMap<>(); // 键为配置id，值为：具体的配置键值
+        Map<Long, Map<String, Object>> configMap = new HashMap<>(); // 键为配置id，值为：具体的配置键值
         for (RpushPlatformConfig config : configs) {
-            Map<String, String> valueMap = configMap.computeIfAbsent(config.getId(), k -> new HashMap<>());
+            Map<String, Object> valueMap = configMap.computeIfAbsent(config.getId(), k -> new HashMap<>());
             valueMap.put("defaultFlag", String.valueOf(config.getDefaultFlag()));
             valueMap.put("configName", config.getConfigName());
             List<RpushPlatformConfigValue> values = configValueMap.get(config.getId());
@@ -98,14 +103,64 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         List<RpushPlatformConfig> configs = page.getRecords();
         List<Long> configIds = configs.stream().map(RpushPlatformConfig::getId).collect(Collectors.toList());
 
-        // 查具体的配置值，并转成对应的配置实体类
-        Map<Long, Map<String, String>> queryConfig = queryConfig(configIds);
-        List<Config> dataList = MessageHandlerUtils.convertConfig(messageHandler, queryConfig);
-        Pagination<Config> pagination = tableDTO.getPagination();
+        // 查具体的配置值
+        Map<Long, Map<String, Object>> queryConfig = queryConfig(configIds);
+        Collection<Map<String, Object>> dataList = queryConfig.values();
+        for (Map.Entry<Long, Map<String, Object>> entry : queryConfig.entrySet()) {
+            entry.getValue().put("configId", entry.getKey());
+        }
+        Pagination<Map<String, Object>> pagination = tableDTO.getPagination();
         pagination.setPageNum(pageNum);
-        pagination.setDataList(dataList);
+        pagination.setDataList(new ArrayList<>(dataList));
         pagination.setTotal((int) page.getTotal());
+
+        // 补一下模板名称
+        fillTemplateName(tableDTO, configFieldVOS, dataList);
+
         return tableDTO;
+    }
+
+    private void fillTemplateName(ConfigTableDTO tableDTO, List<ConfigFieldVO> configFieldVOS, Collection<Map<String, Object>> dataList) {
+        if (configFieldVOS == null || dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        List<ConfigFieldVO> fieldVOS = new ArrayList<>(configFieldVOS);
+        String rpushTemplateKey = "";
+        int size = fieldVOS.size();
+        for (int i = 0; i < size; i++) {
+            ConfigFieldVO fieldVO = fieldVOS.get(i);
+            ConfigValueType type = fieldVO.getType();
+            rpushTemplateKey = fieldVO.getKey();
+            if (ConfigValueType.RPUSH_TEMPLATE.equals(type)) {
+                fieldVOS.add(i, ConfigFieldVO.builder().key(rpushTemplateKey + "Name").name(fieldVO.getName() + "名称").build());
+                i++;
+                size++;
+            }
+        }
+        if (StringUtils.isNotBlank(rpushTemplateKey)) {
+            String finalRpushTemplateKey = rpushTemplateKey;
+            List<Long> templateIds = dataList.stream().map(config -> {
+                String templateIdStr = (String) config.get(finalRpushTemplateKey);
+                if (!NumberUtil.isNumber(templateIdStr)) {
+                    return null;
+                }
+                return Long.parseLong(templateIdStr);
+            }).collect(Collectors.toList());
+            templateIds.removeIf(Objects::isNull);
+            if (templateIds.size() > 0) {
+                Collection<RpushTemplate> rpushTemplates = rpushTemplateService.listByIds(templateIds);
+                Map<Long, String> templateNameMap = rpushTemplates.stream().collect(Collectors.toMap(RpushTemplate::getId, RpushTemplate::getTemplateName));
+                for (Map<String, Object> config : dataList) {
+                    String templateIdStr = String.valueOf(config.get(rpushTemplateKey));
+                    if (!NumberUtil.isNumber(templateIdStr)) {
+                        continue;
+                    }
+                    long templateId = Long.parseLong(templateIdStr);
+                    config.put(rpushTemplateKey + "Name", templateNameMap.get(templateId));
+                }
+            }
+        }
+        tableDTO.setHeader(fieldVOS);
     }
 
     @Transactional

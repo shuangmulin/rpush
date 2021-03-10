@@ -59,7 +59,7 @@ public class RpushTemplateController {
         Pagination<RpushTemplate> pagination = PaginationUtil.convert(page);
         List<RpushTemplate> dataList = pagination.getDataList();
         if (dataList != null && dataList.size() > 0) {
-            // 补一下关联的模板名称
+            // 补一下关联的分组名称
             List<Long> groupIds = dataList.stream().map(RpushTemplate::getReceiverGroupId).collect(Collectors.toList());
             groupIds.removeIf(Objects::isNull);
             if (groupIds.size() > 0) {
@@ -70,7 +70,7 @@ public class RpushTemplateController {
                     if (receiverGroupId == null) {
                         continue;
                     }
-                    rpushTemplate.setReceiverGroupName(groupNameMap.get(rpushTemplate.getId()));
+                    rpushTemplate.setReceiverGroupName(groupNameMap.get(rpushTemplate.getReceiverGroupId()));
                 }
             }
         }
@@ -96,14 +96,14 @@ public class RpushTemplateController {
         return ApiResult.of(dataList.get(0));
     }
 
-    @ApiOperation("新增或更新分组")
+    @ApiOperation("新增或更新模板")
     @PostMapping
-    public ApiResult<String> updateGroup(@RequestBody @Valid @NotNull(message = "参数不全") RpushTemplate group) {
-//        rpushTemplateService.updateTemplate(group);
+    public ApiResult<String> updateGroup(@RequestBody @Valid @NotNull(message = "参数不全") RpushTemplate rpushTemplate) {
+        rpushTemplateService.updateTemplate(rpushTemplate);
         return ApiResult.success();
     }
 
-    @ApiOperation("删除分组")
+    @ApiOperation("删除模板")
     @DeleteMapping("/{id}")
     public ApiResult<String> deleteGroup(@PathVariable("id") Long id) {
         if (id == null) {

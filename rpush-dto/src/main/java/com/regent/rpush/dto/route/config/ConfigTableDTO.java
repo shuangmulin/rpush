@@ -1,6 +1,5 @@
 package com.regent.rpush.dto.route.config;
 
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.table.Pagination;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 表格DTO
@@ -28,6 +28,6 @@ public class ConfigTableDTO implements Serializable {
     private List<ConfigFieldVO> header;
 
     @ApiModelProperty("分页数据")
-    private Pagination<Config> pagination = new Pagination<>(1, 20);
+    private Pagination<Map<String, Object>> pagination = new Pagination<>(1, 20);
 
 }

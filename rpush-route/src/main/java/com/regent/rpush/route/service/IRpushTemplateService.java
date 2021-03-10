@@ -13,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRpushTemplateService extends IService<RpushTemplate> {
 
+    /**
+     * 新增或更新模板
+     */
+    void updateTemplate(RpushTemplate rpushTemplate);
+
 }
