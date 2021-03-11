@@ -13,4 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRpushTemplateReceiverService extends IService<RpushTemplateReceiver> {
 
+    /**
+     * 新增或更新接收人
+     */
+    void updateReceiver(RpushTemplateReceiver receiver);
 }
