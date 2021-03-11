@@ -1,14 +1,16 @@
 package com.regent.rpush.route.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -39,8 +41,15 @@ public class RpushTemplateReceiver extends Model {
     @ApiModelProperty(value = "更新时间")
     private Date dateUpdated;
 
+    @ApiModelProperty(value = "平台")
+    private String platform;
+
     @ApiModelProperty(value = "所属分组id")
     private Long groupId;
+
+    @ApiModelProperty("分组名称")
+    @TableField(exist = false)
+    private String groupName;
 
     @ApiModelProperty(value = "接收人，用来发消息的id性质的字段，如果是邮箱就是要发送的邮箱，如果是企业微信就是企业微信对应用户的id，如果是rpush就是registrationId")
     private String receiverId;
