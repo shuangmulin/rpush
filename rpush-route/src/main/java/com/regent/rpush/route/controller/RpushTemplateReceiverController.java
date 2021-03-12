@@ -51,7 +51,7 @@ public class RpushTemplateReceiverController {
         Page<RpushTemplateReceiver> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushTemplateReceiver> wrapper = new QueryWrapper<>();
         wrapper.eq("platform", platform.name());
-        wrapper.eq(StringUtils.isNotBlank(param.getReceiverName()), "receiver_name", param.getReceiverName());
+        wrapper.like(StringUtils.isNotBlank(param.getReceiverName()), "receiver_name", param.getReceiverName());
         wrapper.eq(param.getGroupId() != null, "group_id", param.getGroupId());
         wrapper.like(StringUtils.isNotBlank(param.getReceiverId()), "receiver_id", param.getReceiverId());
         wrapper.eq(param.getId() != null, "id", param.getId());

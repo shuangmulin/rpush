@@ -18,7 +18,7 @@ public class PageReceiverParam implements Serializable {
 
     private Long id;
     @ApiModelProperty("分组id")
-    private String groupId;
+    private Long groupId;
     @ApiModelProperty("接收人")
     private String receiverId;
     @ApiModelProperty("接收人名称")
