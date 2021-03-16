@@ -4,6 +4,7 @@ import com.regent.rpush.api.server.MessagePushService;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.NormalMessageDTO;
 import com.regent.rpush.dto.message.SocketMessageDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,13 +29,16 @@ public class SocketMessageHandler extends MessageHandler<SocketMessageDTO> {
 
     @Override
     public void handle(SocketMessageDTO param) {
-        List<Long> sendTos = param.getSendTos();
+        List<String> sendTos = param.getSendTos();
         Long fromTo = param.getFromTo();
 
-        for (Long sendTo : sendTos) {
+        for (String sendTo : sendTos) {
+            if (!StringUtils.isNumeric(sendTo)) {
+                continue;
+            }
             NormalMessageDTO build = NormalMessageDTO.builder()
                     .fromTo(fromTo)
-                    .sendTo(sendTo)
+                    .sendTo(Long.parseLong(sendTo))
                     .build();
             build.setContent(param.getContent());
             messagePushService.push(build);

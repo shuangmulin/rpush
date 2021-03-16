@@ -1,5 +1,6 @@
 package com.regent.rpush.route.handler;
 
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lmax.disruptor.EventHandler;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,10 +49,13 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
         try {
             // 处理参数
             JSONObject param = platformMessageDTO.getParam();
-            Type actualTypeArgument = MessageHandlerUtils.getParamType(this);
-            BaseMessage<?> baseMessage = param.toBean(actualTypeArgument);
+            Class<?> actualTypeArgument = MessageHandlerUtils.getParamType(this);
+            BaseMessage<?> baseMessage = param == null ? (BaseMessage<?>) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage<?> ) param.toBean(actualTypeArgument);
             baseMessage.setContent(event.getContent());
+            baseMessage.setTitle(event.getTitle());
             baseMessage.setRequestNo(event.getRequestNo());
+            baseMessage.setSendTos(platformMessageDTO.getSendTos());
+            baseMessage.setGroupIds(platformMessageDTO.getGroupIds());
 
             // 处理配置
             processPlatformConfig(platformMessageDTO, baseMessage);
@@ -72,7 +75,8 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
         if (configIds == null || configIds.size() <= 0) {
             // 查一个默认配置出来用
             QueryWrapper<RpushPlatformConfig> queryWrapper = new QueryWrapper<>();
-            RpushPlatformConfig config = rpushPlatformConfigService.getOne(queryWrapper);
+            queryWrapper.eq("default_flag", true);
+            RpushPlatformConfig config = rpushPlatformConfigService.getOne(queryWrapper, false);
             if (config == null) {
                 return;
             }

@@ -21,9 +21,17 @@ public class PlatformMessageDTO implements Serializable {
     private static final long serialVersionUID = -7899679819734022466L;
 
     /**
-     * 选择的配置id列表
+     * 配置id，可以不传，传了会根据对应的配置去发消息
      */
     private List<Long> configIds;
+    /**
+     * 接收人列表
+     */
+    private List<String> sendTos;
+    /**
+     * 接收人分组列表
+     */
+    private List<Long> groupIds;
     /**
      * 具体的参数
      */

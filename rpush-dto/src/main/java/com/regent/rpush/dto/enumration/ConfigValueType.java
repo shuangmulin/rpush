@@ -8,6 +8,7 @@ package com.regent.rpush.dto.enumration;
  **/
 public enum ConfigValueType {
 
+    AUTO,
     INTEGER,
     DECIMAL,
     STRING,

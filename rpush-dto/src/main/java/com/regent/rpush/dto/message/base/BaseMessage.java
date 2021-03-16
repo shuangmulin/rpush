@@ -14,11 +14,26 @@ import java.util.List;
 public class BaseMessage<config extends Config> extends BaseParam {
     private static final long serialVersionUID = 437493036483567460L;
 
+    /**
+     * 消息标题
+     */
+    private String title;
+    /**
+     * 消息内容
+     */
     private String content;
     /**
      * 配置
      */
     private List<config> configs;
+    /**
+     * 接收人列表
+     */
+    private List<String> sendTos;
+    /**
+     * 接收人分组列表
+     */
+    private List<Long> groupIds;
 
     public String getContent() {
         return content;
@@ -35,5 +50,29 @@ public class BaseMessage<config extends Config> extends BaseParam {
 
     public List<config> getConfigs() {
         return configs;
+    }
+
+    public void setSendTos(List<String> sendTos) {
+        this.sendTos = sendTos;
+    }
+
+    public List<String> getSendTos() {
+        return sendTos;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Long> getGroupIds() {
+        return groupIds;
+    }
+
+    public void setGroupIds(List<Long> groupIds) {
+        this.groupIds = groupIds;
     }
 }

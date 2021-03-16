@@ -25,6 +25,8 @@ public class PlatformDTO implements Serializable {
     private String name;
     @ApiModelProperty(value = "描述")
     private String description;
+    @ApiModelProperty(value = "格式校验用的正则表达式")
+    private String validateReg;
     @ApiModelProperty(value = "是否启用")
     private boolean enable;
 

@@ -22,6 +22,8 @@ public class PageTemplateParam implements Serializable {
     private Long id;
     @ApiModelProperty("模板名称")
     private String templateName;
+    @ApiModelProperty("接收人分组ID")
+    private Long receiverGroupId;
 
     private int pageNum;
     private int pageSize;

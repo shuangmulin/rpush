@@ -50,6 +50,9 @@ public class RpushTemplate extends Model {
     @ApiModelProperty(value = "模板内容")
     private String content;
 
+    @ApiModelProperty(value = "模板标题")
+    private String title;
+
     @ApiModelProperty(value = "预设接收人，多个用;隔开。（对应的是rpush_template_receiver表的receiver_id）")
     private String receiverIds;
 

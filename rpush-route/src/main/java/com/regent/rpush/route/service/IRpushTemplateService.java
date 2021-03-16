@@ -1,7 +1,9 @@
 package com.regent.rpush.route.service;
 
-import com.regent.rpush.route.model.RpushTemplate;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.regent.rpush.route.model.RpushTemplate;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -18,4 +20,10 @@ public interface IRpushTemplateService extends IService<RpushTemplate> {
      */
     void updateTemplate(RpushTemplate rpushTemplate);
 
+    /**
+     * 查询模板关联的所有receiverId
+     *
+     * @param rpushTemplateId 模板ID
+     */
+    Set<String> listAllReceiverId(Long rpushTemplateId);
 }

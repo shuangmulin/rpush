@@ -21,8 +21,13 @@ public @interface ConfigValue {
     String value() default "";
 
     /**
+     * 字段描述
+     */
+    String description() default "";
+
+    /**
      * 默认取对应的java类型
      */
-    ConfigValueType type();
+    ConfigValueType type() default ConfigValueType.AUTO;
 
 }

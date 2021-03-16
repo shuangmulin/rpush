@@ -101,21 +101,29 @@ public final class MessageHandlerUtils {
                 ConfigValue annotation = field.getAnnotation(ConfigValue.class);
                 ConfigValueType type = null;
                 String name = "";
+                String description = "";
                 if (annotation != null) {
                     type = annotation.type();
                     name = annotation.value();
-                }
-                Class<?> javaType = field.getType();
-                if (type != null) {
+                    description = annotation.description();
                     switch (type) {
                         case RPUSH_TEMPLATE:
-                            javaType = RpushTemplate.class;
+                            type = JAVA_TYPE_MAP.get(RpushTemplate.class);
+                            break;
+                        case AUTO:
+                            type = JAVA_TYPE_MAP.get(field.getType());
+                            break;
                     }
+                }
+                if (annotation == null) {
+                    Class<?> javaType = field.getType();
+                    type = JAVA_TYPE_MAP.get(javaType);
                 }
                 name = StringUtils.isBlank(name) ? field.getName() : name;
                 fieldNames.add(ConfigFieldVO.builder()
                         .name(name)
-                        .type(JAVA_TYPE_MAP.get(javaType))
+                        .description(description)
+                        .type(type)
                         .key(field.getName())
                         .build());
             }
@@ -139,7 +147,7 @@ public final class MessageHandlerUtils {
 
                 Config configObj = (Config) configType.newInstance();
                 configObj.setConfigId(configId);
-                configObj.setDefaultFlag(Boolean.parseBoolean((String) valueMap.get("defaultFlag")));
+                configObj.setDefaultFlag((Boolean) valueMap.get("defaultFlag"));
                 configObj.setConfigName((String) valueMap.get("configName"));
                 for (String key : valueMap.keySet()) {
                     if (!ReflectUtil.hasField(configType, key) || "defaultFlag".equals(key) || "configName".equals(key)) {
@@ -153,7 +161,7 @@ public final class MessageHandlerUtils {
             }
             return configs;
         } catch (Exception e) {
-            throw new IllegalStateException("配置字段值转换失败，请检查", e);
+            throw new IllegalStateException(messageHandler.getClass().getName() + "配置字段值转换失败，请检查", e);
         }
     }
 

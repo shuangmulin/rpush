@@ -40,6 +40,7 @@ public class MessagePushController {
         MessagePushDTO messagePushDTO = new MessagePushDTO();
         JSONObject json = new JSONObject(param);
         messagePushDTO.setContent(json.getStr("content"));
+        messagePushDTO.setTitle(json.getStr("title"));
         messagePushDTO.setRequestNo(json.getStr("requestNo"));
         JSONObject platformParam = json.getJSONObject("platformParam");
         MessagePlatformEnum[] values = MessagePlatformEnum.values();
@@ -49,8 +50,12 @@ public class MessagePushController {
                 continue;
             }
             JSONArray configIds = jsonObject.getJSONArray("configIds");
+            JSONArray sendTos = jsonObject.getJSONArray("sendTos");
+            JSONArray groupIds = jsonObject.getJSONArray("groupIds");
             PlatformMessageDTO platformMessageDTO = PlatformMessageDTO.builder()
                     .configIds(configIds == null ? Collections.EMPTY_LIST : configIds.toList(Long.TYPE))
+                    .sendTos(sendTos == null ? Collections.EMPTY_LIST : sendTos.toList(String.class))
+                    .groupIds(groupIds == null ? Collections.EMPTY_LIST : groupIds.toList(Long.TYPE))
                     .param(jsonObject.getJSONObject("param"))
                     .build();
             messagePushDTO.getPlatformParam().put(value, platformMessageDTO);

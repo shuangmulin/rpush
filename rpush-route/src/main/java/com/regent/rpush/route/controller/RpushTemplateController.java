@@ -53,6 +53,7 @@ public class RpushTemplateController {
         Page<RpushTemplate> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq("platform", platform.name());
+        wrapper.eq(param.getReceiverGroupId() != null && param.getReceiverGroupId() > 0, "receiver_group_id", param.getReceiverGroupId());
         wrapper.like(StringUtils.isNotBlank(param.getTemplateName()), "template_name", param.getTemplateName());
         wrapper.eq(param.getId() != null, "id", param.getId());
         page = (Page<RpushTemplate>) rpushTemplateService.page(page, wrapper);

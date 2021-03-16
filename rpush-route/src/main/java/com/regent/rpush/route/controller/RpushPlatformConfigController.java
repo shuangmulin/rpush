@@ -47,6 +47,9 @@ public class RpushPlatformConfigController {
     public ApiResult<List<PlatformDTO>> platforms(String keyword) {
         List<PlatformDTO> platforms = new ArrayList<>();
         for (MessagePlatformEnum platformEnum : MessagePlatformEnum.values()) {
+            if (!platformEnum.isEnable()) {
+                continue;
+            }
             String name = platformEnum.getName();
             if (StringUtils.isNotBlank(keyword) && !name.contains(keyword)) {
                 continue;
@@ -55,7 +58,7 @@ public class RpushPlatformConfigController {
                     .id(platformEnum.name())
                     .name(platformEnum.getName())
                     .description(platformEnum.getDescription())
-                    .enable(platformEnum.isEnable())
+                    .validateReg(platformEnum.getValidateReg())
                     .build());
         }
         return ApiResult.of(platforms);

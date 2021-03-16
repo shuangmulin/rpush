@@ -33,6 +33,10 @@ public class ConfigFieldVO implements Serializable {
      */
     private String key;
     /**
+     * 字段描述
+     */
+    private String description;
+    /**
      * 字段类型
      */
     private ConfigValueType type;
