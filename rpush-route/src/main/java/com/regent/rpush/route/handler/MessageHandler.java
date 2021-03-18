@@ -50,7 +50,7 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
             // 处理参数
             JSONObject param = platformMessageDTO.getParam();
             Class<?> actualTypeArgument = MessageHandlerUtils.getParamType(this);
-            BaseMessage<?> baseMessage = param == null ? (BaseMessage<?>) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage<?> ) param.toBean(actualTypeArgument);
+            BaseMessage<?> baseMessage = param == null ? (BaseMessage<?>) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage<?>) param.toBean(actualTypeArgument);
             baseMessage.setContent(event.getContent());
             baseMessage.setTitle(event.getTitle());
             baseMessage.setRequestNo(event.getRequestNo());

@@ -1,12 +1,15 @@
 package com.regent.rpush.route.handler;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.EmailMessageDTO;
 import com.regent.rpush.dto.message.config.EmailConfig;
+import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.model.RpushTemplate;
+import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.service.IRpushTemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,6 +33,8 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
 
     @Autowired
     private IRpushTemplateService rpushTemplateService;
+    @Autowired
+    private IRpushMessageHisService rpushMessageHisService;
 
     @Override
     public MessagePlatformEnum platform() {
@@ -61,7 +66,25 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
             account.setFrom(config.getFrom());
             account.setUser(config.getUser());
             account.setPass(config.getPassword());
-            MailUtil.send(account, receiverEmails, title, content, false);
+            for (String receiverEmail : receiverEmails) {
+                RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()
+                        .platform(platform().name())
+                        .configName(config.getConfigName())
+                        .receiverId(receiverEmail)
+                        .requestNo(param.getRequestNo())
+                        .configId(config.getConfigId())
+                        .build();
+                try {
+                    MailUtil.send(account, receiverEmail, title, content, false);
+                    hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_SUCCESS);
+                } catch (Exception e) {
+                    String eMessage = ExceptionUtil.getMessage(e);
+                    eMessage = StringUtils.isBlank(eMessage) ? "未知错误" : eMessage;
+                    hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
+                    hisDetail.setErrorMsg(eMessage);
+                }
+                rpushMessageHisService.logDetail(hisDetail);
+            }
         }
     }
 }

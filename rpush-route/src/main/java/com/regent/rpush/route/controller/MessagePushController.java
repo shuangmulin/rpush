@@ -1,6 +1,7 @@
 package com.regent.rpush.route.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Snowflake;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.RingBuffer;
@@ -10,9 +11,12 @@ import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.base.PlatformMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
+import com.regent.rpush.route.model.RpushMessageHis;
+import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.utils.MessageHandlerHolder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,21 +31,31 @@ import java.util.concurrent.Executors;
 @RequestMapping("/message/push")
 public class MessagePushController {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    @Value("${mybatis-plus.global-config.workerId}")
+    private int workerId;
+    @Value("${mybatis-plus.global-config.datacenterId}")
+    private int datacenterId;
 
     /**
      * 队列
      */
     private volatile Disruptor<MessagePushDTO> disruptor;
 
+    @Autowired
+    private IRpushMessageHisService rpushMessageHisService;
+
     @PostMapping
     public ApiResult<String> push(@RequestBody String param) {
         MessagePushDTO messagePushDTO = new MessagePushDTO();
         JSONObject json = new JSONObject(param);
+        String requestNo = json.getStr("requestNo");
+        if (StringUtils.isBlank(requestNo)) {
+            // 如果客户端投递消息时没有传唯一请求号，这里自动生成一个
+            requestNo = new Snowflake(workerId, datacenterId).nextIdStr();
+        }
+        messagePushDTO.setRequestNo(requestNo);
         messagePushDTO.setContent(json.getStr("content"));
         messagePushDTO.setTitle(json.getStr("title"));
-        messagePushDTO.setRequestNo(json.getStr("requestNo"));
         JSONObject platformParam = json.getJSONObject("platformParam");
         MessagePlatformEnum[] values = MessagePlatformEnum.values();
         for (MessagePlatformEnum value : values) {
@@ -60,6 +74,9 @@ public class MessagePushController {
                     .build();
             messagePushDTO.getPlatformParam().put(value, platformMessageDTO);
         }
+
+        rpushMessageHisService.log(RpushMessageHis.builder().requestNo(requestNo).param(param).build()); // 记录消息历史记录
+
         // 往队列里扔
         RingBuffer<MessagePushDTO> ringBuffer = getDisruptor().getRingBuffer();
         long sequence = ringBuffer.next();
@@ -81,7 +98,7 @@ public class MessagePushController {
             if (disruptor != null) {
                 return disruptor;
             }
-            // 项目启动同时启动消息处理队列
+            // 启动消息队列
             Executor executor = Executors.newCachedThreadPool();
             int bufferSize = 1024;
             disruptor = new Disruptor<>(MessagePushDTO::new, bufferSize, executor);
