@@ -1,6 +1,8 @@
 package com.regent.rpush.route.model;
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
@@ -9,6 +11,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,6 +46,15 @@ public class RpushMessageHisDetail extends Model {
      */
     public static final int SEND_STATUS_FAIL = 2;
 
+    /**
+     * 状态中文名映射
+     */
+    public static final Map<Integer, String> SEND_STATUS_NAME_MAP = MapUtil.builder(new HashMap<Integer, String>())
+            .put(SEND_STATUS_NOT_START, "未开始")
+            .put(SEND_STATUS_SUCCESS, "成功")
+            .put(SEND_STATUS_FAIL, "失败")
+            .build();
+
     @ApiModelProperty(value = "主键")
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -58,6 +71,9 @@ public class RpushMessageHisDetail extends Model {
     @ApiModelProperty(value = "平台")
     private String platform;
 
+    @TableField(exist = false)
+    private String platformAlias;
+
     @ApiModelProperty(value = "接收人id")
     private String receiverId;
 
@@ -72,9 +88,15 @@ public class RpushMessageHisDetail extends Model {
 
     @ApiModelProperty(value = "发送状态，0 未开始；1 发送成功；2 发送失败")
     private Integer sendStatus;
+    @TableField(exist = false)
+    private String sendStatusName;
 
     @ApiModelProperty(value = "错误消息")
     private String errorMsg;
+
+    @ApiModelProperty("请求参数")
+    @TableField(exist = false)
+    private String paramJson;
 
 
 }

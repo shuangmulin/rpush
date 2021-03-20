@@ -87,7 +87,7 @@ public class MessagePushController {
             // 发布事件
             ringBuffer.publish(sequence);
         }
-        return ApiResult.of("消息投递成功");
+        return ApiResult.of(requestNo);
     }
 
     private Disruptor<MessagePushDTO> getDisruptor() {
