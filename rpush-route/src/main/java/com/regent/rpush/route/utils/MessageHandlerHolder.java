@@ -1,6 +1,6 @@
 package com.regent.rpush.route.utils;
 
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.route.handler.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,10 +24,10 @@ public class MessageHandlerHolder implements CommandLineRunner {
     /**
      * 系统所有的消息处理器
      */
-    private static final Map<MessagePlatformEnum, MessageHandler<?>> HANDLER_MAP = new LinkedHashMap<>();
+    private static final Map<MessageType, MessageHandler<?>> HANDLER_MAP = new LinkedHashMap<>();
 
-    public static MessageHandler<?> get(MessagePlatformEnum platform) {
-        return HANDLER_MAP.get(platform);
+    public static MessageHandler<?> get(MessageType messageType) {
+        return HANDLER_MAP.get(messageType);
     }
 
     public static Collection<MessageHandler<?>> values() {
@@ -39,12 +39,12 @@ public class MessageHandlerHolder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Map<String, MessageHandler> springMap = applicationContext.getBeansOfType(MessageHandler.class);
         for (MessageHandler messageHandler : springMap.values()) {
-            MessagePlatformEnum platform = messageHandler.platform();
-            if (HANDLER_MAP.containsKey(platform)) {
+            MessageType messageType = messageHandler.messageType();
+            if (HANDLER_MAP.containsKey(messageType)) {
                 // 一种消息平台只接受一个消息处理器（如果接受多个会有处理器执行的顺序问题，会变复杂，暂时不处理这种情况）
                 throw new IllegalStateException("存在重复消息处理器");
             }
-            HANDLER_MAP.put(platform, messageHandler);
+            HANDLER_MAP.put(messageType, messageHandler);
         }
     }
 }

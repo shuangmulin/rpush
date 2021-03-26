@@ -1,6 +1,10 @@
 package com.regent.rpush.dto.enumration;
 
 import cn.hutool.core.lang.Assert;
+import com.regent.rpush.dto.message.config.Config;
+import com.regent.rpush.dto.message.config.EmailConfig;
+import com.regent.rpush.dto.message.config.EmptyConfig;
+import com.regent.rpush.dto.message.config.WechatWorkConfig;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -14,10 +18,10 @@ import java.util.regex.Pattern;
  **/
 public enum MessagePlatformEnum {
 
-    EMAIL("邮箱", "", "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,})$", true),
-    WECHAT_WORK("企业微信", "", "", true),
+    EMAIL(EmailConfig.class, "邮箱", "", "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,})$", true),
+    WECHAT_WORK(WechatWorkConfig.class, "企业微信", "", "", true),
     //    DING_TALK("钉钉", "", true),
-    RPUSH_SERVER("rpush服务", "", "", false)
+    RPUSH_SERVER(EmptyConfig.class, "rpush服务", "", "", false)
     ;
 
     private final String name;
@@ -27,12 +31,17 @@ public enum MessagePlatformEnum {
      */
     private final String validateReg;
     private final boolean enable;
+    /**
+     * 配置类型
+     */
+    private Class<? extends Config> configType;
 
-    MessagePlatformEnum(String name, String description, String validateReg, boolean enable) {
+    MessagePlatformEnum(Class<? extends Config> configType, String name, String description, String validateReg, boolean enable) {
         this.name = name;
         this.description = description;
         this.validateReg = validateReg;
         this.enable = enable;
+        this.configType = configType;
     }
 
     public String getName() {
@@ -49,6 +58,10 @@ public enum MessagePlatformEnum {
 
     public String getValidateReg() {
         return validateReg;
+    }
+
+    public Class<? extends Config> getConfigType() {
+        return configType;
     }
 
     public boolean matcher(String testStr) {

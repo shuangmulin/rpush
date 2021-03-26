@@ -1,7 +1,6 @@
 package com.regent.rpush.dto.message;
 
 import com.regent.rpush.dto.message.base.BaseMessage;
-import com.regent.rpush.dto.message.config.EmailConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,7 +12,10 @@ import lombok.EqualsAndHashCode;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class EmailMessageDTO extends BaseMessage<EmailConfig> {
+public class EmailMessageDTO extends BaseMessage {
     private static final long serialVersionUID = 2692273549631779696L;
+
+    private String title;
+    private String content;
 
 }

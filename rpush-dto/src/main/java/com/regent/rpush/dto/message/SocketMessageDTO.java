@@ -1,7 +1,6 @@
 package com.regent.rpush.dto.message;
 
 import com.regent.rpush.dto.message.base.BaseMessage;
-import com.regent.rpush.dto.message.config.EmptyConfig;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -18,11 +17,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SocketMessageDTO extends BaseMessage<EmptyConfig> {
+public class SocketMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
     @NotNull
     @ApiModelProperty(value = "接收方registrationId")
     private Long fromTo;
+
+    private String content;
 
 }

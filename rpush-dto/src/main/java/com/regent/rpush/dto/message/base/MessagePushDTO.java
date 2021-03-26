@@ -1,7 +1,7 @@
 package com.regent.rpush.dto.message.base;
 
 import com.regent.rpush.dto.BaseParam;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,15 +24,7 @@ public class MessagePushDTO extends BaseParam {
     private static final long serialVersionUID = 2732930320545780215L;
 
     /**
-     * 消息标题
+     * 消息参数，键为需要发送的消息类型，值为对应消息类型需要的参数（不同平台可能会需要不同的参数，所以这里不表达具体类型，由不同的实现决定具体结构）
      */
-    private String title;
-    /**
-     * 消息内容
-     */
-    private String content;
-    /**
-     * 消息参数，键为需要发送的平台，值为对应平台需要的参数（不同平台可能会需要不同的参数，所以这里不表达具体类型，由不同的实现决定具体结构）
-     */
-    private Map<MessagePlatformEnum, PlatformMessageDTO> platformParam = new LinkedHashMap<>();
+    private Map<MessageType, TypeMessageDTO> messageParam = new LinkedHashMap<>();
 }

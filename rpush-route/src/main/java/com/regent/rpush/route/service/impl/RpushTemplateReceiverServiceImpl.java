@@ -56,7 +56,7 @@ public class RpushTemplateReceiverServiceImpl extends ServiceImpl<RpushTemplateR
     }
 
     @Override
-    public Set<String> parseReceiver(BaseMessage<?> param) {
+    public Set<String> parseReceiver(BaseMessage param) {
         Set<String> receiverIds = new HashSet<>();
         if (CollUtil.isNotEmpty(param.getGroupIds())) {
             List<RpushTemplateReceiver> receivers = list(Qw.newInstance(RpushTemplateReceiver.class).in("group_id", param.getGroupIds()));

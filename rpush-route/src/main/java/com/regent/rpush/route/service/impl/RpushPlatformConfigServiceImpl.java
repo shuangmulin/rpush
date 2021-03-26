@@ -13,7 +13,6 @@ import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.dto.route.config.UpdateConfigDTO;
 import com.regent.rpush.dto.table.Pagination;
-import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.mapper.RpushPlatformConfigMapper;
 import com.regent.rpush.route.model.RpushPlatformConfig;
 import com.regent.rpush.route.model.RpushPlatformConfigValue;
@@ -21,7 +20,6 @@ import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import com.regent.rpush.route.service.IRpushPlatformConfigValueService;
 import com.regent.rpush.route.service.IRpushTemplateService;
-import com.regent.rpush.route.utils.MessageHandlerHolder;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import com.regent.rpush.route.utils.Qw;
 import org.apache.commons.lang3.StringUtils;
@@ -80,14 +78,8 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
 
     @Override
     public ConfigTableDTO pageConfig(MessagePlatformEnum platform, Long configId, String configName, Integer pageNum, Integer pageSize) {
-        // 拿到对应的handler
-        MessageHandler<?> messageHandler = MessageHandlerHolder.get(platform);
-        if (messageHandler == null) {
-            throw new IllegalStateException("还未实现的平台：" + platform.getName());
-        }
-
         // 拿到表头
-        List<ConfigFieldVO> configFieldVOS = MessageHandlerUtils.listConfigFieldName(messageHandler);
+        List<ConfigFieldVO> configFieldVOS = MessageHandlerUtils.listConfigFieldName(platform);
         ConfigTableDTO tableDTO = new ConfigTableDTO();
         tableDTO.setHeader(configFieldVOS);
 

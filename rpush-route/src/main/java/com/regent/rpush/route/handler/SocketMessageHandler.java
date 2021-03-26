@@ -1,7 +1,7 @@
 package com.regent.rpush.route.handler;
 
 import com.regent.rpush.api.server.MessagePushService;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.NormalMessageDTO;
 import com.regent.rpush.dto.message.SocketMessageDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +23,8 @@ public class SocketMessageHandler extends MessageHandler<SocketMessageDTO> {
     private MessagePushService messagePushService;
 
     @Override
-    public MessagePlatformEnum platform() {
-        return MessagePlatformEnum.RPUSH_SERVER;
+    public MessageType messageType() {
+        return MessageType.RPUSH_SERVER;
     }
 
     @Override

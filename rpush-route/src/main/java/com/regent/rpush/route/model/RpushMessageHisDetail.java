@@ -68,6 +68,12 @@ public class RpushMessageHisDetail extends Model {
     @ApiModelProperty(value = "更新时间")
     private Date dateUpdated;
 
+    @ApiModelProperty(value = "消息类型")
+    private String messageType;
+
+    @ApiModelProperty(value = "消息类型名称")
+    private String messageTypeName;
+
     @ApiModelProperty(value = "平台")
     private String platform;
 

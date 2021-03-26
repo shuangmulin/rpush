@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PlatformMessageDTO implements Serializable {
+public class TypeMessageDTO implements Serializable {
     private static final long serialVersionUID = -7899679819734022466L;
 
     /**

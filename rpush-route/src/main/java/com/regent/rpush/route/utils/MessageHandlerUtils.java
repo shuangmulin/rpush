@@ -66,27 +66,16 @@ public final class MessageHandlerUtils {
     /**
      * 获取消息处理器的配置类型
      */
-    public static Class<?> getConfigType(MessageHandler<?> messageHandler) {
-        return SingletonUtil.get("config-type-" + messageHandler.getClass().getName(), () -> {
-            Class<?> paramType = getParamType(messageHandler);
-            ParameterizedType messageSupperClass = (ParameterizedType) paramType.getGenericSuperclass();
-            return (Class<?>) messageSupperClass.getActualTypeArguments()[0];
-        });
+    public static Class<? extends Config> getConfigType(MessageHandler<?> messageHandler) {
+        return messageHandler.messageType().getPlatform().getConfigType();
     }
 
     /**
      * 获取消息处理的的配置的所有字段名称
      */
     public static List<ConfigFieldVO> listConfigFieldName(MessagePlatformEnum platform) {
-        return listConfigFieldName(MessageHandlerHolder.get(platform));
-    }
-
-    /**
-     * 获取消息处理的的配置的所有字段名称
-     */
-    public static List<ConfigFieldVO> listConfigFieldName(MessageHandler<?> messageHandler) {
-        return SingletonUtil.get("config-field-names-" + messageHandler.getClass().getName(), () -> {
-            Class<?> configType = getConfigType(messageHandler);
+        return SingletonUtil.get("config-field-names-" + platform.name(), () -> {
+            Class<? extends Config> configType = platform.getConfigType();
             Field[] fields = ReflectUtil.getFieldsDirectly(configType, false); // 只有打了ConfigValue注解的字段才有效
             if (fields == null || fields.length <= 0) {
                 return Collections.emptyList();
@@ -129,6 +118,13 @@ public final class MessageHandlerUtils {
             }
             return fieldNames;
         });
+    }
+
+    /**
+     * 获取消息处理的的配置的所有字段名称
+     */
+    public static List<ConfigFieldVO> listConfigFieldName(MessageHandler<?> messageHandler) {
+        return listConfigFieldName(messageHandler.messageType().getPlatform());
     }
 
     /**

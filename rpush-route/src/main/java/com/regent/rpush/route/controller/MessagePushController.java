@@ -7,9 +7,9 @@ import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.regent.rpush.dto.ApiResult;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
-import com.regent.rpush.dto.message.base.PlatformMessageDTO;
+import com.regent.rpush.dto.message.base.TypeMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.model.RpushMessageHis;
 import com.regent.rpush.route.service.IRpushMessageHisService;
@@ -54,25 +54,23 @@ public class MessagePushController {
             requestNo = new Snowflake(workerId, datacenterId).nextIdStr();
         }
         messagePushDTO.setRequestNo(requestNo);
-        messagePushDTO.setContent(json.getStr("content"));
-        messagePushDTO.setTitle(json.getStr("title"));
-        JSONObject platformParam = json.getJSONObject("platformParam");
-        MessagePlatformEnum[] values = MessagePlatformEnum.values();
-        for (MessagePlatformEnum value : values) {
-            JSONObject jsonObject = platformParam.getJSONObject(value.name());
+        JSONObject messageParam = json.getJSONObject("messageParam");
+        MessageType[] values = MessageType.values();
+        for (MessageType value : values) {
+            JSONObject jsonObject = messageParam.getJSONObject(value.name());
             if (jsonObject == null) {
                 continue;
             }
             JSONArray configIds = jsonObject.getJSONArray("configIds");
             JSONArray sendTos = jsonObject.getJSONArray("sendTos");
             JSONArray groupIds = jsonObject.getJSONArray("groupIds");
-            PlatformMessageDTO platformMessageDTO = PlatformMessageDTO.builder()
+            TypeMessageDTO typeMessageDTO = TypeMessageDTO.builder()
                     .configIds(configIds == null ? Collections.EMPTY_LIST : configIds.toList(Long.TYPE))
                     .sendTos(sendTos == null ? Collections.EMPTY_LIST : sendTos.toList(String.class))
                     .groupIds(groupIds == null ? Collections.EMPTY_LIST : groupIds.toList(Long.TYPE))
                     .param(jsonObject.getJSONObject("param"))
                     .build();
-            messagePushDTO.getPlatformParam().put(value, platformMessageDTO);
+            messagePushDTO.getMessageParam().put(value, typeMessageDTO);
         }
 
         rpushMessageHisService.log(RpushMessageHis.builder().requestNo(requestNo).param(param).build()); // 记录消息历史记录

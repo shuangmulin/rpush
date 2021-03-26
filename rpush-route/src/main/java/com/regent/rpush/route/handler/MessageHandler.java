@@ -4,10 +4,10 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lmax.disruptor.EventHandler;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
-import com.regent.rpush.dto.message.base.PlatformMessageDTO;
+import com.regent.rpush.dto.message.base.TypeMessageDTO;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.route.model.RpushPlatformConfig;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
@@ -26,7 +26,7 @@ import java.util.Map;
  * @author 钟宝林
  * @date 2021/2/8 20:25
  **/
-public abstract class MessageHandler<T extends BaseMessage<?>> implements EventHandler<MessagePushDTO> {
+public abstract class MessageHandler<T extends BaseMessage> implements EventHandler<MessagePushDTO> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
 
@@ -36,29 +36,27 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
     @SuppressWarnings("unchecked")
     @Override
     public void onEvent(MessagePushDTO event, long sequence, boolean endOfBatch) throws Exception {
-        Map<MessagePlatformEnum, PlatformMessageDTO> platformParamMap = event.getPlatformParam();
-        if (!platformParamMap.containsKey(platform())) {
+        Map<MessageType, TypeMessageDTO> messageParamMap = event.getMessageParam();
+        if (!messageParamMap.containsKey(messageType())) {
             // 不处理
             return;
         }
-        MessagePlatformEnum platform = platform();
-        PlatformMessageDTO platformMessageDTO = platformParamMap.get(platform);
-        if (platformMessageDTO == null) {
+        MessageType messageType = messageType();
+        TypeMessageDTO typeMessageDTO = messageParamMap.get(messageType);
+        if (typeMessageDTO == null) {
             return;
         }
         try {
             // 处理参数
-            JSONObject param = platformMessageDTO.getParam();
+            JSONObject param = typeMessageDTO.getParam();
             Class<?> actualTypeArgument = MessageHandlerUtils.getParamType(this);
-            BaseMessage<?> baseMessage = param == null ? (BaseMessage<?>) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage<?>) param.toBean(actualTypeArgument);
-            baseMessage.setContent(event.getContent());
-            baseMessage.setTitle(event.getTitle());
+            BaseMessage baseMessage = param == null ? (BaseMessage) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage) param.toBean(actualTypeArgument);
             baseMessage.setRequestNo(event.getRequestNo());
-            baseMessage.setSendTos(platformMessageDTO.getSendTos());
-            baseMessage.setGroupIds(platformMessageDTO.getGroupIds());
+            baseMessage.setSendTos(typeMessageDTO.getSendTos());
+            baseMessage.setGroupIds(typeMessageDTO.getGroupIds());
 
             // 处理配置
-            processPlatformConfig(platformMessageDTO, baseMessage);
+            processPlatformConfig(typeMessageDTO, baseMessage);
 
             // 最后调用实际消息处理的方法
             handle((T) baseMessage);
@@ -70,7 +68,7 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
     /**
      * 根据参数传入的配置id，转换成具体的配置数据，提供给下游具体的消息处理器使用
      */
-    private void processPlatformConfig(PlatformMessageDTO platformMessageDTO, BaseMessage<?> baseMessage) {
+    private void processPlatformConfig(TypeMessageDTO platformMessageDTO, BaseMessage baseMessage) {
         List<Long> configIds = platformMessageDTO.getConfigIds();
         if (configIds == null || configIds.size() <= 0) {
             // 查一个默认配置出来用
@@ -88,9 +86,9 @@ public abstract class MessageHandler<T extends BaseMessage<?>> implements EventH
     }
 
     /**
-     * 所有消息处理器必须实现这个接口，标识自己处理的是哪个平台的消息
+     * 所有消息处理器必须实现这个接口，标识自己处理的是哪个消息类型
      */
-    public abstract MessagePlatformEnum platform();
+    public abstract MessageType messageType();
 
     /**
      * 实现这个接口来处理消息，再正式调用这个方法之前会处理好需要的参数和需要的配置

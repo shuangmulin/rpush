@@ -24,5 +24,5 @@ public interface IRpushTemplateReceiverService extends IService<RpushTemplateRec
     /**
      * 解析参数里的所有接收人（即{@link BaseMessage#sendTos} + {@link BaseMessage#groupIds}的并集）
      */
-    Set<String> parseReceiver(BaseMessage<?> param);
+    Set<String> parseReceiver(BaseMessage param);
 }

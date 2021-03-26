@@ -4,8 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.EmailMessageDTO;
+import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.EmailConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.model.RpushTemplate;
@@ -37,16 +38,17 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
     private IRpushMessageHisService rpushMessageHisService;
 
     @Override
-    public MessagePlatformEnum platform() {
-        return MessagePlatformEnum.EMAIL;
+    public MessageType messageType() {
+        return MessageType.EMAIL;
     }
 
     @Override
     public void handle(EmailMessageDTO param) {
-        List<EmailConfig> configs = param.getConfigs();
+        List<Config> configs = param.getConfigs();
         String content = param.getContent();
         String title = param.getTitle();
-        for (EmailConfig config : configs) {
+        for (Config conf : configs) {
+            EmailConfig config = (EmailConfig) conf;
             Long templateId = config.getTemplateId();
             RpushTemplate rpushTemplate = rpushTemplateService.getById(templateId);
             content = StringUtils.isBlank(content) ? rpushTemplate.getContent() : content; // 本次投递有传则优先取传入的，否则默认取模板的
@@ -68,7 +70,8 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
             account.setPass(config.getPassword());
             for (String receiverEmail : receiverEmails) {
                 RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()
-                        .platform(platform().name())
+                        .platform(messageType().getPlatform().name())
+                        .messageType(messageType().name())
                         .configName(config.getConfigName())
                         .receiverId(receiverEmail)
                         .requestNo(param.getRequestNo())

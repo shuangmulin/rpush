@@ -11,21 +11,13 @@ import java.util.List;
  * @author 钟宝林
  * @date 2021/2/8 21:02
  **/
-public class BaseMessage<config extends Config> extends BaseParam {
+public class BaseMessage extends BaseParam {
     private static final long serialVersionUID = 437493036483567460L;
 
     /**
-     * 消息标题
-     */
-    private String title;
-    /**
-     * 消息内容
-     */
-    private String content;
-    /**
      * 配置
      */
-    private List<config> configs;
+    private List<Config> configs;
     /**
      * 接收人列表
      */
@@ -35,20 +27,11 @@ public class BaseMessage<config extends Config> extends BaseParam {
      */
     private List<Long> groupIds;
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @SuppressWarnings("unchecked")
     public void setConfigs(List<Config> configs) {
-        this.configs = (List<config>) configs;
+        this.configs = configs;
     }
 
-    public List<config> getConfigs() {
+    public List<Config> getConfigs() {
         return configs;
     }
 
@@ -58,14 +41,6 @@ public class BaseMessage<config extends Config> extends BaseParam {
 
     public List<String> getSendTos() {
         return sendTos;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public List<Long> getGroupIds() {

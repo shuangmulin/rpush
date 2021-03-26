@@ -2,8 +2,9 @@ package com.regent.rpush.route.handler;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.regent.rpush.common.SingletonUtil;
-import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.WechatWorkMessageDTO;
+import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.WechatWorkConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.model.RpushTemplate;
@@ -41,15 +42,16 @@ public class WechatWorkMessageHandler extends MessageHandler<WechatWorkMessageDT
     private IRpushMessageHisService rpushMessageHisService;
 
     @Override
-    public MessagePlatformEnum platform() {
-        return MessagePlatformEnum.WECHAT_WORK;
+    public MessageType messageType() {
+        return MessageType.WECHAT_WORK_TEXT;
     }
 
     @Override
     public void handle(WechatWorkMessageDTO param) {
-        List<WechatWorkConfig> configs = param.getConfigs();
+        List<Config> configs = param.getConfigs();
         String content = param.getContent();
-        for (WechatWorkConfig config : configs) {
+        for (Config conf : configs) {
+            WechatWorkConfig config = (WechatWorkConfig) conf;
             Set<String> receiverUsers = rpushTemplateReceiverService.parseReceiver(param); // 先拿参数里的接收人
 
             // 再看下有没有模板
@@ -78,7 +80,8 @@ public class WechatWorkMessageHandler extends MessageHandler<WechatWorkMessageDT
             for (String receiverUser : receiverUsers) {
                 WxCpMessage message = WxCpMessage.TEXT().agentId(config.getAgentId()).toUser(receiverUser).content(content).build();
                 RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()
-                        .platform(platform().name())
+                        .platform(messageType().getPlatform().name())
+                        .messageType(messageType().name())
                         .configName(config.getConfigName())
                         .receiverId(receiverUser)
                         .requestNo(param.getRequestNo())
