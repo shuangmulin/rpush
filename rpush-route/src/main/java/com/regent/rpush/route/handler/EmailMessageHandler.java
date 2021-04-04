@@ -9,8 +9,8 @@ import com.regent.rpush.dto.message.EmailMessageDTO;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.EmailConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
-import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushMessageHisService;
+import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
 import com.regent.rpush.route.service.IRpushTemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
     private IRpushTemplateService rpushTemplateService;
     @Autowired
     private IRpushMessageHisService rpushMessageHisService;
+    @Autowired
+    private IRpushTemplateReceiverGroupService rpushTemplateReceiverGroupService;
 
     @Override
     public MessageType messageType() {
@@ -49,13 +52,12 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
         String title = param.getTitle();
         for (Config conf : configs) {
             EmailConfig config = (EmailConfig) conf;
-            Long templateId = config.getTemplateId();
-            RpushTemplate rpushTemplate = rpushTemplateService.getById(templateId);
-            content = StringUtils.isBlank(content) ? rpushTemplate.getContent() : content; // 本次投递有传则优先取传入的，否则默认取模板的
-            title = StringUtils.isBlank(title) ? rpushTemplate.getTitle() : title; // 本次投递有传则优先取传入的，否则默认取模板的
-            Set<String> receiverEmails = rpushTemplateService.listAllReceiverId(rpushTemplate.getId()); // 拿模板设置的所有邮箱
-            if (CollUtil.isNotEmpty(param.getSendTos())) {
-                receiverEmails.addAll(param.getSendTos());
+            Set<String> receiverEmails = new HashSet<>();
+            if (CollUtil.isNotEmpty(param.getReceiverIds())) {
+                receiverEmails.addAll(param.getReceiverIds());
+            }
+            if (CollUtil.isNotEmpty(param.getReceiverGroupIds())) {
+                receiverEmails.addAll(rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()));
             }
             if (receiverEmails.size() <= 0) {
                 LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收邮箱", param.getRequestNo(), param.getConfigs());

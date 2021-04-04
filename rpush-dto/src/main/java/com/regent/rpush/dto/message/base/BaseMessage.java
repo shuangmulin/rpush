@@ -18,14 +18,6 @@ public class BaseMessage extends BaseParam {
      * 配置
      */
     private List<Config> configs;
-    /**
-     * 接收人列表
-     */
-    private List<String> sendTos;
-    /**
-     * 接收人分组列表
-     */
-    private List<Long> groupIds;
 
     public void setConfigs(List<Config> configs) {
         this.configs = configs;
@@ -33,21 +25,5 @@ public class BaseMessage extends BaseParam {
 
     public List<Config> getConfigs() {
         return configs;
-    }
-
-    public void setSendTos(List<String> sendTos) {
-        this.sendTos = sendTos;
-    }
-
-    public List<String> getSendTos() {
-        return sendTos;
-    }
-
-    public List<Long> getGroupIds() {
-        return groupIds;
-    }
-
-    public void setGroupIds(List<Long> groupIds) {
-        this.groupIds = groupIds;
     }
 }

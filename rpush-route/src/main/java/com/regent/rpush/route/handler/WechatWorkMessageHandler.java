@@ -9,7 +9,7 @@ import com.regent.rpush.dto.message.config.WechatWorkConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushMessageHisService;
-import com.regent.rpush.route.service.IRpushTemplateReceiverService;
+import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
 import com.regent.rpush.route.service.IRpushTemplateService;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.bean.message.WxCpMessage;
@@ -37,9 +37,9 @@ public class WechatWorkMessageHandler extends MessageHandler<WechatWorkMessageDT
     @Autowired
     private IRpushTemplateService rpushTemplateService;
     @Autowired
-    private IRpushTemplateReceiverService rpushTemplateReceiverService;
-    @Autowired
     private IRpushMessageHisService rpushMessageHisService;
+    @Autowired
+    private IRpushTemplateReceiverGroupService rpushTemplateReceiverGroupService;
 
     @Override
     public MessageType messageType() {
@@ -52,7 +52,8 @@ public class WechatWorkMessageHandler extends MessageHandler<WechatWorkMessageDT
         String content = param.getContent();
         for (Config conf : configs) {
             WechatWorkConfig config = (WechatWorkConfig) conf;
-            Set<String> receiverUsers = rpushTemplateReceiverService.parseReceiver(param); // 先拿参数里的接收人
+            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
+            receiverUsers.addAll(param.getReceiverIds());
 
             // 再看下有没有模板
             Long templateId = config.getTemplateId();

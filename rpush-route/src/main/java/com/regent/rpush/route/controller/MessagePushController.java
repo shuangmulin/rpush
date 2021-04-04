@@ -62,12 +62,8 @@ public class MessagePushController {
                 continue;
             }
             JSONArray configIds = jsonObject.getJSONArray("configIds");
-            JSONArray sendTos = jsonObject.getJSONArray("sendTos");
-            JSONArray groupIds = jsonObject.getJSONArray("groupIds");
             TypeMessageDTO typeMessageDTO = TypeMessageDTO.builder()
                     .configIds(configIds == null ? Collections.EMPTY_LIST : configIds.toList(Long.TYPE))
-                    .sendTos(sendTos == null ? Collections.EMPTY_LIST : sendTos.toList(String.class))
-                    .groupIds(groupIds == null ? Collections.EMPTY_LIST : groupIds.toList(Long.TYPE))
                     .param(jsonObject.getJSONObject("param"))
                     .build();
             messagePushDTO.getMessageParam().put(value, typeMessageDTO);

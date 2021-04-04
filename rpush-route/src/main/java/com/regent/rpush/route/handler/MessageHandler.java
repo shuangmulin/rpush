@@ -52,8 +52,6 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
             Class<?> actualTypeArgument = MessageHandlerUtils.getParamType(this);
             BaseMessage baseMessage = param == null ? (BaseMessage) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage) param.toBean(actualTypeArgument);
             baseMessage.setRequestNo(event.getRequestNo());
-            baseMessage.setSendTos(typeMessageDTO.getSendTos());
-            baseMessage.setGroupIds(typeMessageDTO.getGroupIds());
 
             // 处理配置
             processPlatformConfig(typeMessageDTO, baseMessage);

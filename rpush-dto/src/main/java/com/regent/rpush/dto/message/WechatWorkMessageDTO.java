@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 /**
  * 企业微信消息发送DTO
  *
@@ -17,6 +19,14 @@ import lombok.EqualsAndHashCode;
 public class WechatWorkMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
+    /**
+     * 接收人列表
+     */
+    private List<String> receiverIds;
+    /**
+     * 接收人分组列表
+     */
+    private List<Long> receiverGroupIds;
     private String content;
 
 }

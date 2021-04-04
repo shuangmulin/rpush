@@ -72,6 +72,7 @@ public class RpushMessageHisDetail extends Model {
     private String messageType;
 
     @ApiModelProperty(value = "消息类型名称")
+    @TableField(exist = false)
     private String messageTypeName;
 
     @ApiModelProperty(value = "平台")

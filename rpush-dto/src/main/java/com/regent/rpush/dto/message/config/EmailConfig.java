@@ -1,7 +1,5 @@
 package com.regent.rpush.dto.message.config;
 
-import com.regent.rpush.dto.enumration.ConfigValueType;
-import com.regent.rpush.dto.route.config.ConfigValue;
 import lombok.*;
 
 /**
@@ -21,7 +19,5 @@ public class EmailConfig extends Config {
     private String from;
     private String user;
     private String password;
-    @ConfigValue(value = "消息模板", type = ConfigValueType.RPUSH_TEMPLATE)
-    private Long templateId;
 
 }

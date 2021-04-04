@@ -25,14 +25,6 @@ public class TypeMessageDTO implements Serializable {
      */
     private List<Long> configIds;
     /**
-     * 接收人列表
-     */
-    private List<String> sendTos;
-    /**
-     * 接收人分组列表
-     */
-    private List<Long> groupIds;
-    /**
      * 具体的参数
      */
     private JSONObject param;

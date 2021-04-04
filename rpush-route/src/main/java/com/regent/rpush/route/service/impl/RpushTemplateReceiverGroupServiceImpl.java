@@ -4,11 +4,19 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.regent.rpush.route.mapper.RpushTemplateReceiverGroupMapper;
+import com.regent.rpush.route.model.RpushTemplateReceiver;
 import com.regent.rpush.route.model.RpushTemplateReceiverGroup;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
+import com.regent.rpush.route.service.IRpushTemplateReceiverService;
 import com.regent.rpush.route.utils.Qw;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -20,6 +28,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RpushTemplateReceiverGroupServiceImpl extends ServiceImpl<RpushTemplateReceiverGroupMapper, RpushTemplateReceiverGroup> implements IRpushTemplateReceiverGroupService {
+
+    @Autowired
+    private IRpushTemplateReceiverService rpushTemplateReceiverService;
 
     @Override
     public void updateGroup(RpushTemplateReceiverGroup group) {
@@ -43,5 +54,12 @@ public class RpushTemplateReceiverGroupServiceImpl extends ServiceImpl<RpushTemp
         } else {
             updateById(group);
         }
+    }
+
+    @Override
+    public Set<String> listReceiverIds(List<Long> receiverGroupIds) {
+        List<RpushTemplateReceiver> receivers = rpushTemplateReceiverService.list(Qw.newInstance(RpushTemplateReceiver.class).in("group_id", receiverGroupIds));
+        receivers = receivers == null ? new ArrayList<>() : receivers;
+        return receivers.stream().map(RpushTemplateReceiver::getReceiverId).collect(Collectors.toSet());
     }
 }

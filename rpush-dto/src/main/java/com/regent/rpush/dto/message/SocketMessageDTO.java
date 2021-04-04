@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Socket消息发送DTO
@@ -20,6 +21,10 @@ import javax.validation.constraints.NotNull;
 public class SocketMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
+    /**
+     * 接收人列表
+     */
+    private List<String> receiverIds;
     @NotNull
     @ApiModelProperty(value = "接收方registrationId")
     private Long fromTo;

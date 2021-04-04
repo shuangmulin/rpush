@@ -29,7 +29,7 @@ public class SocketMessageHandler extends MessageHandler<SocketMessageDTO> {
 
     @Override
     public void handle(SocketMessageDTO param) {
-        List<String> sendTos = param.getSendTos();
+        List<String> sendTos = param.getReceiverIds();
         Long fromTo = param.getFromTo();
 
         for (String sendTo : sendTos) {
