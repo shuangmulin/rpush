@@ -11,7 +11,6 @@ import com.regent.rpush.dto.message.config.EmailConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
-import com.regent.rpush.route.service.IRpushTemplateService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +32,6 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailMessageHandler.class);
 
-    @Autowired
-    private IRpushTemplateService rpushTemplateService;
     @Autowired
     private IRpushMessageHisService rpushMessageHisService;
     @Autowired

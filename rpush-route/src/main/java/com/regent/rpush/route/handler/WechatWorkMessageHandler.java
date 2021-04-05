@@ -7,7 +7,6 @@ import com.regent.rpush.dto.message.WechatWorkMessageDTO;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.WechatWorkConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
-import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
 import com.regent.rpush.route.service.IRpushTemplateService;
@@ -53,15 +52,10 @@ public class WechatWorkMessageHandler extends MessageHandler<WechatWorkMessageDT
         for (Config conf : configs) {
             WechatWorkConfig config = (WechatWorkConfig) conf;
             Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
-            receiverUsers.addAll(param.getReceiverIds());
-
-            // 再看下有没有模板
-            Long templateId = config.getTemplateId();
-            RpushTemplate rpushTemplate = rpushTemplateService.getById(templateId);
-            if (rpushTemplate != null) {
-                content = StringUtils.isBlank(content) ? rpushTemplate.getContent() : content; // 本次投递有传则优先取传入的，否则默认取模板的
-                receiverUsers = rpushTemplateService.listAllReceiverId(rpushTemplate.getId()); // 拿模板设置的所有邮箱
+            if (param.getReceiverIds() != null) {
+                receiverUsers.addAll(param.getReceiverIds());
             }
+
             if (receiverUsers.size() <= 0) {
                 LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
                 return;

@@ -5,9 +5,13 @@ import cn.hutool.core.util.ReflectUtil;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
+import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigValue;
+import com.regent.rpush.dto.route.sheme.SchemeFieldVO;
+import com.regent.rpush.dto.route.sheme.SchemeValue;
 import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
@@ -28,28 +32,52 @@ import java.util.*;
 public final class MessageHandlerUtils {
 
     /**
-     * 类型映射
+     * 配置类型映射
      */
-    public static Map<Class<?>, ConfigValueType> JAVA_TYPE_MAP = new HashMap<>();
+    public static Map<Class<?>, ConfigValueType> JAVA_TYPE_CONFIG_MAP = new HashMap<>();
 
     static {
-        JAVA_TYPE_MAP.put(int.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(long.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(short.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(char.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(Integer.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(Long.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(Short.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(Character.class, ConfigValueType.INTEGER);
-        JAVA_TYPE_MAP.put(double.class, ConfigValueType.DECIMAL);
-        JAVA_TYPE_MAP.put(Double.class, ConfigValueType.DECIMAL);
-        JAVA_TYPE_MAP.put(float.class, ConfigValueType.DECIMAL);
-        JAVA_TYPE_MAP.put(Float.class, ConfigValueType.DECIMAL);
-        JAVA_TYPE_MAP.put(BigDecimal.class, ConfigValueType.DECIMAL);
-        JAVA_TYPE_MAP.put(boolean.class, ConfigValueType.BOOLEAN);
-        JAVA_TYPE_MAP.put(Boolean.class, ConfigValueType.BOOLEAN);
-        JAVA_TYPE_MAP.put(String.class, ConfigValueType.STRING);
-        JAVA_TYPE_MAP.put(RpushTemplate.class, ConfigValueType.RPUSH_TEMPLATE);
+        JAVA_TYPE_CONFIG_MAP.put(int.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(long.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(short.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(char.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(Integer.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(Long.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(Short.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(Character.class, ConfigValueType.INTEGER);
+        JAVA_TYPE_CONFIG_MAP.put(double.class, ConfigValueType.DECIMAL);
+        JAVA_TYPE_CONFIG_MAP.put(Double.class, ConfigValueType.DECIMAL);
+        JAVA_TYPE_CONFIG_MAP.put(float.class, ConfigValueType.DECIMAL);
+        JAVA_TYPE_CONFIG_MAP.put(Float.class, ConfigValueType.DECIMAL);
+        JAVA_TYPE_CONFIG_MAP.put(BigDecimal.class, ConfigValueType.DECIMAL);
+        JAVA_TYPE_CONFIG_MAP.put(boolean.class, ConfigValueType.BOOLEAN);
+        JAVA_TYPE_CONFIG_MAP.put(Boolean.class, ConfigValueType.BOOLEAN);
+        JAVA_TYPE_CONFIG_MAP.put(String.class, ConfigValueType.STRING);
+        JAVA_TYPE_CONFIG_MAP.put(RpushTemplate.class, ConfigValueType.RPUSH_TEMPLATE);
+    }
+
+    /**
+     * 方案类型映射
+     */
+    public static Map<Class<?>, SchemeValueType> JAVA_TYPE_SCHEME_MAP = new HashMap<>();
+
+    static {
+        JAVA_TYPE_SCHEME_MAP.put(int.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(long.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(short.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(char.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(Integer.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(Long.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(Short.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(Character.class, SchemeValueType.INTEGER);
+        JAVA_TYPE_SCHEME_MAP.put(double.class, SchemeValueType.DECIMAL);
+        JAVA_TYPE_SCHEME_MAP.put(Double.class, SchemeValueType.DECIMAL);
+        JAVA_TYPE_SCHEME_MAP.put(float.class, SchemeValueType.DECIMAL);
+        JAVA_TYPE_SCHEME_MAP.put(Float.class, SchemeValueType.DECIMAL);
+        JAVA_TYPE_SCHEME_MAP.put(BigDecimal.class, SchemeValueType.DECIMAL);
+        JAVA_TYPE_SCHEME_MAP.put(boolean.class, SchemeValueType.BOOLEAN);
+        JAVA_TYPE_SCHEME_MAP.put(Boolean.class, SchemeValueType.BOOLEAN);
+        JAVA_TYPE_SCHEME_MAP.put(String.class, SchemeValueType.STRING);
     }
 
     /**
@@ -76,7 +104,7 @@ public final class MessageHandlerUtils {
     public static List<ConfigFieldVO> listConfigFieldName(MessagePlatformEnum platform) {
         return SingletonUtil.get("config-field-names-" + platform.name(), () -> {
             Class<? extends Config> configType = platform.getConfigType();
-            Field[] fields = ReflectUtil.getFieldsDirectly(configType, false); // 只有打了ConfigValue注解的字段才有效
+            Field[] fields = ReflectUtil.getFieldsDirectly(configType, false);
             if (fields == null || fields.length <= 0) {
                 return Collections.emptyList();
             }
@@ -97,16 +125,16 @@ public final class MessageHandlerUtils {
                     description = annotation.description();
                     switch (type) {
                         case RPUSH_TEMPLATE:
-                            type = JAVA_TYPE_MAP.get(RpushTemplate.class);
+                            type = JAVA_TYPE_CONFIG_MAP.get(RpushTemplate.class);
                             break;
                         case AUTO:
-                            type = JAVA_TYPE_MAP.get(field.getType());
+                            type = JAVA_TYPE_CONFIG_MAP.get(field.getType());
                             break;
                     }
                 }
                 if (annotation == null) {
                     Class<?> javaType = field.getType();
-                    type = JAVA_TYPE_MAP.get(javaType);
+                    type = JAVA_TYPE_CONFIG_MAP.get(javaType);
                 }
                 name = StringUtils.isBlank(name) ? field.getName() : name;
                 fieldNames.add(ConfigFieldVO.builder()
@@ -159,6 +187,60 @@ public final class MessageHandlerUtils {
         } catch (Exception e) {
             throw new IllegalStateException(messageHandler.getClass().getName() + "配置字段值转换失败，请检查", e);
         }
+    }
+
+    // ====================================================== 方案相关 ==============================================================
+
+    /**
+     * 根据消息类型获取对应方案所有字段
+     *
+     * @param messageType 消息类型
+     * @return 字段列表
+     */
+    public static List<SchemeFieldVO> listSchemeField(MessageType messageType) {
+        return SingletonUtil.get(messageType + SchemeFieldVO.class.getName(), () -> {
+            MessageHandler<?> messageHandler = MessageHandlerHolder.get(messageType);
+            ParameterizedType genericSuperclass = (ParameterizedType) messageHandler.getClass().getGenericSuperclass();
+            Class<?> schemeType = (Class<?>) genericSuperclass.getActualTypeArguments()[0];
+
+            Field[] fields = ReflectUtil.getFieldsDirectly(schemeType, false);
+            if (fields == null || fields.length <= 0) {
+                return Collections.emptyList();
+            }
+
+            List<SchemeFieldVO> fieldNames = new ArrayList<>();
+            for (Field field : fields) {
+                if (Modifier.isFinal(field.getModifiers())) {
+                    continue;
+                }
+                SchemeValue annotation = field.getAnnotation(SchemeValue.class);
+                SchemeValueType type = null;
+                String name = "";
+                String description = "";
+                if (annotation != null) {
+                    type = annotation.type();
+                    name = annotation.value();
+                    description = annotation.description();
+                    switch (type) {
+                        case AUTO:
+                            type = JAVA_TYPE_SCHEME_MAP.get(field.getType());
+                            break;
+                    }
+                }
+                if (annotation == null) {
+                    Class<?> javaType = field.getType();
+                    type = JAVA_TYPE_SCHEME_MAP.get(javaType);
+                }
+                name = StringUtils.isBlank(name) ? field.getName() : name;
+                fieldNames.add(SchemeFieldVO.builder()
+                        .name(name)
+                        .description(description)
+                        .type(type)
+                        .key(field.getName())
+                        .build());
+            }
+            return fieldNames;
+        });
     }
 
 }

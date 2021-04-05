@@ -1,6 +1,5 @@
 package com.regent.rpush.dto.message.config;
 
-import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.route.config.ConfigValue;
 import lombok.*;
 
@@ -24,7 +23,5 @@ public class WechatWorkConfig extends Config {
     private String secret;
     @ConfigValue(value = "应用agentId")
     private Integer agentId;
-    @ConfigValue(value = "模板", type = ConfigValueType.RPUSH_TEMPLATE)
-    private Long templateId;
 
 }

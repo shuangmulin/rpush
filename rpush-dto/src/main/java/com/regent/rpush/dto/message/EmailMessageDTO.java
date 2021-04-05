@@ -1,6 +1,8 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
+import com.regent.rpush.dto.route.sheme.SchemeValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,14 +20,18 @@ public class EmailMessageDTO extends BaseMessage {
     private static final long serialVersionUID = 2692273549631779696L;
 
     /**
-     * 接收人列表
-     */
-    private List<String> receiverIds;
-    /**
      * 接收人分组列表
      */
+    @SchemeValue(type = SchemeValueType.RECEIVER_GROUP)
     private List<Long> receiverGroupIds;
+    /**
+     * 接收人列表
+     */
+    @SchemeValue(type = SchemeValueType.RECEIVER)
+    private List<String> receiverIds;
+    @SchemeValue(description = "请输入邮箱标题...")
     private String title;
+    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入邮箱内容...")
     private String content;
 
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +59,9 @@ public class RpushTemplateReceiverGroupServiceImpl extends ServiceImpl<RpushTemp
 
     @Override
     public Set<String> listReceiverIds(List<Long> receiverGroupIds) {
+        if (receiverGroupIds == null || receiverGroupIds.size() <= 0) {
+            return new HashSet<>();
+        }
         List<RpushTemplateReceiver> receivers = rpushTemplateReceiverService.list(Qw.newInstance(RpushTemplateReceiver.class).in("group_id", receiverGroupIds));
         receivers = receivers == null ? new ArrayList<>() : receivers;
         return receivers.stream().map(RpushTemplateReceiver::getReceiverId).collect(Collectors.toSet());

@@ -8,17 +8,26 @@ package com.regent.rpush.dto.enumration;
  **/
 public enum MessageType {
 
-    EMAIL(MessagePlatformEnum.EMAIL),
-    RPUSH_SERVER(MessagePlatformEnum.RPUSH_SERVER),
-    WECHAT_WORK_TEXT(MessagePlatformEnum.WECHAT_WORK);
+    EMAIL("普通邮件 ", MessagePlatformEnum.EMAIL),
+    RPUSH_SERVER("文本", MessagePlatformEnum.RPUSH_SERVER),
+    WECHAT_WORK_TEXT("文本", MessagePlatformEnum.WECHAT_WORK);
 
+    /**
+     * 所属平台
+     */
     private final MessagePlatformEnum platform;
+    private final String name;
 
-    MessageType(MessagePlatformEnum platform) {
+    MessageType(String name, MessagePlatformEnum platform) {
+        this.name = name;
         this.platform = platform;
     }
 
     public MessagePlatformEnum getPlatform() {
         return platform;
+    }
+
+    public String getName() {
+        return name;
     }
 }

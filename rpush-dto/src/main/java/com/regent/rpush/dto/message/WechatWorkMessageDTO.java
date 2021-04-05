@@ -1,6 +1,8 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
+import com.regent.rpush.dto.route.sheme.SchemeValue;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,13 +22,16 @@ public class WechatWorkMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
     /**
-     * 接收人列表
-     */
-    private List<String> receiverIds;
-    /**
      * 接收人分组列表
      */
+    @SchemeValue(type = SchemeValueType.RECEIVER_GROUP)
     private List<Long> receiverGroupIds;
+    /**
+     * 接收人列表
+     */
+    @SchemeValue(type = SchemeValueType.RECEIVER)
+    private List<String> receiverIds;
+    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入内容...")
     private String content;
 
 }
