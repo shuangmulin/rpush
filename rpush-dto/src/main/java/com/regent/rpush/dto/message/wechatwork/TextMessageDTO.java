@@ -1,4 +1,4 @@
-package com.regent.rpush.dto.message;
+package com.regent.rpush.dto.message.wechatwork;
 
 import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
@@ -18,7 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public class WechatWorkMessageDTO extends BaseMessage {
+public class TextMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
     /**

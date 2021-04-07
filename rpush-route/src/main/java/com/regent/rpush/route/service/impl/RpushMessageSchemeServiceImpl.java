@@ -31,7 +31,7 @@ public class RpushMessageSchemeServiceImpl extends ServiceImpl<RpushMessageSchem
 
     @Transactional
     @Override
-    public Long saveOrUpdate(SchemeDTO scheme) {
+    public RpushMessageScheme saveOrUpdate(SchemeDTO scheme) {
         RpushMessageScheme messageScheme = new RpushMessageScheme();
         messageScheme.setId(scheme.getId());
         messageScheme.setMessageType(scheme.getMessageType().name());
@@ -56,7 +56,7 @@ public class RpushMessageSchemeServiceImpl extends ServiceImpl<RpushMessageSchem
         } else {
             save(messageScheme);
         }
-        return messageScheme.getId();
+        return messageScheme;
     }
 
     @Override

@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface IRpushMessageSchemeService extends IService<RpushMessageScheme> {
 
-    Long saveOrUpdate(SchemeDTO scheme);
+    RpushMessageScheme saveOrUpdate(SchemeDTO scheme);
 
     List<IdAndName> listScheme(MessageType messageType);
 }

@@ -10,6 +10,7 @@ import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.base.TypeMessageDTO;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.route.model.RpushPlatformConfig;
+import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
 
     @Autowired
     private IRpushPlatformConfigService rpushPlatformConfigService;
+    @Autowired
+    protected IRpushMessageHisService rpushMessageHisService;
 
     @SuppressWarnings("unchecked")
     @Override

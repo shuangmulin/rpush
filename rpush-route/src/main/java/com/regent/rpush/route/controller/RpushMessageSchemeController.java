@@ -2,6 +2,7 @@ package com.regent.rpush.route.controller;
 
 
 import com.regent.rpush.dto.ApiResult;
+import com.regent.rpush.dto.StatusCode;
 import com.regent.rpush.dto.common.IdAndName;
 import com.regent.rpush.dto.common.IdStrAndName;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
@@ -12,6 +13,7 @@ import com.regent.rpush.route.model.RpushMessageScheme;
 import com.regent.rpush.route.service.IRpushMessageSchemeService;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,8 +60,17 @@ public class RpushMessageSchemeController {
 
     @ApiOperation("更新或保存方案")
     @PostMapping("/update")
-    public ApiResult<Long> update(@NotNull(message = "参数不全") @RequestBody SchemeDTO scheme) {
+    public ApiResult<RpushMessageScheme> update(@NotNull(message = "参数不全") @RequestBody SchemeDTO scheme) {
         return ApiResult.of(rpushMessageSchemeService.saveOrUpdate(scheme));
+    }
+
+    @ApiOperation("删除方案")
+    @DeleteMapping
+    public ApiResult<Boolean> delete(String schemeId) {
+        if (StringUtils.isBlank(schemeId)) {
+            return ApiResult.of(StatusCode.VALIDATE_FAIL, "未知方案");
+        }
+        return ApiResult.of(rpushMessageSchemeService.removeById(schemeId));
     }
 
     @ApiOperation("查询方案列表")
@@ -71,7 +82,8 @@ public class RpushMessageSchemeController {
     @ApiOperation("查询某个方案")
     @GetMapping("/detail")
     public ApiResult<RpushMessageScheme> getSchemeParam(@NotBlank(message = "未知消息") String schemeId) {
-        return ApiResult.of(rpushMessageSchemeService.getById(schemeId));
+        RpushMessageScheme scheme = rpushMessageSchemeService.getById(schemeId);
+        return ApiResult.of(scheme);
     }
 
 }
