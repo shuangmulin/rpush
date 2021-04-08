@@ -41,5 +41,9 @@ public class SchemeFieldVO implements Serializable {
      * 选项（如果是选择型字段）
      */
     private List<IdStrAndName> options = new ArrayList<>();
+    /**
+     * 多对象字段
+     */
+    private List<MultiObjFieldVO> multiObjFields = new ArrayList<>();
 
 }

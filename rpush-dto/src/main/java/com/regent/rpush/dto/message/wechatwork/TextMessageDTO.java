@@ -26,11 +26,19 @@ public class TextMessageDTO extends BaseMessage {
      */
     @SchemeValue(type = SchemeValueType.RECEIVER_GROUP)
     private List<Long> receiverGroupIds;
+
     /**
      * 接收人列表
      */
     @SchemeValue(type = SchemeValueType.RECEIVER)
     private List<String> receiverIds;
+
+    @SchemeValue(description = "PartyID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
+    private String toParty;
+
+    @SchemeValue(description = "TagID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
+    private String toTag;
+
     @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入内容...")
     private String content;
 

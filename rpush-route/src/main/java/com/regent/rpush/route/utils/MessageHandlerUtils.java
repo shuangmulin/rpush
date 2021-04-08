@@ -10,6 +10,8 @@ import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigValue;
+import com.regent.rpush.dto.route.sheme.MultiObjField;
+import com.regent.rpush.dto.route.sheme.MultiObjFieldVO;
 import com.regent.rpush.dto.route.sheme.SchemeFieldVO;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
 import com.regent.rpush.route.handler.MessageHandler;
@@ -78,6 +80,9 @@ public final class MessageHandlerUtils {
         JAVA_TYPE_SCHEME_MAP.put(boolean.class, SchemeValueType.BOOLEAN);
         JAVA_TYPE_SCHEME_MAP.put(Boolean.class, SchemeValueType.BOOLEAN);
         JAVA_TYPE_SCHEME_MAP.put(String.class, SchemeValueType.STRING);
+        JAVA_TYPE_SCHEME_MAP.put(List.class, SchemeValueType.MULTI_OBJ_INPUT);
+        JAVA_TYPE_SCHEME_MAP.put(Set.class, SchemeValueType.MULTI_OBJ_INPUT);
+        JAVA_TYPE_SCHEME_MAP.put(Collection.class, SchemeValueType.MULTI_OBJ_INPUT);
     }
 
     /**
@@ -231,12 +236,39 @@ public final class MessageHandlerUtils {
                     Class<?> javaType = field.getType();
                     type = JAVA_TYPE_SCHEME_MAP.get(javaType);
                 }
+                List<MultiObjFieldVO> multiObjFields = new ArrayList<>();
+                if (SchemeValueType.MULTI_OBJ_INPUT.equals(type)) {
+                    // 多对象输入
+                    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+                    Class<?> multiObjClass = (Class<?>) genericType.getActualTypeArguments()[0];
+                    Field[] multiObjFieldArr = ReflectUtil.getFieldsDirectly(multiObjClass, false);
+                    for (Field fieldMulti : multiObjFieldArr) {
+                        if (Modifier.isFinal(field.getModifiers())) {
+                            continue;
+                        }
+                        MultiObjField fieldAnnotation = fieldMulti.getAnnotation(MultiObjField.class);
+                        if (fieldAnnotation != null) {
+                            multiObjFields.add(MultiObjFieldVO.builder()
+                                    .description(fieldAnnotation.description())
+                                    .key(fieldMulti.getName())
+                                    .label(fieldAnnotation.value())
+                                    .build());
+                        } else {
+                            multiObjFields.add(MultiObjFieldVO.builder()
+                                    .description(fieldMulti.getName())
+                                    .key(fieldMulti.getName())
+                                    .label(fieldMulti.getName())
+                                    .build());
+                        }
+                    }
+                }
                 name = StringUtils.isBlank(name) ? field.getName() : name;
                 fieldNames.add(SchemeFieldVO.builder()
                         .name(name)
                         .description(description)
                         .type(type)
                         .key(field.getName())
+                        .multiObjFields(multiObjFields)
                         .build());
             }
             return fieldNames;

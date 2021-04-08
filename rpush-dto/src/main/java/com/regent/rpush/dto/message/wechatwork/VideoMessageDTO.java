@@ -3,23 +3,23 @@ package com.regent.rpush.dto.message.wechatwork;
 import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.List;
 
 /**
- * 企业微信Markdown
+ * 视频消息类型DTO
  *
  * @author 钟宝林
- * @since 2021/4/7/007 17:57
+ * @since 2021/4/8/008 21:49
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class MarkdownMessageDTO extends BaseMessage {
-    private static final long serialVersionUID = 8123659270032033936L;
+public class VideoMessageDTO extends BaseMessage {
+    private static final long serialVersionUID = -5830938694539681793L;
 
     /**
      * 接收人分组列表
@@ -39,8 +39,12 @@ public class MarkdownMessageDTO extends BaseMessage {
     @SchemeValue(description = "TagID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
     private String toTag;
 
-    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入Markdown内容...")
-    private String content;
+    @SchemeValue(description = "视频素材id")
+    private String mediaId;
 
+    @SchemeValue(description = "视频消息的标题，不超过128个字节，超过会自动截断")
+    private String title;
 
+    @SchemeValue(description = "视频消息的描述，不超过512个字节，超过会自动截断")
+    private String description;
 }

@@ -10,7 +10,13 @@ public enum MessageType {
 
     EMAIL("普通邮件 ", MessagePlatformEnum.EMAIL),
     RPUSH_SERVER("文本", MessagePlatformEnum.RPUSH_SERVER),
+
     WECHAT_WORK_TEXT("文本", MessagePlatformEnum.WECHAT_WORK),
+    WECHAT_WORK_IMAGE("图片", MessagePlatformEnum.WECHAT_WORK),
+    WECHAT_WORK_VIDEO("视频", MessagePlatformEnum.WECHAT_WORK),
+    WECHAT_WORK_FILE("文件", MessagePlatformEnum.WECHAT_WORK),
+    WECHAT_WORK_TEXTCARD("文本卡片", MessagePlatformEnum.WECHAT_WORK),
+    WECHAT_WORK_NEWS("图文消息", MessagePlatformEnum.WECHAT_WORK),
     WECHAT_WORK_MARKDOWN("Markdown", MessagePlatformEnum.WECHAT_WORK);
 
     /**

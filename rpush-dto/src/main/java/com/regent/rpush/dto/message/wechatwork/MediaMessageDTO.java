@@ -3,23 +3,23 @@ package com.regent.rpush.dto.message.wechatwork;
 import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.List;
 
 /**
- * 企业微信Markdown
+ * 图片、文件消息DTO
  *
  * @author 钟宝林
- * @since 2021/4/7/007 17:57
+ * @since 2021/4/8/008 21:38
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class MarkdownMessageDTO extends BaseMessage {
-    private static final long serialVersionUID = 8123659270032033936L;
+public class MediaMessageDTO extends BaseMessage {
+    private static final long serialVersionUID = 7412950115675650317L;
 
     /**
      * 接收人分组列表
@@ -39,8 +39,7 @@ public class MarkdownMessageDTO extends BaseMessage {
     @SchemeValue(description = "TagID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
     private String toTag;
 
-    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入Markdown内容...")
-    private String content;
-
+    @SchemeValue(description = "素材id")
+    private String mediaId;
 
 }

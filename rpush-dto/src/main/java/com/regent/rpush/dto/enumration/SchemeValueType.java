@@ -13,9 +13,21 @@ public enum SchemeValueType {
     DECIMAL,
     STRING,
     BOOLEAN,
+    TEXTAREA,
+
+    // ===========以下为特殊处理的类型============
+    /**
+     * 接收人分组
+     */
     RECEIVER_GROUP,
+    /**
+     * 接收人
+     */
     RECEIVER,
-    TEXTAREA
+    /**
+     * 多对象输入
+     */
+    MULTI_OBJ_INPUT
     ;
 
 }

@@ -68,7 +68,13 @@ public class TextMessageHandler extends MessageHandler<TextMessageDTO> {
             wxCpService.setWxCpConfigStorage(cpConfig);
 
             for (String receiverUser : receiverUsers) {
-                WxCpMessage message = WxCpMessage.TEXT().agentId(config.getAgentId()).toUser(receiverUser).content(content).build();
+                WxCpMessage message = WxCpMessage.TEXT()
+                        .agentId(config.getAgentId())
+                        .toUser(receiverUser)
+                        .content(content)
+                        .toParty(param.getToParty())
+                        .toTag(param.getToTag())
+                        .build();
                 RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()
                         .platform(messageType().getPlatform().name())
                         .messageType(messageType().name())
