@@ -55,16 +55,15 @@ public class VideoMessageHandler extends MessageHandler<VideoMessageDTO> {
                 return;
             }
 
-            WxCpDefaultConfigImpl cpConfig = SingletonUtil.get(config.getCorpId() + config.getSecret() + config.getAgentId(), () -> {
-                WxCpDefaultConfigImpl cpConfig1 = new WxCpDefaultConfigImpl();
-                cpConfig1.setCorpId(config.getCorpId());
-                cpConfig1.setCorpSecret(config.getSecret());
-                cpConfig1.setAgentId(config.getAgentId());
-                return cpConfig1;
+            WxCpServiceImpl wxCpService = SingletonUtil.get(config.getCorpId() + config.getSecret() + config.getAgentId(), () -> {
+                WxCpDefaultConfigImpl cpConfig = new WxCpDefaultConfigImpl();
+                cpConfig.setCorpId(config.getCorpId());
+                cpConfig.setCorpSecret(config.getSecret());
+                cpConfig.setAgentId(config.getAgentId());
+                WxCpServiceImpl wxCpService1 = new WxCpServiceImpl();
+                wxCpService1.setWxCpConfigStorage(cpConfig);
+                return wxCpService1;
             });
-
-            WxCpServiceImpl wxCpService = new WxCpServiceImpl();
-            wxCpService.setWxCpConfigStorage(cpConfig);
 
             for (String receiverUser : receiverUsers) {
                 RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()

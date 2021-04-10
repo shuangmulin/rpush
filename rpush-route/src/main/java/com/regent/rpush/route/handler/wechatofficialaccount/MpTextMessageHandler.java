@@ -1,17 +1,18 @@
-package com.regent.rpush.route.handler.wechatwork;
+package com.regent.rpush.route.handler.wechatofficialaccount;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.config.Config;
-import com.regent.rpush.dto.message.config.WechatWorkConfig;
-import com.regent.rpush.dto.message.wechatwork.MediaMessageDTO;
+import com.regent.rpush.dto.message.config.WechatOfficialAccountConfig;
+import com.regent.rpush.dto.message.wechatofficialaccount.TextMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
-import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
-import me.chanjar.weixin.cp.bean.message.WxCpMessage;
-import me.chanjar.weixin.cp.config.impl.WxCpDefaultConfigImpl;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,29 +23,29 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 企业微信-图片消息
+ * 微信公众号文本消息handler
  *
  * @author 钟宝林
- * @since 2021/4/8/008 21:36
+ * @since 2021/3/16/016 10:45
  **/
 @Component
-public class ImageMessageHandler extends MessageHandler<MediaMessageDTO> {
+public class MpTextMessageHandler extends MessageHandler<TextMessageDTO> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ImageMessageHandler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MpTextMessageHandler.class);
 
     @Autowired
     private IRpushTemplateReceiverGroupService rpushTemplateReceiverGroupService;
 
     @Override
     public MessageType messageType() {
-        return MessageType.WECHAT_WORK_IMAGE;
+        return MessageType.WECHAT_OFFICIAL_ACCOUNT_TEXT;
     }
 
     @Override
-    public void handle(MediaMessageDTO param) {
+    public void handle(TextMessageDTO param) {
         List<Config> configs = param.getConfigs();
         for (Config conf : configs) {
-            WechatWorkConfig config = (WechatWorkConfig) conf;
+            WechatOfficialAccountConfig config = (WechatOfficialAccountConfig) conf;
             Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
@@ -54,18 +55,19 @@ public class ImageMessageHandler extends MessageHandler<MediaMessageDTO> {
                 LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
                 return;
             }
-            
-            WxCpServiceImpl wxCpService = SingletonUtil.get(config.getCorpId() + config.getSecret() + config.getAgentId(), () -> {
-                WxCpDefaultConfigImpl cpConfig = new WxCpDefaultConfigImpl();
-                cpConfig.setCorpId(config.getCorpId());
-                cpConfig.setCorpSecret(config.getSecret());
-                cpConfig.setAgentId(config.getAgentId());
-                WxCpServiceImpl wxCpService1 = new WxCpServiceImpl();
-                wxCpService1.setWxCpConfigStorage(cpConfig);
-                return wxCpService1;
+
+            WxMpService wxService = SingletonUtil.get(config.getAppId() + config.getSecret(), () -> {
+                WxMpDefaultConfigImpl mpConfig = new WxMpDefaultConfigImpl();
+                mpConfig.setAppId(config.getAppId());
+                mpConfig.setSecret(config.getSecret());
+                WxMpService wxService1 = new WxMpServiceImpl();
+                wxService1.setWxMpConfigStorage(mpConfig);
+                return wxService1;
             });
 
             for (String receiverUser : receiverUsers) {
+                WxMpKefuMessage message = WxMpKefuMessage.TEXT().toUser(receiverUser).content(param.getContent()).build();
+
                 RpushMessageHisDetail hisDetail = RpushMessageHisDetail.builder()
                         .platform(messageType().getPlatform().name())
                         .messageType(messageType().name())
@@ -74,16 +76,8 @@ public class ImageMessageHandler extends MessageHandler<MediaMessageDTO> {
                         .requestNo(param.getRequestNo())
                         .configId(config.getConfigId())
                         .build();
-
-                WxCpMessage message = WxCpMessage.IMAGE()
-                        .agentId(config.getAgentId()) // 企业号应用ID
-                        .toUser(receiverUser)
-                        .toParty(param.getToParty())
-                        .toTag(param.getToTag())
-                        .mediaId(param.getMediaId())
-                        .build();
                 try {
-                    wxCpService.getMessageService().send(message);
+                    wxService.getKefuService().sendKefuMessage(message);
                     hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_SUCCESS);
                 } catch (Exception e) {
                     String eMessage = ExceptionUtil.getMessage(e);
