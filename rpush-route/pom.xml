@@ -93,6 +93,14 @@
             <artifactId>weixin-java-mp</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <!-- 钉钉 -->
+        <dependency>
+            <groupId>com.taobao.top</groupId>
+            <artifactId>top-api-sdk-dev</artifactId>
+            <version>ding-open-mc-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/lib/taobao-sdk-java-auto_1479188381469-20210409.jar</systemPath>
+        </dependency>
 
         <dependency>
             <groupId>com.regent</groupId>
@@ -129,6 +137,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -27,7 +27,11 @@ public enum SchemeValueType {
     /**
      * 多对象输入
      */
-    MULTI_OBJ_INPUT
+    MULTI_OBJ_INPUT,
+    /**
+     * 多选
+     */
+    SELECT
     ;
 
 }

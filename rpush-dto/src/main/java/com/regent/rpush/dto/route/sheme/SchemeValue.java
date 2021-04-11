@@ -30,4 +30,9 @@ public @interface SchemeValue {
      */
     SchemeValueType type() default SchemeValueType.AUTO;
 
+    /**
+     * 如果是选项型，这里可以直接指定有哪些选项
+     */
+    SchemeValueOption[] options() default {};
+
 }

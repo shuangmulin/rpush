@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 public enum MessagePlatformEnum {
 
     EMAIL(EmailConfig.class, "邮箱", "", "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,})$", true),
-    WECHAT_WORK(WechatWorkConfig.class, "企业微信", "", "", true),
+    WECHAT_WORK_AGENT(WechatWorkAgentConfig.class, "企业微信-应用消息", "", "", true),
+    WECHAT_WORK_ROBOT(WechatWorkRobotConfig.class, "企业微信-群机器人", "", "", true),
     WECHAT_OFFICIAL_ACCOUNT(WechatOfficialAccountConfig.class, "微信公众号", "", "", true),
-    //    DING_TALK("钉钉", "", true),
-    RPUSH_SERVER(EmptyConfig.class, "rpush服务", "", "", false)
-    ;
+    DING_TALK_CORP(DingTalkCorpConfig.class, "钉钉-工作通知", "", "", true),
+    RPUSH_SERVER(EmptyConfig.class, "rpush服务", "", "", false);
 
     private final String name;
     private final String description;

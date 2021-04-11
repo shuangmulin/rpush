@@ -1,0 +1,26 @@
+package com.regent.rpush.dto.message.dingtalk.corp;
+
+import com.regent.rpush.dto.route.sheme.MultiObjField;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 按钮
+ *
+ * @author 钟宝林
+ * @since 2021/4/11/011 14:59
+ **/
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class BtnJsonDTO {
+
+    @MultiObjField("按钮标题")
+    private String title;
+    @MultiObjField("跳转链接")
+    private String actionUrl;
+
+}

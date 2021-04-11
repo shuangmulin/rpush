@@ -3,6 +3,7 @@ package com.regent.rpush.route.utils;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.regent.rpush.common.SingletonUtil;
+import com.regent.rpush.dto.common.IdStrAndName;
 import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.enumration.MessageType;
@@ -10,10 +11,7 @@ import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigValue;
-import com.regent.rpush.dto.route.sheme.MultiObjField;
-import com.regent.rpush.dto.route.sheme.MultiObjFieldVO;
-import com.regent.rpush.dto.route.sheme.SchemeFieldVO;
-import com.regent.rpush.dto.route.sheme.SchemeValue;
+import com.regent.rpush.dto.route.sheme.*;
 import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.model.RpushTemplate;
 import com.regent.rpush.route.service.IRpushPlatformConfigService;
@@ -222,6 +220,7 @@ public final class MessageHandlerUtils {
                 SchemeValueType type = null;
                 String name = "";
                 String description = "";
+                List<IdStrAndName> idStrAndNames = new ArrayList<>();
                 if (annotation != null) {
                     type = annotation.type();
                     name = annotation.value();
@@ -230,6 +229,11 @@ public final class MessageHandlerUtils {
                         case AUTO:
                             type = JAVA_TYPE_SCHEME_MAP.get(field.getType());
                             break;
+                    }
+
+                    SchemeValueOption[] options = annotation.options();
+                    for (SchemeValueOption option : options) {
+                        idStrAndNames.add(new IdStrAndName(option.key(), option.label()));
                     }
                 }
                 if (annotation == null) {
@@ -268,6 +272,7 @@ public final class MessageHandlerUtils {
                         .description(description)
                         .type(type)
                         .key(field.getName())
+                        .options(idStrAndNames)
                         .multiObjFields(multiObjFields)
                         .build());
             }
