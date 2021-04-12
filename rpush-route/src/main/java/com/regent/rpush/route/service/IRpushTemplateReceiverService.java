@@ -1,7 +1,11 @@
 package com.regent.rpush.route.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.route.dto.ReceiverBatchInsertDTO;
 import com.regent.rpush.route.model.RpushTemplateReceiver;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +21,9 @@ public interface IRpushTemplateReceiverService extends IService<RpushTemplateRec
      * 新增或更新接收人
      */
     void updateReceiver(RpushTemplateReceiver receiver);
+
+    /**
+     * 批量插入
+     */
+    void batchInsert(MessagePlatformEnum platform, List<ReceiverBatchInsertDTO> receivers);
 }

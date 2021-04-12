@@ -2,6 +2,8 @@ package com.regent.rpush.route.mapper;
 
 import com.regent.rpush.route.model.RpushTemplateReceiver;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * <p>
@@ -13,4 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RpushTemplateReceiverMapper extends BaseMapper<RpushTemplateReceiver> {
 
+    @Update("${sqlStr}")
+    void execute(@Param("sqlStr") String sqlStr);
 }

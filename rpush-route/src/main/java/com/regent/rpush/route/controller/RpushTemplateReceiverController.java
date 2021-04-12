@@ -1,6 +1,9 @@
 package com.regent.rpush.route.controller;
 
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.regent.rpush.common.PageUtil;
@@ -8,6 +11,7 @@ import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
 import com.regent.rpush.dto.route.template.receiver.PageReceiverParam;
 import com.regent.rpush.dto.table.Pagination;
+import com.regent.rpush.route.dto.ReceiverBatchInsertDTO;
 import com.regent.rpush.route.model.RpushTemplateReceiver;
 import com.regent.rpush.route.model.RpushTemplateReceiverGroup;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
@@ -17,13 +21,12 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,5 +116,56 @@ public class RpushTemplateReceiverController {
         }
         rpushTemplateReceiverService.removeById(id);
         return ApiResult.success();
+    }
+
+    @ApiOperation("Excel导入")
+    @PostMapping("/import")
+    @ResponseBody
+    public ApiResult<String> upload(@RequestParam("platform") MessagePlatformEnum platform, @RequestParam("file") MultipartFile file) throws IOException {
+        if (platform == null) {
+            return ApiResult.of("未知平台");
+        }
+        if (file.isEmpty()) {
+            return ApiResult.of("上传文件不能为空");
+        }
+        EasyExcel.read(file.getInputStream(), ReceiverBatchInsertDTO.class, new ImportReceiverListener(platform, rpushTemplateReceiverService)).headRowNumber(3).sheet().doRead(); // 导入
+        return ApiResult.success();
+    }
+
+    private static class ImportReceiverListener extends AnalysisEventListener<ReceiverBatchInsertDTO> {
+        /**
+         * 每隔3000条存储数据库
+         */
+        private static final int BATCH_COUNT = 3000;
+        private final List<ReceiverBatchInsertDTO> list = new ArrayList<>();
+
+        private final IRpushTemplateReceiverService rpushTemplateReceiverService;
+        private final MessagePlatformEnum platform;
+
+        ImportReceiverListener (MessagePlatformEnum platform, IRpushTemplateReceiverService rpushTemplateReceiverService) {
+            this.platform = platform;
+            this.rpushTemplateReceiverService = rpushTemplateReceiverService;
+        }
+
+        @Override
+        public void invoke(ReceiverBatchInsertDTO data, AnalysisContext context) {
+            list.add(data);
+            if (list.size() >= BATCH_COUNT) {
+                saveData();
+                list.clear();
+            }
+        }
+
+        @Override
+        public void doAfterAllAnalysed(AnalysisContext context) {
+            saveData();
+        }
+
+        /**
+         * 加上存储数据库
+         */
+        private void saveData() {
+            rpushTemplateReceiverService.batchInsert(platform, list);
+        }
     }
 }
