@@ -18,6 +18,7 @@ import com.regent.rpush.route.utils.Qw;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,6 +36,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/rpush-platform-config")
+@PreAuthorize("hasAnyAuthority('admin')")
 public class RpushPlatformConfigController {
 
     @Autowired
@@ -77,7 +79,7 @@ public class RpushPlatformConfigController {
     @ApiOperation("获取某个配置的数据")
     @GetMapping("/{platform}/config/{configId}")
     public ApiResult<Map<String, Object>> getConfig(@PathVariable("platform") MessagePlatformEnum platform,
-                                       @PathVariable("configId") Long configId) {
+                                                    @PathVariable("configId") Long configId) {
         if (configId == null || platform == null) {
             return ApiResult.of(null);
         }

@@ -15,6 +15,7 @@ import com.regent.rpush.route.utils.MessageHandlerUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/rpush-message-scheme")
+@PreAuthorize("hasAnyAuthority('admin')")
 public class RpushMessageSchemeController {
 
     @Autowired

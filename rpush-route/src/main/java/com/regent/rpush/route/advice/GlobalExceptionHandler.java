@@ -6,6 +6,7 @@ import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -40,6 +41,13 @@ public class GlobalExceptionHandler {
     public ApiResult<String> illegalArgumentExceptionHandler(IllegalArgumentException ex) {
         LOGGER.warn(ex.getMessage(), ex);
         return ApiResult.of(StatusCode.VALIDATE_FAIL, ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseBody
+    public ApiResult<String> authenticationExceptionHandler(IllegalArgumentException ex) {
+        LOGGER.info(ex.getMessage(), ex);
+        return ApiResult.unauthorized();
     }
 
     @ExceptionHandler(Exception.class)

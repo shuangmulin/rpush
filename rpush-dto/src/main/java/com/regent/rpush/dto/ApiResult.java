@@ -23,6 +23,10 @@ public class ApiResult<T> implements Serializable {
         return of(StatusCode.SUCCESS.getCode(), StatusCode.SUCCESS.getMsg(), null);
     }
 
+    public static <T> ApiResult<T> unauthorized() {
+        return of(StatusCode.SUCCESS.getCode(), StatusCode.UNAUTHORIZED.getMsg(), null);
+    }
+
     public static <T> ApiResult<T> of(T data) {
         return of(0, StatusCode.SUCCESS.getMsg(), data);
     }
