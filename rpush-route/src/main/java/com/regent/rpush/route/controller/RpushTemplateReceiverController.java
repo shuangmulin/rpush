@@ -19,13 +19,22 @@ import com.regent.rpush.route.service.IRpushTemplateReceiverService;
 import com.regent.rpush.route.utils.PaginationUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,6 +51,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/rpush-template-receiver")
 @PreAuthorize("hasAnyAuthority('admin')")
 public class RpushTemplateReceiverController {
+    private final static Logger LOGGER = LoggerFactory.getLogger(RpushTemplateReceiverController.class);
+
     @Autowired
     private IRpushTemplateReceiverService rpushTemplateReceiverService;
     @Autowired
@@ -120,9 +131,30 @@ public class RpushTemplateReceiverController {
         return ApiResult.success();
     }
 
+
+    @GetMapping("download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,
+                                                 HttpServletRequest request) {
+        Resource resource = new ClassPathResource("/file" + File.separator + fileName);
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException e) {
+            LOGGER.error("无法获取文件类型", e);
+        }
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
     @ApiOperation("Excel导入")
     @PostMapping("/import")
     @ResponseBody
+    @CrossOrigin
     public ApiResult<String> upload(@RequestParam("platform") MessagePlatformEnum platform, @RequestParam("file") MultipartFile file) throws IOException {
         if (platform == null) {
             return ApiResult.of("未知平台");
