@@ -35,7 +35,7 @@ public class ResourceServerConfigurer extends ResourceServerConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest()
-                .authenticated();
+                .permitAll();
     }
 
     @Bean
