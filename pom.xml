@@ -13,6 +13,8 @@
         <module>rpush-api</module>
         <module>rpush-client</module>
         <module>rpush-monitor</module>
+        <module>rpush-scheduler</module>
+        <module>rpush-zuul</module>
     </modules>
 
     <groupId>com.regent</groupId>

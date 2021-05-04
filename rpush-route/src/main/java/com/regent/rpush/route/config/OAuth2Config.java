@@ -40,7 +40,15 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .authorities("admin")
                 .authorizedGrantTypes("refresh_token", "client_credentials")
                 .accessTokenValiditySeconds(3600)
-                .scopes("all");
+                .scopes("all")
+                .and()
+                .withClient("scheduler")
+                .secret(passwordEncoder.encode("scheduler123")) // 以用户模式硬编码，如果需求有更复杂的权限可以自行扩展
+                .authorities("scheduler")
+                .authorizedGrantTypes("refresh_token", "client_credentials")
+                .accessTokenValiditySeconds(3600)
+                .scopes("all")
+        ;
     }
 
     @Override

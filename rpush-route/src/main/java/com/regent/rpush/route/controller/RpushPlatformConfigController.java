@@ -5,6 +5,7 @@ import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.common.IdStrAndName;
 import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.route.PlatformDTO;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
@@ -64,6 +65,23 @@ public class RpushPlatformConfigController {
                     .build());
         }
         return ApiResult.of(platforms);
+    }
+
+    @ApiOperation(value = "获取所有消息类型")
+    @GetMapping("/message-type")
+    public ApiResult<List<IdStrAndName>> messageTypes(String keyword) {
+        List<IdStrAndName> messageTypes = new ArrayList<>();
+        for (MessageType messageType : MessageType.values()) {
+            String name = messageType.getName();
+            if (StringUtils.isNotBlank(keyword) && !name.contains(keyword)) {
+                continue;
+            }
+            messageTypes.add(IdStrAndName.builder()
+                    .id(messageType.name())
+                    .name(messageType.getPlatform().getName() + "-" + messageType.getName())
+                    .build());
+        }
+        return ApiResult.of(messageTypes);
     }
 
     @ApiOperation("平台配置的列表查询")

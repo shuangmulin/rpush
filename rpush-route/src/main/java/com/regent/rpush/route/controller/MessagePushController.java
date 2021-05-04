@@ -6,7 +6,9 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.regent.rpush.api.route.MessageRoutePushService;
 import com.regent.rpush.dto.ApiResult;
+import com.regent.rpush.dto.StatusCode;
 import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.base.MessagePushDTO;
 import com.regent.rpush.dto.message.base.TypeMessageDTO;
@@ -30,8 +32,8 @@ import java.util.concurrent.Executors;
 @SuppressWarnings({"rawtypes", "unchecked", "MismatchedQueryAndUpdateOfCollection"})
 @RestController
 @RequestMapping("/message/push")
-@PreAuthorize("hasAnyAuthority('admin')")
-public class MessagePushController {
+@PreAuthorize("hasAnyAuthority('admin', 'scheduler')")
+public class MessagePushController implements MessageRoutePushService {
 
     @Value("${mybatis-plus.global-config.workerId}")
     private int workerId;
@@ -57,6 +59,9 @@ public class MessagePushController {
         }
         messagePushDTO.setRequestNo(requestNo);
         JSONObject messageParam = json.getJSONObject("messageParam");
+        if (messageParam == null) {
+            return ApiResult.of(StatusCode.VALIDATE_FAIL, "消息推送参数错误");
+        }
         MessageType[] values = MessageType.values();
         for (MessageType value : values) {
             JSONObject jsonObject = messageParam.getJSONObject(value.name());
@@ -69,6 +74,9 @@ public class MessagePushController {
                     .param(jsonObject.getJSONObject("param"))
                     .build();
             messagePushDTO.getMessageParam().put(value, typeMessageDTO);
+        }
+        if (messagePushDTO.getMessageParam() == null || messagePushDTO.getMessageParam().size() <= 0) {
+            return ApiResult.of(StatusCode.VALIDATE_FAIL, "消息推送参数错误");
         }
 
         rpushMessageHisService.log(RpushMessageHis.builder().requestNo(requestNo).param(param).build()); // 记录消息历史记录
