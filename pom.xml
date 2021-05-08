@@ -34,12 +34,12 @@
             <url>https://maven.aliyun.com/repository/central</url>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </pluginRepository>
-    </pluginRepositories>
+<!--    <pluginRepositories>-->
+<!--        <pluginRepository>-->
+<!--            <id>aliyun</id>-->
+<!--            <url>https://maven.aliyun.com/repository/central</url>-->
+<!--        </pluginRepository>-->
+<!--    </pluginRepositories>-->
 
     <dependencyManagement>
         <dependencies>

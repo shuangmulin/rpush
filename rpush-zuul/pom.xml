@@ -32,7 +32,6 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
       <!-- spring-boot-maven-plugin (提供了直接运行项目的插件：如果是通过parent方式继承spring-boot-starter-parent则不用此插件) -->
@@ -48,6 +47,25 @@
         </executions>
         <configuration>
           <includeSystemScope>true</includeSystemScope>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>1.7.0</version>
+        <configuration>
+          <!--配置基本镜像-->
+          <from>
+            <image>openjdk:8-jdk-alpine</image>
+          </from>
+          <!--配置最终推送的地址，仓库名，镜像名-->
+          <to>
+            <image>registry.hub.docker.com/shuangmulin/rpush-zuul</image>
+            <tags>
+              <tag>1.0</tag>
+            </tags>
+          </to>
         </configuration>
       </plugin>
     </plugins>
