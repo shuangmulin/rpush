@@ -121,16 +121,6 @@
                         </tags>
                     </to>
                 </configuration>
-
-                <!--绑定到maven lifecicle-->
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
