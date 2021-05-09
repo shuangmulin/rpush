@@ -89,3 +89,4 @@ services:
     ports:
       - 8123:8123
 ```
+> 运行 docker-compose up -d之后，直接访问8124端口即可
