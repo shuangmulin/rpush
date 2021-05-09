@@ -48,3 +48,44 @@
 
 #### postman多平台发送示例
 <img alt="treeexcel" src="https://github.com/shuangmulin/static/blob/master/rpush/postman%E5%A4%9A%E5%B9%B3%E5%8F%B0%E5%8F%91%E9%80%81.gif?raw=true">
+
+## docker-compose
+```yml
+version: '2'
+services:
+  rpush-eureka:
+    image: shuangmulin/rpush-eureka
+    container_name: rpush-eureka
+    ports:
+      - 8761:8761
+  rpush-zuul:
+    image: shuangmulin/rpush-zuul
+    environment:
+      - eureka-service-ip=173.16.0.11 # 指定eureka ip
+      - eureka-service-port=8761 # 指定eureka port
+    container_name: rpush-zuul
+    ports:
+      - 8124:8124
+  rpush-route:
+    image: shuangmulin/rpush-route
+    environment:
+      - eureka-service-ip=173.16.0.11 # 指定eureka ip
+      - eureka-service-port=8761 # 指定eureka port
+      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8 # 数据库连接url
+      - jdbc.username=root # 数据库账号
+      - jdbc.password=123456 # 数据库密码
+    container_name: rpush-route
+    ports:
+      - 8121:8121
+  rpush-scheduler:
+    image: shuangmulin/rpush-scheduler
+    environment:
+      - eureka-service-ip=173.16.0.11 # 指定eureka ip
+      - eureka-service-port=8761 # 指定eureka port
+      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8 # 数据库连接url
+      - jdbc.username=root # 数据库账号
+      - jdbc.password=123456 # 数据库密码
+    container_name: rpush-scheduler
+    ports:
+      - 8123:8123
+```
