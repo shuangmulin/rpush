@@ -11,17 +11,6 @@
     UNIQUE KEY `UK_group_id_receiver_id` (`request_no`,`group_name`,`receiver_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接收人导入表';
 
- CREATE TABLE IF NOT EXISTS `oauth_access_token`
-(
-    `token_id`          varchar(255) DEFAULT NULL,
-    `token`             longblob,
-    `authentication_id` varchar(255) DEFAULT NULL,
-    `user_name`         varchar(255) DEFAULT NULL,
-    `client_id`         varchar(255) DEFAULT NULL,
-    `authentication`    longblob,
-    `refresh_token`     varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
  CREATE TABLE IF NOT EXISTS `oauth_client_details`
 (
     `client_id`               varchar(48) NOT NULL,
@@ -37,13 +26,6 @@
     `autoapprove`             varchar(256)  DEFAULT NULL,
     PRIMARY KEY (`client_id`),
     UNIQUE KEY `UK_clientId` (`client_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
- CREATE TABLE IF NOT EXISTS `oauth_refresh_token`
-(
-    `token_id`       varchar(255) DEFAULT NULL,
-    `token`          longblob,
-    `authentication` longblob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
  CREATE TABLE IF NOT EXISTS `rpush_message_his`
