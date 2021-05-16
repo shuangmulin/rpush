@@ -21,4 +21,6 @@ public interface IRpushMessageSchemeService extends IService<RpushMessageScheme>
     RpushMessageScheme saveOrUpdate(SchemeDTO scheme);
 
     List<IdAndName> listScheme(MessageType messageType);
+
+    void delete(String schemeId);
 }

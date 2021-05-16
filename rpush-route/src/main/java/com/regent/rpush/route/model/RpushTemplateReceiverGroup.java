@@ -50,5 +50,8 @@ public class RpushTemplateReceiverGroup extends Model {
     @ApiModelProperty(value = "分组名称")
     private String groupName;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

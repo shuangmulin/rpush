@@ -52,5 +52,7 @@ public class RpushMessageScheme extends Model {
     @ApiModelProperty(value = "方案名称")
     private String name;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
 
 }

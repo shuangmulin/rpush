@@ -16,6 +16,7 @@ import com.regent.rpush.route.handler.MessageHandler;
 import com.regent.rpush.route.model.RpushMessageHis;
 import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.utils.MessageHandlerHolder;
+import com.regent.rpush.route.config.SessionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +33,7 @@ import java.util.concurrent.Executors;
 @SuppressWarnings({"rawtypes", "unchecked", "MismatchedQueryAndUpdateOfCollection"})
 @RestController
 @RequestMapping("/message/push")
-@PreAuthorize("hasAnyAuthority('admin', 'scheduler')")
+@PreAuthorize("hasAnyAuthority('admin', 'super-admin')")
 public class MessagePushController implements MessageRoutePushService {
 
     @Value("${mybatis-plus.global-config.workerId}")
@@ -62,6 +63,15 @@ public class MessagePushController implements MessageRoutePushService {
         if (messageParam == null) {
             return ApiResult.of(StatusCode.VALIDATE_FAIL, "消息推送参数错误");
         }
+        String clientId;
+        if (SessionUtils.isSupperAdmin()) {
+            // 只有超级管理员可以指定client推送消息
+            clientId = json.getStr("clientId");
+        } else {
+            clientId = SessionUtils.getClientId();
+        }
+        messagePushDTO.setClientId(clientId);
+
         MessageType[] values = MessageType.values();
         for (MessageType value : values) {
             JSONObject jsonObject = messageParam.getJSONObject(value.name());
@@ -79,7 +89,7 @@ public class MessagePushController implements MessageRoutePushService {
             return ApiResult.of(StatusCode.VALIDATE_FAIL, "消息推送参数错误");
         }
 
-        rpushMessageHisService.log(RpushMessageHis.builder().requestNo(requestNo).param(param).build()); // 记录消息历史记录
+        rpushMessageHisService.log(clientId, RpushMessageHis.builder().requestNo(requestNo).param(param).build()); // 记录消息历史记录
 
         // 往队列里扔
         RingBuffer<MessagePushDTO> ringBuffer = getDisruptor().getRingBuffer();

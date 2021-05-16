@@ -16,7 +16,6 @@ import com.regent.rpush.route.utils.PaginationUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,9 +34,9 @@ import java.util.stream.Collectors;
  * @author 钟宝林
  * @since 2021-03-04
  */
-@RestController
-@RequestMapping("/rpush-template")
-@PreAuthorize("hasAnyAuthority('admin')")
+//@RestController
+//@RequestMapping("/rpush-template")
+//@PreAuthorize("hasAnyAuthority('admin')")
 public class RpushTemplateController {
 
     @Autowired

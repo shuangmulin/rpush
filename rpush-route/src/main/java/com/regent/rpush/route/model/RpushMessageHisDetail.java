@@ -105,5 +105,8 @@ public class RpushMessageHisDetail extends Model {
     @TableField(exist = false)
     private String paramJson;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

@@ -9,6 +9,7 @@ import com.regent.rpush.route.mapper.RpushMessageSchemeMapper;
 import com.regent.rpush.route.model.RpushMessageScheme;
 import com.regent.rpush.route.service.IRpushMessageSchemeService;
 import com.regent.rpush.route.utils.Qw;
+import com.regent.rpush.route.config.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +33,19 @@ public class RpushMessageSchemeServiceImpl extends ServiceImpl<RpushMessageSchem
     @Transactional
     @Override
     public RpushMessageScheme saveOrUpdate(SchemeDTO scheme) {
+        String clientId = SessionUtils.getClientId();
+
         RpushMessageScheme messageScheme = new RpushMessageScheme();
         messageScheme.setId(scheme.getId());
         messageScheme.setMessageType(scheme.getMessageType().name());
         messageScheme.setName(scheme.getName());
         messageScheme.setPlatform(scheme.getMessageType().getPlatform().name());
         messageScheme.setParam(scheme.getParam());
+        messageScheme.setClientId(clientId);
 
         // 名称查重
         QueryWrapper<RpushMessageScheme> wrapper = Qw.newInstance(RpushMessageScheme.class)
+                .eq("clientId", clientId)
                 .eq("name", scheme.getName())
                 .eq("message_type", scheme.getMessageType());
         if (scheme.getId() != null) {
@@ -61,6 +66,12 @@ public class RpushMessageSchemeServiceImpl extends ServiceImpl<RpushMessageSchem
 
     @Override
     public List<IdAndName> listScheme(MessageType messageType) {
-        return rpushMessageSchemeMapper.listScheme(messageType);
+        String clientId = SessionUtils.getClientId();
+        return rpushMessageSchemeMapper.listScheme(clientId, messageType);
+    }
+
+    @Override
+    public void delete(String schemeId) {
+        rpushMessageSchemeMapper.delete(Qw.newInstance(RpushMessageScheme.class).eq("id", schemeId).eq("client_id", SessionUtils.getClientId()));
     }
 }

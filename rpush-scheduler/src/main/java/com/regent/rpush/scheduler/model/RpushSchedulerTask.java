@@ -71,5 +71,8 @@ public class RpushSchedulerTask extends Model {
     @ApiModelProperty(value = "预设结束时间")
     private Date endAt;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

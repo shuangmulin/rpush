@@ -45,7 +45,7 @@ public class AgentVideoMessageHandler extends MessageHandler<VideoMessageDTO> {
         List<Config> configs = param.getConfigs();
         for (Config conf : configs) {
             WechatWorkAgentConfig config = (WechatWorkAgentConfig) conf;
-            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
+            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
@@ -93,7 +93,7 @@ public class AgentVideoMessageHandler extends MessageHandler<VideoMessageDTO> {
                     hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                     hisDetail.setErrorMsg(eMessage);
                 }
-                rpushMessageHisService.logDetail(hisDetail);
+                rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
             }
         }
     }

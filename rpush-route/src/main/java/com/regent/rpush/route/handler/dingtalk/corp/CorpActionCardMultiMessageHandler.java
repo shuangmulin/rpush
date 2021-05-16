@@ -48,7 +48,7 @@ public class CorpActionCardMultiMessageHandler extends MessageHandler<ActionCard
         List<Config> configs = param.getConfigs();
         for (Config conf : configs) {
             DingTalkCorpConfig config = (DingTalkCorpConfig) conf;
-            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
+            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
@@ -104,7 +104,7 @@ public class CorpActionCardMultiMessageHandler extends MessageHandler<ActionCard
                 hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                 hisDetail.setErrorMsg(eMessage);
             }
-            rpushMessageHisService.logDetail(hisDetail);
+            rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
         }
     }
 }

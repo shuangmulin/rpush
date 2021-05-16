@@ -1,9 +1,12 @@
 package com.regent.rpush.scheduler.service.impl;
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.regent.rpush.scheduler.mapper.RpushSchedulerTaskMapper;
 import com.regent.rpush.scheduler.model.RpushSchedulerTask;
 import com.regent.rpush.scheduler.service.IRpushSchedulerTaskService;
+import com.regent.rpush.scheduler.utils.Qw;
+import com.regent.rpush.scheduler.auth.SessionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -55,6 +58,7 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
         if (StringUtils.isBlank(task.getBeanClass())) {
             task.setBeanClass("com.regent.rpush.scheduler.job.MessagePushJob");
         }
+        task.setClientId(SessionUtils.getClientId());
         save(task); // 入库
 
         startTask(task); // 启动任务
@@ -88,9 +92,12 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
             Class<? extends Job> jobClass = (Class<? extends Job>) (Class.forName(task.getBeanClass()).newInstance()
                     .getClass());
             JobBuilder jobBuilder = JobBuilder.newJob(jobClass).withIdentity(task.getJobName(), task.getJobGroup());// 任务名称和组构成任务key
+            jobBuilder.usingJobData("clientId", task.getClientId());
             String param = task.getParam();
             if (StringUtils.isNotBlank(param)) {
-                jobBuilder.usingJobData("param", param);
+                JSONObject paramJson = new JSONObject(param);
+                paramJson.put("clientId", task.getClientId());
+                jobBuilder.usingJobData("param", paramJson.toString());
             }
             JobDetail jobDetail = jobBuilder.build();
             // 定义调度触发规则
@@ -118,7 +125,7 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
     @Transactional
     @Override
     public void disableTask(Long taskId) throws SchedulerException {
-        RpushSchedulerTask task = getById(taskId);
+        RpushSchedulerTask task = getOne(Qw.newInstance(RpushSchedulerTask.class).eq("id", taskId).eq("client_id", SessionUtils.getClientId()));
         if (task == null) {
             return;
         }
@@ -133,7 +140,7 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
     @Transactional
     @Override
     public void disableOrEnable(Long taskId, boolean disableOrEnable) throws SchedulerException {
-        RpushSchedulerTask task = getById(taskId);
+        RpushSchedulerTask task = getOne(Qw.newInstance(RpushSchedulerTask.class).eq("id", taskId).eq("client_id", SessionUtils.getClientId()));
         if (disableOrEnable) {
             // 停用
             disableTask(taskId);
@@ -151,7 +158,10 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
     @Transactional
     @Override
     public void updateTask(RpushSchedulerTask task) throws SchedulerException {
-        RpushSchedulerTask oldTask = getById(task.getId());
+        RpushSchedulerTask oldTask = getOne(Qw.newInstance(RpushSchedulerTask.class).eq("id", task.getId()).eq("client_id", SessionUtils.getClientId()));
+        if (oldTask == null) {
+            return;
+        }
         String oldJobName = oldTask.getJobName();
         String oldJobGroup = oldTask.getJobGroup();
 
@@ -160,5 +170,10 @@ public class RpushSchedulerTaskServiceImpl extends ServiceImpl<RpushSchedulerTas
 
         removeById(task.getId()); // 删掉原来的
         addJob(task); // 重建
+    }
+
+    @Override
+    public void delete(Long taskId) {
+        remove(Qw.newInstance(RpushSchedulerTask.class).eq("id", taskId).eq("client_id", SessionUtils.getClientId()));
     }
 }

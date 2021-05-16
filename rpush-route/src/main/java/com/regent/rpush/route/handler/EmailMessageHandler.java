@@ -54,7 +54,7 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
                 receiverEmails.addAll(param.getReceiverIds());
             }
             if (CollUtil.isNotEmpty(param.getReceiverGroupIds())) {
-                receiverEmails.addAll(rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()));
+                receiverEmails.addAll(rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()));
             }
             if (receiverEmails.size() <= 0) {
                 LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收邮箱", param.getRequestNo(), param.getConfigs());
@@ -85,7 +85,7 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
                     hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                     hisDetail.setErrorMsg(eMessage);
                 }
-                rpushMessageHisService.logDetail(hisDetail);
+                rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
             }
         }
     }

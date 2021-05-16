@@ -25,7 +25,7 @@ public interface IRpushPlatformConfigService extends IService<RpushPlatformConfi
      * @param configIds 配置id列表，传空会返回空map
      * @return 键为配置id，值为：具体的配置键值
      */
-    Map<Long, Map<String, Object>> queryConfig(List<Long> configIds);
+    Map<Long, Map<String, Object>> queryConfig(String clientId, List<Long> configIds);
 
     /**
      * 查询配置分页数据

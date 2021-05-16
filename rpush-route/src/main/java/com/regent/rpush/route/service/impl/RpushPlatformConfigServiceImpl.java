@@ -22,6 +22,7 @@ import com.regent.rpush.route.service.IRpushPlatformConfigValueService;
 import com.regent.rpush.route.service.IRpushTemplateService;
 import com.regent.rpush.route.utils.MessageHandlerUtils;
 import com.regent.rpush.route.utils.Qw;
+import com.regent.rpush.route.config.SessionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,12 +48,13 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
     private IRpushTemplateService rpushTemplateService;
 
     @Override
-    public Map<Long, Map<String, Object>> queryConfig(List<Long> configIds) {
+    public Map<Long, Map<String, Object>> queryConfig(String clientId, List<Long> configIds) {
         if (configIds == null || configIds.size() <= 0) {
             return new HashMap<>();
         }
         Collection<RpushPlatformConfig> configs = listByIds(configIds);
         QueryWrapper<RpushPlatformConfigValue> configValueQueryWrapper = new QueryWrapper<>();
+        configValueQueryWrapper.in("client_id", clientId);
         configValueQueryWrapper.in("config_id", configIds);
         List<RpushPlatformConfigValue> configValues = rpushPlatformConfigValueService.list(configValueQueryWrapper);
         Map<Long, List<RpushPlatformConfigValue>> configValueMap = new HashMap<>();
@@ -88,6 +90,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         pageSize = PageUtil.getDefaultPageSize(pageSize);
         Page<RpushPlatformConfig> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushPlatformConfig> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", SessionUtils.getClientId());
         wrapper.eq("platform", platform.name());
         wrapper.like(StringUtils.isNotBlank(configName), "config_name", configName);
         wrapper.eq(configId != null, "id", configId);
@@ -96,7 +99,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         List<Long> configIds = configs.stream().map(RpushPlatformConfig::getId).collect(Collectors.toList());
 
         // 查具体的配置值
-        Map<Long, Map<String, Object>> queryConfig = queryConfig(configIds);
+        Map<Long, Map<String, Object>> queryConfig = queryConfig(SessionUtils.getClientId(), configIds);
         Collection<Map<String, Object>> dataList = queryConfig.values();
         for (Map.Entry<Long, Map<String, Object>> entry : queryConfig.entrySet()) {
             entry.getValue().put("configId", entry.getKey());
@@ -168,6 +171,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         configId = configId != null && configId <= 0L ? null : configId;
         MessagePlatformEnum platform = updateConfigDTO.getPlatform();
         String configName = updateConfigDTO.getConfigName();
+        String clientId = SessionUtils.getClientId();
 
         boolean isUpdate = configId != null;
         boolean isAdd = configId == null; // 有传配置id认为是更新，没有传id认为是新增
@@ -180,6 +184,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         if (StringUtils.isNotBlank(configName)) {
             // 名称判重
             QueryWrapper<RpushPlatformConfig> configNameQw = Qw.newInstance(RpushPlatformConfig.class)
+                    .eq("client_id", clientId)
                     .eq("platform", platform)
                     .eq("config_name", configName);
             if (configId != null) {
@@ -197,6 +202,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
             updateById(rpushPlatformConfig);
         } else {
             rpushPlatformConfig = new RpushPlatformConfig();
+            rpushPlatformConfig.setClientId(clientId);
             rpushPlatformConfig.setConfigName(configName);
             rpushPlatformConfig.setPlatform(platform.name());
             save(rpushPlatformConfig);
@@ -225,6 +231,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
             configValue.setConfigId(configId);
             configValue.setValue(value);
             configValue.setKey(key);
+            configValue.setClientId(clientId);
             configValues.add(configValue);
         }
         rpushPlatformConfigValueService.saveBatch(configValues);
@@ -236,7 +243,8 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
             return;
         }
 
-        RpushPlatformConfig rpushPlatformConfig = getById(configId);
+        String clientId = SessionUtils.getClientId();
+        RpushPlatformConfig rpushPlatformConfig = getOne(Qw.newInstance(RpushPlatformConfig.class).eq("id", configId).eq("client_id", clientId));
         if (rpushPlatformConfig == null) {
             return;
         }
@@ -244,6 +252,7 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         if (defaultFlag) {
             UpdateWrapper<RpushPlatformConfig> defaultFlagUw = new UpdateWrapper<>();
             defaultFlagUw.set("default_flag", false)
+                    .eq("client_id", clientId)
                     .eq("platform", rpushPlatformConfig.getPlatform())
                     .eq("default_flag", true)
                     .ne("id", configId);
@@ -259,7 +268,8 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
         if (configId == null) {
             return;
         }
-        removeById(configId);
-        rpushPlatformConfigValueService.remove(Qw.newInstance(RpushPlatformConfigValue.class).eq("config_id", configId));
+        String clientId = SessionUtils.getClientId();
+        remove(Qw.newInstance(RpushPlatformConfig.class).eq("id", configId).eq("client_id", clientId));
+        rpushPlatformConfigValueService.remove(Qw.newInstance(RpushPlatformConfigValue.class).eq("config_id", configId).eq("client_id", clientId));
     }
 }

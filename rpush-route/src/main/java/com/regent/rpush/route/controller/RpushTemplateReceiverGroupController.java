@@ -11,6 +11,7 @@ import com.regent.rpush.dto.table.Pagination;
 import com.regent.rpush.route.model.RpushTemplateReceiverGroup;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
 import com.regent.rpush.route.utils.PaginationUtil;
+import com.regent.rpush.route.config.SessionUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class RpushTemplateReceiverGroupController {
         int pageSize = PageUtil.getDefaultPageSize(param.getPageSize());
         Page<RpushTemplateReceiverGroup> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushTemplateReceiverGroup> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", SessionUtils.getClientId());
         wrapper.eq("platform", platform.name());
         wrapper.like(StringUtils.isNotBlank(param.getGroupName()), "group_name", param.getGroupName());
         wrapper.eq(param.getId() != null, "id", param.getId());
@@ -85,7 +87,7 @@ public class RpushTemplateReceiverGroupController {
         if (id == null) {
             return ApiResult.success();
         }
-        rpushTemplateReceiverGroupService.removeById(id);
+        rpushTemplateReceiverGroupService.delete(id);
         return ApiResult.success();
     }
 

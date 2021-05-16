@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -24,9 +26,6 @@ import javax.sql.DataSource;
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    public PasswordEncoder passwordEncoder;
-
-    @Autowired
     private DataSource dataSource;
 
     @Autowired
@@ -34,21 +33,12 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("admin")
-                .secret(passwordEncoder.encode("admin")) // 以用户模式硬编码，如果需求有更复杂的权限可以自行扩展
-                .authorities("admin")
-                .authorizedGrantTypes("refresh_token", "client_credentials")
-                .accessTokenValiditySeconds(3600)
-                .scopes("all")
-                .and()
-                .withClient("scheduler")
-                .secret(passwordEncoder.encode("scheduler123")) // 以用户模式硬编码，如果需求有更复杂的权限可以自行扩展
-                .authorities("scheduler")
-                .authorizedGrantTypes("refresh_token", "client_credentials")
-                .accessTokenValiditySeconds(3600)
-                .scopes("all")
-        ;
+        clients.withClientDetails(clientDetails());
+    }
+
+    @Bean
+    public ClientDetailsService clientDetails() {
+        return new JdbcClientDetailsService(dataSource);
     }
 
     @Override

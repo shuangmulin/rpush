@@ -48,5 +48,8 @@ public class RpushMessageHis extends Model {
     @ApiModelProperty(value = "请求号，唯一")
     private String requestNo;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

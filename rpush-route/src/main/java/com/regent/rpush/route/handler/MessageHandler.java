@@ -55,6 +55,7 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
             Class<?> actualTypeArgument = MessageHandlerUtils.getParamType(this);
             BaseMessage baseMessage = param == null ? (BaseMessage) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage) param.toBean(actualTypeArgument);
             baseMessage.setRequestNo(event.getRequestNo());
+            baseMessage.setClientId(event.getClientId());
 
             // 处理配置
             processPlatformConfig(typeMessageDTO, baseMessage);
@@ -74,6 +75,7 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
         if (configIds == null || configIds.size() <= 0) {
             // 查一个默认配置出来用
             QueryWrapper<RpushPlatformConfig> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("client_id", baseMessage.getClientId());
             queryWrapper.eq("default_flag", true);
             RpushPlatformConfig config = rpushPlatformConfigService.getOne(queryWrapper, false);
             if (config == null) {
@@ -81,7 +83,7 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
             }
             configIds = Collections.singletonList(config.getId());
         }
-        Map<Long, Map<String, Object>> configMap = rpushPlatformConfigService.queryConfig(configIds); // 键为配置id，值为：具体的配置键值
+        Map<Long, Map<String, Object>> configMap = rpushPlatformConfigService.queryConfig(baseMessage.getClientId(), configIds); // 键为配置id，值为：具体的配置键值
         List<Config> configs = MessageHandlerUtils.convertConfig(this, configMap); // 转成具体的配置实体类
         baseMessage.setConfigs(configs);
     }
