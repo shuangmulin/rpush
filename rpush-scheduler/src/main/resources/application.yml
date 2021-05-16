@@ -8,6 +8,7 @@ auth:
   super-admin:
     username: ${super-admin.username:superadmin} # 超級管理用户名
     password: ${super-admin.password:superadmin} # 超級管理密码
+  jwtSigningKey: ${jwtSigningKey:123456}
 
 spring:
   application:
