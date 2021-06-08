@@ -29,12 +29,12 @@
         <netty.version>4.1.42.Final</netty.version>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/repository/central</url>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>aliyun</id>-->
+<!--            <url>https://maven.aliyun.com/repository/central</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 <!--    <pluginRepositories>-->
 <!--        <pluginRepository>-->
 <!--            <id>aliyun</id>-->
