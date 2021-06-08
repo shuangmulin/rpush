@@ -1,7 +1,11 @@
 package com.regent.rpush.dto.socket;
 
 import com.regent.rpush.dto.BaseParam;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -15,7 +19,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class SendMsgDTO extends BaseParam {
     private static final long serialVersionUID = 737722535877172748L;
 

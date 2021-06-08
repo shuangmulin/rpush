@@ -7,7 +7,6 @@ import com.dingtalk.api.request.OapiMessageCorpconversationAsyncsendV2Request;
 import com.dingtalk.api.response.OapiMessageCorpconversationAsyncsendV2Response;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.MessageType;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.DingTalkCorpConfig;
 import com.regent.rpush.dto.message.dingtalk.corp.TextMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
@@ -43,16 +42,15 @@ public class CorpTextMessageHandler extends MessageHandler<TextMessageDTO> {
 
     @Override
     public void handle(TextMessageDTO param) {
-        List<Config> configs = param.getConfigs();
-        for (Config conf : configs) {
-            DingTalkCorpConfig config = (DingTalkCorpConfig) conf;
+        List<DingTalkCorpConfig> configs = rpushPlatformConfigService.queryConfigOrDefault(param, DingTalkCorpConfig.class, messageType().getPlatform());
+        for (DingTalkCorpConfig config : configs) {
             Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
 
             if (receiverUsers.size() <= 0) {
-                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
+                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), config.getConfigName());
                 return;
             }
 

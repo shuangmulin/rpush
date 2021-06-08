@@ -15,6 +15,7 @@
         <module>rpush-monitor</module>
         <module>rpush-scheduler</module>
         <module>rpush-zuul</module>
+        <module>rpush-sdk</module>
     </modules>
 
     <groupId>com.regent</groupId>

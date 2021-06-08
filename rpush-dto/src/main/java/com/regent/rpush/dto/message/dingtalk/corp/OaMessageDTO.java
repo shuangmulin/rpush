@@ -5,6 +5,7 @@ import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.MultiObjField;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 public class OaMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -4488454049089666314L;
 

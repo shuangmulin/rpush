@@ -2,7 +2,11 @@ package com.regent.rpush.dto.rpushserver;
 
 import com.regent.rpush.dto.BaseParam;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 下线DTO
@@ -14,7 +18,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class OfflineDTO extends BaseParam {
     private static final long serialVersionUID = -2239907502712723992L;
 

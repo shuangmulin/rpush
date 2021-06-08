@@ -3,7 +3,6 @@ package com.regent.rpush.route.handler.wechatofficialaccount;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.MessageType;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.WechatOfficialAccountConfig;
 import com.regent.rpush.dto.message.wechatofficialaccount.TemplateMessageDTO;
 import com.regent.rpush.dto.message.wechatofficialaccount.WechatTemplateData;
@@ -45,16 +44,15 @@ public class TemplateMessageHandler extends MessageHandler<TemplateMessageDTO> {
 
     @Override
     public void handle(TemplateMessageDTO param) {
-        List<Config> configs = param.getConfigs();
-        for (Config conf : configs) {
-            WechatOfficialAccountConfig config = (WechatOfficialAccountConfig) conf;
+        List<WechatOfficialAccountConfig> configs = rpushPlatformConfigService.queryConfigOrDefault(param, WechatOfficialAccountConfig.class, messageType().getPlatform());
+        for (WechatOfficialAccountConfig config : configs) {
             Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
 
             if (receiverUsers.size() <= 0) {
-                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
+                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), config.getConfigName());
                 return;
             }
 

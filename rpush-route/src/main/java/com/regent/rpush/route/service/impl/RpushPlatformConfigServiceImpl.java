@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.regent.rpush.common.PageUtil;
 import com.regent.rpush.dto.enumration.ConfigValueType;
 import com.regent.rpush.dto.enumration.MessagePlatformEnum;
+import com.regent.rpush.dto.message.base.BaseMessage;
+import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.route.config.ConfigFieldVO;
 import com.regent.rpush.dto.route.config.ConfigTableDTO;
 import com.regent.rpush.dto.route.config.UpdateConfigDTO;
@@ -76,6 +78,31 @@ public class RpushPlatformConfigServiceImpl extends ServiceImpl<RpushPlatformCon
             }
         }
         return configMap;
+    }
+
+    @Override
+    public <T> List<T> queryConfigOrDefault(String clientId, List<Long> configIds, Class<T> configType, MessagePlatformEnum platform) {
+        if (configIds == null || configIds.size() <= 0) {
+            // 查一个默认配置出来用
+            QueryWrapper<RpushPlatformConfig> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("client_id", clientId);
+            queryWrapper.eq("platform", platform.name());
+            queryWrapper.eq("default_flag", true);
+            RpushPlatformConfig config = getOne(queryWrapper, false);
+            if (config == null) {
+                return new ArrayList<>();
+            }
+            configIds = Collections.singletonList(config.getId());
+        }
+        Map<Long, Map<String, Object>> configMap = queryConfig(clientId, configIds); // 键为配置id，值为：具体的配置键值
+        List<Config> configs = MessageHandlerUtils.convertConfig(configType, configMap); // 转成具体的配置实体类
+        //noinspection unchecked
+        return (List<T>) configs;
+    }
+
+    @Override
+    public <T> List<T> queryConfigOrDefault(BaseMessage message, Class<T> configType, MessagePlatformEnum platform) {
+        return queryConfigOrDefault(message.getClientId(), message.getConfigIds(), configType, platform);
     }
 
     @Override

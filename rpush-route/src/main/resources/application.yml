@@ -52,3 +52,6 @@ management:
 rpush-server:
   ribbon:
     NFLoadBalancerRuleClassName: com.regent.rpush.route.loadbalancer.ServerBalancer
+
+sdk:
+  directory: ${target.java.sdk.directory}
