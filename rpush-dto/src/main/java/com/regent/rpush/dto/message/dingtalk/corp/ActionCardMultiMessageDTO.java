@@ -4,8 +4,10 @@ import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
 import com.regent.rpush.dto.route.sheme.SchemeValueOption;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ActionCardMultiMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 

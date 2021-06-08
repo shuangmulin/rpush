@@ -18,6 +18,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OaMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -4488454049089666314L;
 
