@@ -35,7 +35,9 @@ public class RpushMessageHisServiceImpl extends ServiceImpl<RpushMessageHisMappe
     private IRpushMessageHisDetailService rpushMessageHisDetailService;
 
     @Override
-    public void log(RpushMessageHis rpushMessageHis) {
+    public void log(String clientId, RpushMessageHis rpushMessageHis) {
+        rpushMessageHis.setClientId(clientId);
+
         // 往队列里扔
         RingBuffer<RpushMessageHis> ringBuffer = getDisruptorHis().getRingBuffer();
         long sequence = ringBuffer.next();
@@ -49,7 +51,9 @@ public class RpushMessageHisServiceImpl extends ServiceImpl<RpushMessageHisMappe
     }
 
     @Override
-    public void logDetail(RpushMessageHisDetail hisDetail) {
+    public void logDetail(String clientId, RpushMessageHisDetail hisDetail) {
+        hisDetail.setClientId(clientId);
+
         // 往队列里扔
         RingBuffer<RpushMessageHisDetail> ringBuffer = getDisruptorHisDetail().getRingBuffer();
         long sequence = ringBuffer.next();

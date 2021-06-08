@@ -6,7 +6,6 @@ import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.dto.message.EmailMessageDTO;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.EmailConfig;
 import com.regent.rpush.route.model.RpushMessageHisDetail;
 import com.regent.rpush.route.service.IRpushMessageHisService;
@@ -44,20 +43,19 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
 
     @Override
     public void handle(EmailMessageDTO param) {
-        List<Config> configs = param.getConfigs();
+        List<EmailConfig> configs = rpushPlatformConfigService.queryConfigOrDefault(param, EmailConfig.class, messageType().getPlatform());
         String content = param.getContent();
         String title = param.getTitle();
-        for (Config conf : configs) {
-            EmailConfig config = (EmailConfig) conf;
+        for (EmailConfig config : configs) {
             Set<String> receiverEmails = new HashSet<>();
             if (CollUtil.isNotEmpty(param.getReceiverIds())) {
                 receiverEmails.addAll(param.getReceiverIds());
             }
             if (CollUtil.isNotEmpty(param.getReceiverGroupIds())) {
-                receiverEmails.addAll(rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()));
+                receiverEmails.addAll(rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()));
             }
             if (receiverEmails.size() <= 0) {
-                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收邮箱", param.getRequestNo(), param.getConfigs());
+                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收邮箱", param.getRequestNo(), config.getConfigName());
                 return;
             }
             MailAccount account = new MailAccount();
@@ -85,7 +83,7 @@ public class EmailMessageHandler extends MessageHandler<EmailMessageDTO> {
                     hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                     hisDetail.setErrorMsg(eMessage);
                 }
-                rpushMessageHisService.logDetail(hisDetail);
+                rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
             }
         }
     }

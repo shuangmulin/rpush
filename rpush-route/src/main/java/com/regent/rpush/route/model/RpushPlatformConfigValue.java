@@ -52,5 +52,8 @@ public class RpushPlatformConfigValue extends Model {
     @TableField("`value`")
     private String value;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

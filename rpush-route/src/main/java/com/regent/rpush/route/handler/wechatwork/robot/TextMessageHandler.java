@@ -5,7 +5,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import com.regent.rpush.dto.enumration.MessageType;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.WechatWorkRobotConfig;
 import com.regent.rpush.dto.message.wechatwork.robot.TextMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
@@ -43,16 +42,15 @@ public class TextMessageHandler extends MessageHandler<TextMessageDTO> {
 
     @Override
     public void handle(TextMessageDTO param) {
-        List<Config> configs = param.getConfigs();
-        for (Config conf : configs) {
-            WechatWorkRobotConfig config = (WechatWorkRobotConfig) conf;
-            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
+        List<WechatWorkRobotConfig> configs = rpushPlatformConfigService.queryConfigOrDefault(param, WechatWorkRobotConfig.class, messageType().getPlatform());
+        for (WechatWorkRobotConfig config : configs) {
+            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
 
             if (receiverUsers.size() <= 0) {
-                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
+                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), config.getConfigName());
                 return;
             }
 
@@ -95,7 +93,7 @@ public class TextMessageHandler extends MessageHandler<TextMessageDTO> {
                 hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                 hisDetail.setErrorMsg(eMessage);
             }
-            rpushMessageHisService.logDetail(hisDetail);
+            rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
         }
     }
 }

@@ -17,6 +17,7 @@ import com.regent.rpush.route.model.RpushTemplateReceiverGroup;
 import com.regent.rpush.route.service.IRpushTemplateReceiverGroupService;
 import com.regent.rpush.route.service.IRpushTemplateReceiverService;
 import com.regent.rpush.route.utils.PaginationUtil;
+import com.regent.rpush.route.config.SessionUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +67,7 @@ public class RpushTemplateReceiverController {
         int pageSize = PageUtil.getDefaultPageSize(param.getPageSize());
         Page<RpushTemplateReceiver> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushTemplateReceiver> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", SessionUtils.getClientId());
         wrapper.eq("platform", platform.name());
         wrapper.like(StringUtils.isNotBlank(param.getReceiverName()), "receiver_name", param.getReceiverName());
         wrapper.eq(param.getGroupId() != null, "group_id", param.getGroupId());
@@ -127,7 +129,7 @@ public class RpushTemplateReceiverController {
         if (id == null) {
             return ApiResult.success();
         }
-        rpushTemplateReceiverService.removeById(id);
+        rpushTemplateReceiverService.delete(id);
         return ApiResult.success();
     }
 

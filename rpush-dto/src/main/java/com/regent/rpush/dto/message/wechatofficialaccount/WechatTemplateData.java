@@ -2,9 +2,9 @@ package com.regent.rpush.dto.message.wechatofficialaccount;
 
 import com.regent.rpush.dto.route.sheme.MultiObjField;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * 微信模板Data
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class WechatTemplateData {
 
     private String name;

@@ -7,7 +7,7 @@ public class GeneratorCodeConfig {
 
 //    public static void main(String[] args) {
 //        String[] tableNames = {
-//                "rpush_message_scheme",
+//                "oauth_client_details",
 //        };
 //
 //        // 代码生成器
@@ -27,7 +27,7 @@ public class GeneratorCodeConfig {
 //
 //        // 数据源配置
 //        DataSourceConfig dsc = new DataSourceConfig();
-//        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/rpush?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true");
+//        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/rpush_auth?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true");
 //        dsc.setDriverName("com.mysql.jdbc.Driver");
 //        dsc.setUsername("root");
 //        dsc.setPassword("123456");

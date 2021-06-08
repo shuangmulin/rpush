@@ -5,6 +5,7 @@ import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
 public class EmailMessageDTO extends BaseMessage {
     private static final long serialVersionUID = 2692273549631779696L;
 

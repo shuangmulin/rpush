@@ -5,6 +5,7 @@ import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -23,11 +24,17 @@ public class RouteAccessTokenService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Value("${auth.super-admin.password}")
+    private String supperAdminPass;
+
+    @Value(("${auth.super-admin.username}"))
+    private String supperAdminUsername;
+
     private TimedCache<String, String> getAccessTokenTimedCache() {
         if (accessTokenTimedCache == null || StringUtils.isEmpty(accessTokenTimedCache.get("accessToken"))) {
             synchronized (RouteAccessTokenService.class) {
                 if (accessTokenTimedCache == null || StringUtils.isEmpty(accessTokenTimedCache.get("accessToken"))) {
-                    ResponseEntity<String> forEntity = restTemplate.getForEntity("http://rpush-route/oauth/token?grant_type=client_credentials&scope=all&client_id=scheduler&client_secret=scheduler123", String.class);
+                    ResponseEntity<String> forEntity = restTemplate.getForEntity("http://rpush-route/oauth/token?grant_type=client_credentials&scope=all&client_id=" + supperAdminUsername + "&client_secret=" + supperAdminPass, String.class);
                     JSONObject jsonObject = new JSONObject(forEntity.getBody());
                     Long expiresIn = jsonObject.getLong("expires_in");
                     String accessToken = jsonObject.getStr("access_token");

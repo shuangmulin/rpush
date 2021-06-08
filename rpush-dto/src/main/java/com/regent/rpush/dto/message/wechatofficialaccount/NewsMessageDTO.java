@@ -3,9 +3,9 @@ package com.regent.rpush.dto.message.wechatofficialaccount;
 import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 public class NewsMessageDTO extends BaseMessage {
     private static final long serialVersionUID = 7034106110120563906L;
 

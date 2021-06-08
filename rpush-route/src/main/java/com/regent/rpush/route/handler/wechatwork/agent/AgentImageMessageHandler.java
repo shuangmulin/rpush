@@ -3,7 +3,6 @@ package com.regent.rpush.route.handler.wechatwork.agent;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.regent.rpush.common.SingletonUtil;
 import com.regent.rpush.dto.enumration.MessageType;
-import com.regent.rpush.dto.message.config.Config;
 import com.regent.rpush.dto.message.config.WechatWorkAgentConfig;
 import com.regent.rpush.dto.message.wechatwork.agent.MediaMessageDTO;
 import com.regent.rpush.route.handler.MessageHandler;
@@ -42,16 +41,15 @@ public class AgentImageMessageHandler extends MessageHandler<MediaMessageDTO> {
 
     @Override
     public void handle(MediaMessageDTO param) {
-        List<Config> configs = param.getConfigs();
-        for (Config conf : configs) {
-            WechatWorkAgentConfig config = (WechatWorkAgentConfig) conf;
-            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds()); // 先拿参数里分组的接收人
+        List<WechatWorkAgentConfig> configs = rpushPlatformConfigService.queryConfigOrDefault(param, WechatWorkAgentConfig.class, messageType().getPlatform());
+        for (WechatWorkAgentConfig config : configs) {
+            Set<String> receiverUsers = rpushTemplateReceiverGroupService.listReceiverIds(param.getReceiverGroupIds(), param.getClientId()); // 先拿参数里分组的接收人
             if (param.getReceiverIds() != null) {
                 receiverUsers.addAll(param.getReceiverIds());
             }
 
             if (receiverUsers.size() <= 0) {
-                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), param.getConfigs());
+                LOGGER.warn("请求号：{}，消息配置：{}。没有检测到接收用户", param.getRequestNo(), config.getConfigName());
                 return;
             }
 
@@ -91,7 +89,7 @@ public class AgentImageMessageHandler extends MessageHandler<MediaMessageDTO> {
                     hisDetail.setSendStatus(RpushMessageHisDetail.SEND_STATUS_FAIL);
                     hisDetail.setErrorMsg(eMessage);
                 }
-                rpushMessageHisService.logDetail(hisDetail);
+                rpushMessageHisService.logDetail(param.getClientId(), hisDetail);
             }
         }
     }

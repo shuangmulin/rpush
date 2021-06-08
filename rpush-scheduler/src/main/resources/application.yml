@@ -4,12 +4,18 @@ server:
     enabled: true
     mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain
 
+auth:
+  super-admin:
+    username: ${super-admin.username:superadmin} # 超級管理用户名
+    password: ${super-admin.password:superadmin} # 超級管理密码
+  jwtSigningKey: ${jwtSigningKey:123456}
+
 spring:
   application:
     name: rpush-scheduler
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: ${jdbc.url:jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8}
+    url: ${jdbc.url:jdbc:mysql://localhost:3306/rpush_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8}
     username: ${jdbc.username:root}
     password: ${jdbc.password:123456}
     type: com.alibaba.druid.pool.DruidDataSource

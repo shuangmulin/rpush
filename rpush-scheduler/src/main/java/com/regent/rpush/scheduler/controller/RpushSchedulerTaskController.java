@@ -10,10 +10,12 @@ import com.regent.rpush.scheduler.dto.PageTaskParam;
 import com.regent.rpush.scheduler.model.RpushSchedulerTask;
 import com.regent.rpush.scheduler.service.IRpushSchedulerTaskService;
 import com.regent.rpush.scheduler.utils.PaginationUtil;
+import com.regent.rpush.scheduler.auth.SessionUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +33,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rpush-scheduler-task")
 @CrossOrigin
+@PreAuthorize("hasAnyAuthority('admin')")
 public class RpushSchedulerTaskController {
 
     @Autowired
@@ -43,6 +46,7 @@ public class RpushSchedulerTaskController {
         Page<RpushSchedulerTask> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushSchedulerTask> wrapper = new QueryWrapper<>();
         wrapper.eq(param.getId() != null, "id", param.getId());
+        wrapper.eq( "client_id", SessionUtils.getClientId());
         wrapper.eq(param.getEnableFlag() != null, "enable_flag", param.getEnableFlag());
         wrapper.like(StringUtils.isNotBlank(param.getJobName()), "job_name", param.getJobName());
         wrapper.like(StringUtils.isNotBlank(param.getJobGroup()), "job_group", param.getJobGroup());
@@ -89,7 +93,7 @@ public class RpushSchedulerTaskController {
         if (id == null) {
             return ApiResult.success();
         }
-        rpushSchedulerTaskService.removeById(id);
+        rpushSchedulerTaskService.delete(id);
         rpushSchedulerTaskService.disableTask(id);
         return ApiResult.success();
     }

@@ -3,7 +3,11 @@ package com.regent.rpush.dto.message.wechatwork.agent;
 import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
 import com.regent.rpush.dto.route.sheme.SchemeValue;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -17,7 +21,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 public class MediaMessageDTO extends BaseMessage {
     private static final long serialVersionUID = 7412950115675650317L;
 

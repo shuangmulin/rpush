@@ -60,5 +60,8 @@ public class RpushTemplateReceiver extends Model {
     @ApiModelProperty(value = "头像，显示用的字段，可以为空")
     private String profilePhoto;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 
 }

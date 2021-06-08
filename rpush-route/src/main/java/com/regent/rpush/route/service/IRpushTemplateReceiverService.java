@@ -26,4 +26,6 @@ public interface IRpushTemplateReceiverService extends IService<RpushTemplateRec
      * 批量插入
      */
     void batchInsert(MessagePlatformEnum platform, List<ReceiverBatchInsertDTO> receivers);
+
+    void delete(Long id);
 }

@@ -27,5 +27,7 @@ public interface IRpushTemplateReceiverGroupService extends IService<RpushTempla
      * @param receiverGroupIds 接收人分组id
      * @return 接收人id列表
      */
-    Set<String> listReceiverIds(List<Long> receiverGroupIds);
+    Set<String> listReceiverIds(List<Long> receiverGroupIds, String clientId);
+
+    void delete(Long id);
 }

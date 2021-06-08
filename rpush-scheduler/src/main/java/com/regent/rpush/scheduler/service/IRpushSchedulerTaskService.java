@@ -49,4 +49,6 @@ public interface IRpushSchedulerTaskService extends IService<RpushSchedulerTask>
      * @param disableOrEnable true 表示停用，false 表示启用
      */
     void disableOrEnable(Long taskId, boolean disableOrEnable) throws SchedulerException;
+
+    void delete(Long taskId);
 }

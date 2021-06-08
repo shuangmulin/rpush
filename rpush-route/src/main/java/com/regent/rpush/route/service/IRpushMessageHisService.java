@@ -17,10 +17,10 @@ public interface IRpushMessageHisService extends IService<RpushMessageHis> {
     /**
      * 记录消息历史记录
      */
-    void log(RpushMessageHis rpushMessageHis);
+    void log(String clientId, RpushMessageHis rpushMessageHis);
 
     /**
      * 记录消息历史记录详情
      */
-    void logDetail(RpushMessageHisDetail hisDetail);
+    void logDetail(String clientId, RpushMessageHisDetail hisDetail);
 }

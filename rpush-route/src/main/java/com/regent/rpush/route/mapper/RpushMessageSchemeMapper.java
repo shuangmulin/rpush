@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.regent.rpush.dto.common.IdAndName;
 import com.regent.rpush.dto.enumration.MessageType;
 import com.regent.rpush.route.model.RpushMessageScheme;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public interface RpushMessageSchemeMapper extends BaseMapper<RpushMessageScheme>
             "FROM " +
             " rpush_message_scheme AS rms " +
             "WHERE " +
-            " rms.message_type = #{messageType}")
-    List<IdAndName> listScheme(MessageType messageType);
+            " rms.client_id = #{clientId}" +
+            "AND rms.message_type = #{messageType}")
+    List<IdAndName> listScheme(@Param("clientId") String clientId, @Param("messageType") MessageType messageType);
 }

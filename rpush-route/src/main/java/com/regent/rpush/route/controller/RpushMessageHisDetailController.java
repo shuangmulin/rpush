@@ -14,6 +14,7 @@ import com.regent.rpush.route.service.IRpushMessageHisDetailService;
 import com.regent.rpush.route.service.IRpushMessageHisService;
 import com.regent.rpush.route.utils.PaginationUtil;
 import com.regent.rpush.route.utils.Qw;
+import com.regent.rpush.route.config.SessionUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,12 @@ public class RpushMessageHisDetailController {
     @ApiOperation("历史消息分页")
     @PostMapping
     public ApiResult<Pagination<RpushMessageHisDetail>> page(@RequestBody @Valid @NotNull(message = "参数不全") PageHisDetailParam param) {
+        String clientId = SessionUtils.getClientId();
         int pageNum = PageUtil.getDefaultPageNum(param.getPageNum());
         int pageSize = PageUtil.getDefaultPageSize(param.getPageSize());
         Page<RpushMessageHisDetail> page = new Page<>(pageNum, pageSize);
         QueryWrapper<RpushMessageHisDetail> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", clientId);
         wrapper.in(param.getPlatform() != null && param.getPlatform().size() > 0, "platform", param.getPlatform());
         wrapper.like(StringUtils.isNotBlank(param.getRequestNo()), "request_no", param.getRequestNo());
         wrapper.in(param.getSendStatus() != null && param.getSendStatus().size() > 0, "send_status", param.getSendStatus());
