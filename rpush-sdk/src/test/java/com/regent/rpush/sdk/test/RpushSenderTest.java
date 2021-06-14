@@ -2,6 +2,7 @@ package com.regent.rpush.sdk.test;
 
 import com.regent.rpush.dto.message.wechatwork.agent.MarkdownMessageDTO;
 import com.regent.rpush.dto.message.wechatwork.robot.TextMessageDTO;
+import com.regent.rpush.sdk.RpushMessage;
 import com.regent.rpush.sdk.RpushSender;
 
 import java.util.Collections;
@@ -26,8 +27,9 @@ public class RpushSenderTest {
                 ">请准时参加会议。 \n" +
                 "> \n" +
                 ">如需修改会议信息，请点击：[修改会议信息](https://work.weixin.qq.com)";
-        MarkdownMessageDTO markdown = RpushSender.WECHAT_WORK_AGENT_MARKDOWN().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
-        TextMessageDTO text = RpushSender.WECHAT_WORK_ROBOT_TEXT().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
+        MarkdownMessageDTO markdown = RpushMessage.WECHAT_WORK_AGENT_MARKDOWN().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
+        TextMessageDTO text = RpushMessage.WECHAT_WORK_ROBOT_TEXT().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
+//        RpushSender.instance( "http://localhost:8124", "baolin", "666666").sendMessage(markdown, text);
         RpushSender.instance("baolin", "666666").sendMessage(markdown, text);
     }
 
