@@ -54,11 +54,11 @@ admin admin
 
 #### web端多平台发送示例
 
-<img alt="web端多平台发送示例" src="https://gitee.com/shuangmulin/static/raw/master/rpush/web.gif">
+<img alt="web端多平台发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_b94f5ca5abfac91b1a8d729faf65d02f_single.gif">
 
 #### postman多平台发送示例
 
-<img alt="postman多平台发送示例" src="https://gitee.com/shuangmulin/static/raw/master/rpush/postman.gif">
+<img alt="postman多平台发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_de79c4c1e47a026b60614b629f63040f_postman.gif">
 
 #### 用代码发消息
 
