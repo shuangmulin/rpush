@@ -50,11 +50,11 @@ admin admin
 
 #### 单个消息类型发送示例
 
-<img alt="单个消息类型发送示例" src="https://gitee.com/shuangmulin/static/raw/master/rpush/single.gif">
+<img alt="单个消息类型发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_b94f5ca5abfac91b1a8d729faf65d02f_single.gif">
 
 #### web端多平台发送示例
 
-<img alt="web端多平台发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_b94f5ca5abfac91b1a8d729faf65d02f_single.gif">
+<img alt="web端多平台发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_c3c95c7008390a1b2cb00d1cc1855fc7_web.gif">
 
 #### postman多平台发送示例
 
