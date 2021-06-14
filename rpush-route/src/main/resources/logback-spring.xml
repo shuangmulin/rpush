@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>logback</contextName>
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>[%level] %d{HH:mm:ss} [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+<!--    &lt;!&ndash;按天生成INFO日志&ndash;&gt;-->
+<!--    <appender name="file-info" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>DEBUG</level>-->
+<!--        </filter>-->
+<!--        <Prudent>true</Prudent>-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <FileNamePattern>-->
+<!--                ${user.dir}/logs/regent-service-fac/info/%d{yyyy-MM-dd}.log-->
+<!--            </FileNamePattern>-->
+<!--        </rollingPolicy>-->
+<!--        <layout class="ch.qos.logback.classic.PatternLayout">-->
+<!--            <Pattern>-->
+<!--                [%level] %d{HH:mm:ss} [%thread] %logger{36} - %msg%n-->
+<!--            </Pattern>-->
+<!--        </layout>-->
+<!--    </appender>-->
+
+    <!--按天生成ERROR日志-->
+    <appender name="file-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <Prudent>true</Prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${user.dir}/logs/rpush-route/error/%d{yyyy-MM-dd}.log
+            </FileNamePattern>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                [%level] %d{HH:mm:ss} [%thread] %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="java.sql.PreparedStatement" level="DEBUG" additivity="false">
+        <appender-ref ref="console"/>
+<!--        <appender-ref ref="file-info"/>-->
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+<!--        <appender-ref ref="file-info"/>-->
+        <appender-ref ref="file-error"/>
+    </root>
+
+</configuration>
