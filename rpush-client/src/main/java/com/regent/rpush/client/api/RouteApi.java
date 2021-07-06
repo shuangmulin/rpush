@@ -20,9 +20,9 @@ public class RouteApi {
      * 获取服务端信息
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static ApiResult<ServerInfoDTO> route() {
+    public static ApiResult<ServerInfoDTO> route(String routeServicePath) {
         try {
-            String body = HttpUtil.get(BASE_URL + "/route");
+            String body = HttpUtil.get(routeServicePath + "/route");
             return JSONUtil.parseObj(body)
                     .toBean(new TypeReference<ApiResult<ServerInfoDTO>>() {
                     });
@@ -35,9 +35,9 @@ public class RouteApi {
     /**
      * 下线
      */
-    public static ApiResult<String> offline() {
+    public static ApiResult<String> offline(String routeServicePath) {
         OfflineDTO offlineDTO = OfflineDTO.builder().registrationId(Config.getRegistrationId()).build();
-        String body = HttpUtil.post(BASE_URL + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
+        String body = HttpUtil.post(routeServicePath + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
         return JSONUtil.parseObj(body)
                 .toBean(new TypeReference<ApiResult<String>>() {
                 });

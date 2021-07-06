@@ -20,7 +20,7 @@ public enum MessagePlatformEnum {
     WECHAT_WORK_ROBOT(WechatWorkRobotConfig.class, "企业微信-群机器人", "", "", true),
     WECHAT_OFFICIAL_ACCOUNT(WechatOfficialAccountConfig.class, "微信公众号", "", "", true),
     DING_TALK_CORP(DingTalkCorpConfig.class, "钉钉-工作通知", "", "", true),
-    RPUSH_SERVER(EmptyConfig.class, "rpush服务", "", "", false);
+    RPUSH_SERVER(EmptyConfig.class, "rpush服务", "", "", true);
 
     private final String name;
     private final String description;

@@ -1,6 +1,7 @@
 package com.regent.rpush.sdk;
 
 import com.regent.rpush.dto.enumration.MessageType;
+import com.regent.rpush.dto.message.RpushMessageDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +18,9 @@ public class RpushMessage {
     * 消息参数和消息类型的映射关系，键为消息参数类型，值为对应的消息类型
     */
     static final Map<Class<?>, MessageType> MESSAGE_TYPE_PARAM_MAP = new HashMap<>();
-            
+
     /**
-     * 邮箱普通邮件 
+     * 邮箱普通邮件
      */
     public static com.regent.rpush.dto.message.EmailMessageDTO.EmailMessageDTOBuilder<?, ?> EMAIL() {
         return com.regent.rpush.dto.message.EmailMessageDTO.builder();
@@ -27,17 +28,17 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.EmailMessageDTO.class, MessageType.EMAIL);
     }
-        
+
     /**
      * rpush服务文本
      */
-    public static com.regent.rpush.dto.message.SocketMessageDTO.SocketMessageDTOBuilder<?, ?> RPUSH_SERVER() {
-        return com.regent.rpush.dto.message.SocketMessageDTO.builder();
+    public static RpushMessageDTO.RpushMessageDTOBuilder<?, ?> RPUSH_SERVER() {
+        return RpushMessageDTO.builder();
     }
     static {
-        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.SocketMessageDTO.class, MessageType.RPUSH_SERVER);
+        MESSAGE_TYPE_PARAM_MAP.put(RpushMessageDTO.class, MessageType.RPUSH_SERVER);
     }
-        
+
     /**
      * 钉钉-工作通知卡片-多按钮
      */
@@ -47,7 +48,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.ActionCardMultiMessageDTO.class, MessageType.DING_TALK_COPR_ACTION_CARD_MULTI);
     }
-        
+
     /**
      * 钉钉-工作通知卡片-单按钮
      */
@@ -57,7 +58,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.ActionCardSingleMessageDTO.class, MessageType.DING_TALK_COPR_ACTION_CARD_SINGLE);
     }
-        
+
     /**
      * 钉钉-工作通知链接消息
      */
@@ -67,7 +68,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.LinkMessageDTO.class, MessageType.DING_TALK_COPR_LINK);
     }
-        
+
     /**
      * 钉钉-工作通知Markdown
      */
@@ -77,7 +78,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.MarkdownMessageDTO.class, MessageType.DING_TALK_COPR_MARKDOWN);
     }
-        
+
     /**
      * 钉钉-工作通知OA消息
      */
@@ -87,7 +88,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.OaMessageDTO.class, MessageType.DING_TALK_COPR_OA);
     }
-        
+
     /**
      * 钉钉-工作通知文本
      */
@@ -97,7 +98,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.corp.TextMessageDTO.class, MessageType.DING_TALK_COPR_TEXT);
     }
-        
+
     /**
      * 微信公众号图文消息
      */
@@ -107,7 +108,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatofficialaccount.NewsMessageDTO.class, MessageType.WECHAT_OFFICIAL_ACCOUNT_NEWS);
     }
-        
+
     /**
      * 微信公众号文本
      */
@@ -117,7 +118,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatofficialaccount.TextMessageDTO.class, MessageType.WECHAT_OFFICIAL_ACCOUNT_TEXT);
     }
-        
+
     /**
      * 微信公众号模板消息
      */
@@ -127,7 +128,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatofficialaccount.TemplateMessageDTO.class, MessageType.WECHAT_OFFICIAL_ACCOUNT_TEMPLATE);
     }
-        
+
     /**
      * 企业微信-应用消息文件
      */
@@ -137,7 +138,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.MediaMessageDTO.class, MessageType.WECHAT_WORK_AGENT_FILE);
     }
-        
+
     /**
      * 企业微信-应用消息图片
      */
@@ -147,7 +148,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.MediaMessageDTO.class, MessageType.WECHAT_WORK_AGENT_IMAGE);
     }
-        
+
     /**
      * 企业微信-应用消息Markdown
      */
@@ -157,7 +158,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.MarkdownMessageDTO.class, MessageType.WECHAT_WORK_AGENT_MARKDOWN);
     }
-        
+
     /**
      * 企业微信-应用消息图文消息
      */
@@ -167,7 +168,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.NewsMessageDTO.class, MessageType.WECHAT_WORK_AGENT_NEWS);
     }
-        
+
     /**
      * 企业微信-应用消息文本卡片
      */
@@ -177,7 +178,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.TextCardMessageDTO.class, MessageType.WECHAT_WORK_AGENT_TEXTCARD);
     }
-        
+
     /**
      * 企业微信-应用消息文本
      */
@@ -187,7 +188,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.TextMessageDTO.class, MessageType.WECHAT_WORK_AGENT_TEXT);
     }
-        
+
     /**
      * 企业微信-应用消息视频
      */
@@ -197,7 +198,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.agent.VideoMessageDTO.class, MessageType.WECHAT_WORK_AGENT_VIDEO);
     }
-        
+
     /**
      * 企业微信-群机器人图片
      */
@@ -207,7 +208,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.robot.ImageMessageDTO.class, MessageType.WECHAT_WORK_ROBOT_IMAGE);
     }
-        
+
     /**
      * 企业微信-群机器人Markdown
      */
@@ -217,7 +218,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.robot.MarkdownMessageDTO.class, MessageType.WECHAT_WORK_ROBOT_MARKDOWN);
     }
-        
+
     /**
      * 企业微信-群机器人图文消息
      */
@@ -227,7 +228,7 @@ public class RpushMessage {
     static {
         MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.wechatwork.robot.NewsMessageDTO.class, MessageType.WECHAT_WORK_ROBOT_NEWS);
     }
-        
+
     /**
      * 企业微信-群机器人文本
      */

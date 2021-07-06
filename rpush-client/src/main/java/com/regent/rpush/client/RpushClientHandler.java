@@ -17,10 +17,16 @@ import io.netty.handler.timeout.IdleStateEvent;
 @ChannelHandler.Sharable
 public class RpushClientHandler extends SimpleChannelInboundHandler<MessageProto.MessageProtocol> {
 
+    private final RpushClient rpushClient;
+
+    public RpushClientHandler(RpushClient rpushClient) {
+        this.rpushClient = rpushClient;
+    }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // 尝试重连
-        App.reconnect();
+        rpushClient.reconnect();
     }
 
     @Override

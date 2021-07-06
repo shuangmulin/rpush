@@ -1,14 +1,14 @@
 package com.regent.rpush.dto.message;
 
+import com.regent.rpush.dto.enumration.SchemeValueType;
 import com.regent.rpush.dto.message.base.BaseMessage;
-import io.swagger.annotations.ApiModelProperty;
+import com.regent.rpush.dto.route.sheme.SchemeValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -22,17 +22,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class SocketMessageDTO extends BaseMessage {
+public class RpushMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
     /**
      * 接收人列表
      */
+    @SchemeValue(type = SchemeValueType.RECEIVER)
     private List<String> receiverIds;
-    @NotNull
-    @ApiModelProperty(value = "接收方registrationId")
-    private Long fromTo;
 
+    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入消息内容...")
     private String content;
 
 }

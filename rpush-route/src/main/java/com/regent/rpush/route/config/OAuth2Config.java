@@ -1,5 +1,6 @@
 package com.regent.rpush.route.config;
 
+import com.regent.rpush.route.service.impl.RpushUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Collections;
 
@@ -34,6 +36,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Resource
+    private RpushUserDetailService userDetailService;
 
     @Value("${auth.jwtSigningKey}")
     private String jwtSigningKey;
@@ -54,6 +59,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         security.checkTokenAccess("permitAll()");
         security.tokenKeyAccess("permitAll()");
     }
+
 
     //设置token 比如token的有效时长等
     @Bean
@@ -76,7 +82,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         endpoints.tokenStore(tokenStore())
                 .authenticationManager(authenticationManager)
                 .accessTokenConverter(accessTokenConverter())
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.GET);
+                .allowedTokenEndpointRequestMethods(HttpMethod.POST, HttpMethod.GET);
+        endpoints.userDetailsService(userDetailService);
     }
 
     @Bean
