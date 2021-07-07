@@ -3,7 +3,6 @@ package com.regent.rpush.client.api;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
-import com.regent.rpush.client.Config;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.rpushserver.OfflineDTO;
 import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
@@ -13,8 +12,6 @@ import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
  * @since 2021/2/26/026 22:35
  **/
 public class RouteApi {
-
-    private static final String BASE_URL = "http://" + Config.getRouteHost() + ":" + Config.getRoutePort();
 
     /**
      * 获取服务端信息
@@ -35,8 +32,8 @@ public class RouteApi {
     /**
      * 下线
      */
-    public static ApiResult<String> offline(String routeServicePath) {
-        OfflineDTO offlineDTO = OfflineDTO.builder().registrationId(Config.getRegistrationId()).build();
+    public static ApiResult<String> offline(String routeServicePath, long registrationId) {
+        OfflineDTO offlineDTO = OfflineDTO.builder().registrationId(registrationId).build();
         String body = HttpUtil.post(routeServicePath + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
         return JSONUtil.parseObj(body)
                 .toBean(new TypeReference<ApiResult<String>>() {

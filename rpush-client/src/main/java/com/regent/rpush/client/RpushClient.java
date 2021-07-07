@@ -128,7 +128,7 @@ public class RpushClient {
             }
             try {
                 // 首先清除路由信息，下线
-                RouteApi.offline(routeServicePath);
+                RouteApi.offline(routeServicePath, registrationId);
 
                 System.out.println("服务器断连, 尝试重连中....");
                 start();
