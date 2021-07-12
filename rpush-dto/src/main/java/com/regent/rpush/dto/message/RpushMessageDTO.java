@@ -26,6 +26,10 @@ public class RpushMessageDTO extends BaseMessage {
     private static final long serialVersionUID = -3289428483627765265L;
 
     /**
+     * 消息来源，默认为系统消息，即-1
+     */
+    private long fromTo = -1;
+    /**
      * 接收人列表
      */
     @SchemeValue(type = SchemeValueType.RECEIVER)

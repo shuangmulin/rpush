@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
 @SuppressWarnings({"rawtypes", "unchecked", "MismatchedQueryAndUpdateOfCollection"})
 @RestController
 @RequestMapping("/message/push")
-@PreAuthorize("hasAnyAuthority('admin', 'super-admin')")
+@PreAuthorize("hasAnyAuthority('admin', 'super-admin', 'push_message')")
 public class MessagePushController implements MessageRoutePushService {
 
     @Value("${mybatis-plus.global-config.workerId}")

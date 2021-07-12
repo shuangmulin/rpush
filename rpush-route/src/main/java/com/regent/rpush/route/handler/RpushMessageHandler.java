@@ -36,7 +36,7 @@ public class RpushMessageHandler extends MessageHandler<RpushMessageDTO> {
                 continue;
             }
             NormalMessageDTO build = NormalMessageDTO.builder()
-                    .fromTo(-1L)
+                    .fromTo(param.getFromTo())
                     .sendTo(Long.parseLong(sendTo))
                     .build();
             build.setContent(param.getContent());
