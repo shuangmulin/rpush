@@ -49,4 +49,7 @@ public class RpushServerRegistration extends Model {
     @ApiModelProperty(value = "密码")
     private String password;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 }

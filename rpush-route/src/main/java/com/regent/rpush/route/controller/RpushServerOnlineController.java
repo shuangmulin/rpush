@@ -3,23 +3,26 @@ package com.regent.rpush.route.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.regent.rpush.api.route.RpushServerOnlineService;
+import com.regent.rpush.common.PageUtil;
 import com.regent.rpush.dto.ApiResult;
 import com.regent.rpush.dto.StatusCode;
-import com.regent.rpush.dto.rpushserver.LoginDTO;
-import com.regent.rpush.dto.rpushserver.OfflineDTO;
-import com.regent.rpush.dto.rpushserver.RpushServerRegistrationDTO;
-import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
+import com.regent.rpush.dto.rpushserver.*;
+import com.regent.rpush.dto.table.Pagination;
+import com.regent.rpush.route.config.SessionUtils;
 import com.regent.rpush.route.model.RpushServerOnline;
 import com.regent.rpush.route.model.RpushServerRegistration;
 import com.regent.rpush.route.service.IRpushServerOnlineService;
 import com.regent.rpush.route.service.IRpushServerRegistrationService;
+import com.regent.rpush.route.utils.Qw;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -58,6 +61,7 @@ public class RpushServerOnlineController implements RpushServerOnlineService {
         rpushServerOnline.setServerHost(serverInfo.getHost());
         rpushServerOnline.setServerHttpPort(serverInfo.getHttpPort());
         rpushServerOnline.setServerSocketPort(serverInfo.getSocketPort());
+        rpushServerOnline.setClientId(rpushServerRegistration.getClientId());
         rpushServerOnlineService.save(rpushServerOnline);
         RpushServerRegistrationDTO registrationDTO = new RpushServerRegistrationDTO();
         BeanUtil.copyProperties(rpushServerRegistration, registrationDTO);
@@ -71,6 +75,41 @@ public class RpushServerOnlineController implements RpushServerOnlineService {
         wrapper.eq("registration_id", offlineParam.getRegistrationId());
         rpushServerOnlineService.remove(wrapper);
         return new ApiResult<>();
+    }
+
+    @PreAuthorize("hasAnyAuthority('push_message', 'admin')")
+    @ApiOperation(value = "获取所有在线的设备信息")
+    @GetMapping("/registrations")
+    public ApiResult<Pagination<RpushServerRegistrationDTO>> onlineRegistrations(@RequestBody PageOnlineDTO param) {
+        int pageNum = PageUtil.getDefaultPageNum(param.getPageNum());
+        int pageSize = PageUtil.getDefaultPageSize(param.getPageSize());
+        Page<RpushServerOnline> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<RpushServerOnline> qw = Qw.newInstance(RpushServerOnline.class).eq("client_id", SessionUtils.getClientId());
+        if (param.getRegistrationId() != null) {
+            qw.eq("registration_id", param.getRegistrationId());
+        }
+        page = (Page<RpushServerOnline>) rpushServerOnlineService.page(page, qw);
+
+        List<RpushServerOnline> rpushServerOnlineList = page.getRecords();
+        List<Long> onlineRegistrationIds = new ArrayList<>();
+        for (RpushServerOnline rpushServerOnline : rpushServerOnlineList) {
+            onlineRegistrationIds.add(rpushServerOnline.getRegistrationId());
+        }
+
+        List<RpushServerRegistration> rpushServerRegistrations = rpushServerRegistrationService.list(Qw.newInstance(RpushServerRegistration.class).in("id", onlineRegistrationIds));
+        List<RpushServerRegistrationDTO> result = new ArrayList<>();
+        for (RpushServerRegistration rpushServerRegistration : rpushServerRegistrations) {
+            RpushServerRegistrationDTO registrationDTO = new RpushServerRegistrationDTO();
+            BeanUtil.copyProperties(rpushServerRegistration, registrationDTO);
+            result.add(registrationDTO);
+        }
+
+        Pagination<RpushServerRegistrationDTO> pagination = new Pagination<>();
+        pagination.setPageNum(pageNum);
+        pagination.setPageSize(pageSize);
+        pagination.setDataList(result);
+        pagination.setTotal((int) page.getTotal());
+        return ApiResult.of(pagination);
     }
 
 }

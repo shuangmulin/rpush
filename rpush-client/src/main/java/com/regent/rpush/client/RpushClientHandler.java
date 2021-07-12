@@ -1,6 +1,5 @@
 package com.regent.rpush.client;
 
-import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
 import com.regent.rpush.common.protocol.PingPong;
 import io.netty.channel.ChannelFutureListener;
@@ -9,6 +8,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+
+import java.util.List;
 
 /**
  * @author 钟宝林
@@ -47,11 +48,20 @@ public class RpushClientHandler extends SimpleChannelInboundHandler<MessageProto
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, MessageProto.MessageProtocol messageProtocol) throws Exception {
-        if (messageProtocol.getType() == Constants.MessageType.PING) {
-            System.out.println(messageProtocol);
-            return;
-        }
+        Msg msg = Msg.builder()
+                .content(messageProtocol.getContent())
+                .fromTo(messageProtocol.getFromTo())
+                .sendTo(messageProtocol.getSendTo())
+                .type(messageProtocol.getType())
+                .build();
 
-        System.out.println(messageProtocol.getContent());
+        List<MsgProcessor> msgProcessors = rpushClient.getMsgProcessors();
+        for (MsgProcessor msgProcessor : msgProcessors) {
+            boolean process = msgProcessor.process(msg);
+            if (process) {
+                // 返回false，不再继续执行
+                break;
+            }
+        }
     }
 }

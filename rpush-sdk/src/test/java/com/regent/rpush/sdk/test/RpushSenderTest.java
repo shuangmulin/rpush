@@ -3,7 +3,7 @@ package com.regent.rpush.sdk.test;
 import com.regent.rpush.dto.message.wechatwork.agent.MarkdownMessageDTO;
 import com.regent.rpush.dto.message.wechatwork.robot.TextMessageDTO;
 import com.regent.rpush.sdk.RpushMessage;
-import com.regent.rpush.sdk.RpushSender;
+import com.regent.rpush.sdk.RpushService;
 
 import java.util.Collections;
 
@@ -30,7 +30,7 @@ public class RpushSenderTest {
         MarkdownMessageDTO markdown = RpushMessage.WECHAT_WORK_AGENT_MARKDOWN().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
         TextMessageDTO text = RpushMessage.WECHAT_WORK_ROBOT_TEXT().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
 //        RpushSender.instance( "http://localhost:8124", "baolin", "666666").sendMessage(markdown, text);
-        RpushSender.instance("baolin", "666666").sendMessage(markdown, text);
+        RpushService.instance("baolin", "666666").sendMessage(markdown, text);
     }
 
 }

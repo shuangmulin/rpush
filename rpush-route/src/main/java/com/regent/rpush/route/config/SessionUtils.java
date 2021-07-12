@@ -1,10 +1,12 @@
 package com.regent.rpush.route.config;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 /**
  * @author 钟宝林
@@ -17,7 +19,10 @@ public class SessionUtils {
     public static String getClientId() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication auth = context.getAuthentication();
-        return auth.getName();
+        if (auth instanceof UsernamePasswordAuthenticationToken) {
+            return auth.getName();
+        }
+        return ((OAuth2Authentication) auth).getOAuth2Request().getClientId();
     }
 
     public static boolean isSupperAdmin() {

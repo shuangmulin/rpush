@@ -1,7 +1,6 @@
 package com.regent.rpush.sdk;
 
 import com.regent.rpush.dto.enumration.MessageType;
-import com.regent.rpush.dto.message.RpushMessageDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +17,9 @@ public class RpushMessage {
     * 消息参数和消息类型的映射关系，键为消息参数类型，值为对应的消息类型
     */
     static final Map<Class<?>, MessageType> MESSAGE_TYPE_PARAM_MAP = new HashMap<>();
-
+    
     /**
-     * 邮箱普通邮件
+     * 邮箱普通邮件 
      */
     public static com.regent.rpush.dto.message.EmailMessageDTO.EmailMessageDTOBuilder<?, ?> EMAIL() {
         return com.regent.rpush.dto.message.EmailMessageDTO.builder();
@@ -32,11 +31,11 @@ public class RpushMessage {
     /**
      * rpush服务文本
      */
-    public static RpushMessageDTO.RpushMessageDTOBuilder<?, ?> RPUSH_SERVER() {
-        return RpushMessageDTO.builder();
+    public static com.regent.rpush.dto.message.RpushMessageDTO.RpushMessageDTOBuilder<?, ?> RPUSH_SERVER() {
+        return com.regent.rpush.dto.message.RpushMessageDTO.builder();
     }
     static {
-        MESSAGE_TYPE_PARAM_MAP.put(RpushMessageDTO.class, MessageType.RPUSH_SERVER);
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.RpushMessageDTO.class, MessageType.RPUSH_SERVER);
     }
 
     /**

@@ -14,12 +14,17 @@ import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 public class RouteApi {
 
     /**
+     * 路由服务名称
+     */
+    private static final String RPUSH_ROUTE_SERVICE_NAME = "rpush-route";
+
+    /**
      * 获取服务端信息
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     public static ApiResult<ServerInfoDTO> route(String routeServicePath) {
         try {
-            String body = HttpUtil.get(routeServicePath + "/route");
+            String body = HttpUtil.get(routeServicePath + "/" + RPUSH_ROUTE_SERVICE_NAME + "/route");
             return JSONUtil.parseObj(body)
                     .toBean(new TypeReference<ApiResult<ServerInfoDTO>>() {
                     });
@@ -34,7 +39,7 @@ public class RouteApi {
      */
     public static ApiResult<String> offline(String routeServicePath, long registrationId) {
         OfflineDTO offlineDTO = OfflineDTO.builder().registrationId(registrationId).build();
-        String body = HttpUtil.post(routeServicePath + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
+        String body = HttpUtil.post(routeServicePath + "/" + RPUSH_ROUTE_SERVICE_NAME    + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
         return JSONUtil.parseObj(body)
                 .toBean(new TypeReference<ApiResult<String>>() {
                 });

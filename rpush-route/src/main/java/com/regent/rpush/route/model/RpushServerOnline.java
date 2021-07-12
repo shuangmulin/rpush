@@ -55,4 +55,7 @@ public class RpushServerOnline extends Model {
     @ApiModelProperty(value = "服务端端口")
     private int serverHttpPort;
 
+    @ApiModelProperty(value = "clientId")
+    private String clientId;
+
 }

@@ -146,7 +146,7 @@ public class RpushPlatformConfigController {
         return ApiResult.success();
     }
 
-    @ApiOperation("设为默认")
+    @ApiOperation("删除配置")
     @DeleteMapping("/config/{configId}")
     public ApiResult<String> delete(@PathVariable("configId") Long configId) {
         rpushPlatformConfigService.delete(configId);

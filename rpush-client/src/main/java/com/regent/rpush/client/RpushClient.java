@@ -1,6 +1,6 @@
 package com.regent.rpush.client;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import com.regent.rpush.client.api.RouteApi;
 import com.regent.rpush.common.Constants;
 import com.regent.rpush.common.protocol.MessageProto;
@@ -16,13 +16,20 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 public class RpushClient {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(RpushClient.class);
 
     /**
      * 路由服务路径
@@ -32,6 +39,24 @@ public class RpushClient {
      * 设备id
      */
     private final long registrationId;
+    /**
+     * 消息处理器
+     */
+    private final List<MsgProcessor> msgProcessors = new ArrayList<>();
+
+    /**
+     * 添加消息处理器，如果有消息接收到，会按顺序触发
+     *
+     * @param msgProcessor 消息处理器
+     */
+    public void addMsgProcessor(MsgProcessor msgProcessor) {
+        msgProcessors.add(msgProcessor);
+        msgProcessors.sort(Comparator.comparingInt(MsgProcessor::getOrder));
+    }
+
+    List<MsgProcessor> getMsgProcessors() {
+        return msgProcessors;
+    }
 
     public RpushClient(String routeServicePath, long registrationId) {
         this.routeServicePath = routeServicePath;
@@ -75,7 +100,7 @@ public class RpushClient {
                 .build();
         ChannelFuture future = channel.writeAndFlush(login);
         future.addListener((ChannelFutureListener) channelFuture ->
-                System.out.println("登录成功")
+                LOGGER.info("登录成功")
         );
     }
 
@@ -110,12 +135,12 @@ public class RpushClient {
         } catch (Exception e) {
             errorCount++;
             if (errorCount >= 10) {
-                System.out.println("连接失败次数达到上限[" + errorCount + "]次");
+                LOGGER.info("连接失败次数达到上限[" + errorCount + "]次");
                 System.exit(0);
             }
         }
         if (future.isSuccess()) {
-            System.out.println("Start cim client success!");
+            LOGGER.info("Start cim client success!");
         }
         channel = (SocketChannel) future.channel();
     }
@@ -130,13 +155,13 @@ public class RpushClient {
                 // 首先清除路由信息，下线
                 RouteApi.offline(routeServicePath, registrationId);
 
-                System.out.println("服务器断连, 尝试重连中....");
+                LOGGER.info("服务器断连, 尝试重连中....");
                 start();
-                System.out.println("重连成功!!!");
+                LOGGER.info("重连成功!!!");
                 reconnectExecutor.shutdown();
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("重连服务端失败");
+                LOGGER.warn("重连服务端失败");
             }
         }, 0, 10, TimeUnit.SECONDS);
     }
@@ -144,7 +169,7 @@ public class RpushClient {
     private ScheduledExecutorService getReconnectExecutor() {
         if (reconnectExecutor == null || reconnectExecutor.isShutdown()) {
             ThreadFactory sche = new ThreadFactoryBuilder()
-                    .setNameFormat("reConnect-job-%d")
+                    .setNamePrefix("reConnect-job-%d")
                     .setDaemon(true)
                     .build();
             reconnectExecutor = new ScheduledThreadPoolExecutor(1, sche);
