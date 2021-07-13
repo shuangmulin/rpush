@@ -274,6 +274,37 @@ public class RpushService {
         return getRegistration(getAccessToken(), registrationId);
     }
 
+    /**
+     * 获取当前设备的信息
+     *
+     * @param accessToken accessToken
+     */
+    public RpushServerRegistrationDTO getCurrentRegistration(String accessToken) {
+        checkToken(accessToken);
+        if (!grantType.equals(GRANT_TYPE_PASSWORD)) {
+            throw new IllegalStateException("当前授权方式无法调用‘获取当前设备的信息’接口");
+        }
+
+        String body = HttpRequest.get(baseUrl + "/" + RPUSH_ROUTE_SERVICE_NAME + "/rpush-server-registration/current")
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + accessToken)
+                .timeout(30000)//超时，毫秒
+                .execute().body();
+
+        JSONObject result = parseResult(body);
+        if (result.getInt("code") != StatusCode.SUCCESS.getCode()) {
+            throw new IllegalStateException("请求失败，" + result.getStr("msg"));
+        }
+        return result.getBean("data", RpushServerRegistrationDTO.class);
+    }
+
+    /**
+     * 获取当前设备的信息
+     */
+    public RpushServerRegistrationDTO getCurrentRegistration() {
+        return getCurrentRegistration(getAccessToken());
+    }
+
     private JSONObject parseResult(String resultBody) {
         try {
             return new JSONObject(resultBody);

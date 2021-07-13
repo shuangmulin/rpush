@@ -25,6 +25,12 @@ public class SessionUtils {
         return ((OAuth2Authentication) auth).getOAuth2Request().getClientId();
     }
 
+    public static String getLoginName() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication auth = context.getAuthentication();
+        return String.valueOf(auth.getPrincipal());
+    }
+
     public static boolean isSupperAdmin() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         for (GrantedAuthority authority : auth.getAuthorities()) {

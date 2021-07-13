@@ -96,6 +96,10 @@ public class RpushServerOnlineController implements RpushServerOnlineService {
             onlineRegistrationIds.add(rpushServerOnline.getRegistrationId());
         }
 
+        if (onlineRegistrationIds.size() <= 0) {
+            return ApiResult.of(new Pagination<>());
+        }
+
         List<RpushServerRegistration> rpushServerRegistrations = rpushServerRegistrationService.list(Qw.newInstance(RpushServerRegistration.class).in("id", onlineRegistrationIds));
         List<RpushServerRegistrationDTO> result = new ArrayList<>();
         for (RpushServerRegistration rpushServerRegistration : rpushServerRegistrations) {

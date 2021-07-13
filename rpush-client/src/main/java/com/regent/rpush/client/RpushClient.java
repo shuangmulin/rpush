@@ -177,4 +177,7 @@ public class RpushClient {
         return reconnectExecutor;
     }
 
+    public long getRegistrationId() {
+        return registrationId;
+    }
 }
