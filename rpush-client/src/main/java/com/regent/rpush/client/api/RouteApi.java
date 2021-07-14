@@ -25,8 +25,8 @@ public class RouteApi {
      * 获取服务端信息
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    public static ApiResult<ServerInfoDTO> route(String routeServicePath) {
-        String body = HttpUtil.get(routeServicePath + "/" + RPUSH_ROUTE_SERVICE_NAME + "/route");
+    public static ApiResult<ServerInfoDTO> route(String servicePath) {
+        String body = HttpUtil.get(servicePath + "/" + RPUSH_ROUTE_SERVICE_NAME + "/route");
         return parseResult(body, "获取路由信息失败")
                 .toBean(new TypeReference<ApiResult<ServerInfoDTO>>() {
                 });
@@ -35,9 +35,9 @@ public class RouteApi {
     /**
      * 下线
      */
-    public static ApiResult<String> offline(String routeServicePath, long registrationId) {
+    public static ApiResult<String> offline(String servicePath, long registrationId) {
         OfflineDTO offlineDTO = OfflineDTO.builder().registrationId(registrationId).build();
-        String body = HttpUtil.post(routeServicePath + "/" + RPUSH_ROUTE_SERVICE_NAME + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
+        String body = HttpUtil.post(servicePath + "/" + RPUSH_ROUTE_SERVICE_NAME + "/rpush-server-online/offline", JSONUtil.toJsonStr(offlineDTO));
         return parseResult(body, null)
                 .toBean(new TypeReference<ApiResult<String>>() {
                 });

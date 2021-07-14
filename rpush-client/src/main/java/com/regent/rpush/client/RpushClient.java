@@ -34,7 +34,7 @@ public class RpushClient {
     /**
      * 路由服务路径
      */
-    private final String routeServicePath;
+    private final String servicePath;
     /**
      * 设备id
      */
@@ -58,8 +58,8 @@ public class RpushClient {
         return msgProcessors;
     }
 
-    public RpushClient(String routeServicePath, long registrationId) {
-        this.routeServicePath = routeServicePath;
+    public RpushClient(String servicePath, long registrationId) {
+        this.servicePath = servicePath;
         this.registrationId = registrationId;
     }
 
@@ -79,7 +79,7 @@ public class RpushClient {
 
     public void start() {
         // 获取可以使用的服务器 ip+port
-        ServerInfoDTO serverInfoDTO = RouteApi.route(routeServicePath).getData();
+        ServerInfoDTO serverInfoDTO = RouteApi.route(servicePath).getData();
 
         // 启动客户端
         startClient(serverInfoDTO);
@@ -153,7 +153,7 @@ public class RpushClient {
             }
             try {
                 // 首先清除路由信息，下线
-                RouteApi.offline(routeServicePath, registrationId);
+                RouteApi.offline(servicePath, registrationId);
 
                 LOGGER.info("服务器断连, 尝试重连中....");
                 start();
