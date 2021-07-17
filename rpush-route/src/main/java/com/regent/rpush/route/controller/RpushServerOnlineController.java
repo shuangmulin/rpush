@@ -79,7 +79,7 @@ public class RpushServerOnlineController implements RpushServerOnlineService {
 
     @PreAuthorize("hasAnyAuthority('push_message', 'admin')")
     @ApiOperation(value = "获取所有在线的设备信息")
-    @GetMapping("/registrations")
+    @PostMapping("/registrations")
     public ApiResult<Pagination<RpushServerRegistrationDTO>> onlineRegistrations(@RequestBody PageOnlineDTO param) {
         int pageNum = PageUtil.getDefaultPageNum(param.getPageNum());
         int pageSize = PageUtil.getDefaultPageSize(param.getPageSize());

@@ -140,7 +140,7 @@ public class RpushClient {
             }
         }
         if (future.isSuccess()) {
-            LOGGER.info("Start cim client success!");
+            LOGGER.info("服务器连接成功!");
         }
         channel = (SocketChannel) future.channel();
     }

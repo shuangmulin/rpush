@@ -227,7 +227,7 @@ public class RpushService {
     public Pagination<RpushServerRegistrationDTO> pageOnlineRegistrations(String accessToken, PageOnlineDTO param) {
         checkToken(accessToken);
 
-        String body = HttpRequest.get(baseUrl + "/" + RPUSH_ROUTE_SERVICE_NAME + "/rpush-server-online/registrations")
+        String body = HttpRequest.post(baseUrl + "/" + RPUSH_ROUTE_SERVICE_NAME + "/rpush-server-online/registrations")
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + accessToken)
                 .body(JSONUtil.toJsonStr(param))

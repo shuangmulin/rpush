@@ -1,6 +1,6 @@
 package com.regent.rpush.server.socket.websocket;
 
-import cn.hutool.json.JSONUtil;
+import cn.hutool.json.JSONObject;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.regent.rpush.dto.message.NormalMessageDTO;
 import com.regent.rpush.server.socket.RpushClient;
@@ -40,7 +40,10 @@ public class WebSocketClient implements RpushClient {
 
     @Override
     public void pushMessage(NormalMessageDTO message) {
-        socketIOClient.sendEvent("message", JSONUtil.toJsonStr(message));
+        JSONObject jsonObject = new JSONObject(message);
+        jsonObject.set("sendTo", jsonObject.getStr("sendTo"));
+        jsonObject.set("fromTo", jsonObject.getStr("fromTo"));
+        socketIOClient.sendEvent("message", jsonObject.toString());
     }
 
     @Override

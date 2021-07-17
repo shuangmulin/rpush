@@ -18,7 +18,6 @@ public class NettySocketIOConfig {
     @Bean
     public SocketIOServer socketIOServer() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
-        config.setHostname("localhost");
         config.setPort(webSocketPort);
         return new SocketIOServer(config);
     }
