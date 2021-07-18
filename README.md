@@ -66,7 +66,7 @@ admin admin
 
 ```java
 /**
- * @author 钟宝林
+ * @author shuangmulin
  * @since 2021/6/8/008 11:37
  **/
 public class RpushSenderTest {
@@ -94,7 +94,7 @@ public class RpushSenderTest {
         TextMessageDTO text = RpushMessage.WECHAT_WORK_ROBOT_TEXT().content(content).receiverIds(Collections.singletonList("ZhongBaoLin")).build();
         // 邮箱
         EmailMessageDTO email = RpushMessage.EMAIL().title("会议通知").content(content).build();
-        RpushSender.instance("baolin", "666666").sendMessage(markdown, text, email); // 填上账号密码，运行即可
+        RpushService.instance("baolin", "666666").sendMessage(markdown, text, email); // 填上账号密码，运行即可
     }
 }
 ```
@@ -117,7 +117,7 @@ public class RpushSenderTest {
         <dependency>
             <groupId>com.github.shuangmulin.rpush</groupId>
             <artifactId>rpush-sdk</artifactId>
-            <version>v1.0.1</version>
+            <version>v1.0.2</version>
         </dependency>
     </dependencies>
 </project>
