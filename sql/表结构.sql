@@ -141,16 +141,20 @@
     KEY                  `registration_id` (`registration_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COMMENT='在线设备表，记录所有节点的在线设备';
 
- CREATE TABLE IF NOT EXISTS `rpush_server_registration`
-(
-    `id`           bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `version`      int(11) NOT NULL DEFAULT '0' COMMENT '记录版本',
-    `date_created` datetime    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `date_updated` datetime             DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `name`         varchar(32) NOT NULL DEFAULT '' COMMENT '名称',
-    `client_id`    varchar(32) NOT NULL DEFAULT '' COMMENT '数据所属clientId',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1363049405430763523 DEFAULT CHARSET=utf8mb4 COMMENT='注册设备表';
+ CREATE TABLE `rpush_server_registration` (
+                                              `id` bigint(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                              `version` int(11) NOT NULL DEFAULT '0' COMMENT '记录版本',
+                                              `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                              `date_updated` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                                              `name` varchar(32) NOT NULL DEFAULT '' COMMENT '名称',
+                                              `client_id` varchar(32) NOT NULL DEFAULT '' COMMENT '数据所属clientId',
+                                              `password` varchar(256) NOT NULL COMMENT '登录密码',
+                                              `login_name` varchar(32) NOT NULL COMMENT '登录名称',
+                                              PRIMARY KEY (`id`),
+                                              KEY `UK_clientId_loginName` (`client_id`,`login_name`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=1363044308899532806 DEFAULT CHARSET=utf8mb4 COMMENT='注册设备表';
+
+
 
  CREATE TABLE IF NOT EXISTS `rpush_template`
 (

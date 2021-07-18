@@ -3,6 +3,7 @@ package com.regent.rpush.server;
 import com.regent.rpush.dto.rpushserver.ServerInfoDTO;
 import com.spring4all.swagger.EnableSwagger2Doc;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +28,9 @@ public class ServerApplication {
     @Value("${rpush.web-socket.port}")
     private int webSocketPort;
 
+    @Value("${rpush.ip}")
+    private String ip;
+
     @Autowired
     private InetUtils inetUtils;
 
@@ -38,7 +42,10 @@ public class ServerApplication {
     @Bean
     public ServerInfoDTO serverInfo() {
         InetUtils.HostInfo hostInfo = inetUtils.findFirstNonLoopbackHostInfo();
-        String host = hostInfo.getIpAddress();
+        String host = ip;
+        if (StringUtils.equals(host, "none")) {
+            host = hostInfo.getIpAddress();
+        }
         return ServerInfoDTO.builder().httpPort(httpPort).socketPort(socketPort).webSocketPort(webSocketPort).host(host).build();
     }
 
