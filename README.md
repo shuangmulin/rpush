@@ -123,11 +123,33 @@ public class RpushSenderTest {
 </project>
 ```
 
-## docker-compose
+#### 即时通讯
+
+Rpush对即时通讯的实现方式比较`包容`，即对具体的连接实现做了解耦，不局限于某一种连接方式，可以netty，可以websocket，可以comet，当然也可以用原始的bio来做。这里展示websocke的网页端和netty实现的命令行客户端之间互相单聊和群聊的效果（该示例的相关代码：[客户端示例代码地址](https://github.com/shuangmulin/rpush-client-sample)）：
+<img alt="单个消息类型发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_304939d3d7c870cc9bd1f04172385a87_%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF%E6%95%88%E6%9E%9C.gif">
+
+### 关于架构
+
+// TODO...（时间问题只能先TODO）
+
+### 一些比较核心的扩展点
+
+// TODO...（时间问题只能先TODO）
+
+## 用docker-compose快速部署一个Rpush服务
 
 ```yml
 version: '2'
 services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - /data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /data/nginx/log:/var/log/nginx
+      - /data/nginx/html:/usr/share/nginx/html
   rpush-eureka:
     image: shuangmulin/rpush-eureka
     container_name: rpush-eureka
@@ -136,33 +158,48 @@ services:
   rpush-zuul:
     image: shuangmulin/rpush-zuul
     environment:
-      - eureka-service-ip=173.16.0.11 # 指定eureka ip
-      - eureka-service-port=8761 # 指定eureka port
+      - eureka-service-ip=172.16.0.11
+      - eureka-service-port=8761
     container_name: rpush-zuul
     ports:
       - 8124:8124
   rpush-route:
     image: shuangmulin/rpush-route
     environment:
-      - eureka-service-ip=173.16.0.11 # 指定eureka ip
-      - eureka-service-port=8761 # 指定eureka port
-      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8 # 数据库连接url
-      - jdbc.username=root # 数据库账号
-      - jdbc.password=123456 # 数据库密码
+      - eureka-service-ip=localhost
+      - eureka-service-port=8761
+      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+      - jdbc.username=root
+      - jdbc.password=123456
+      - super-admin.username=superadmin
+      - super-admin.password=superadmin
+      - jwtSigningKey=fjksadjfklds
     container_name: rpush-route
     ports:
       - 8121:8121
+  rpush-server:
+    image: shuangmulin/rpush-server
+    environment:
+      - eureka-service-ip=localhost
+      - eureka-service-port=8761
+    container_name: rpush-server
+    ports:
+      - 8122:8122
   rpush-scheduler:
     image: shuangmulin/rpush-scheduler
     environment:
-      - eureka-service-ip=173.16.0.11 # 指定eureka ip
-      - eureka-service-port=8761 # 指定eureka port
-      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8 # 数据库连接url
-      - jdbc.username=root # 数据库账号
-      - jdbc.password=123456 # 数据库密码
+      - eureka-service-ip=localhost
+      - eureka-service-port=8761
+      - jdbc.url=jdbc:mysql://localhost:3306/rpush?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+      - jdbc.username=root
+      - jdbc.password=123456
+      - super-admin.username=superadmin
+      - super-admin.password=superadmin
+      - jwtSigningKey=fasdferear
     container_name: rpush-scheduler
     ports:
       - 8123:8123
+
 ```
 
 > 运行 docker-compose up -d之后，直接访问8124端口即可
