@@ -24,6 +24,7 @@ management:
         include: "*"
 
 rpush:
+  ip: ${rpush-ip:none}
   server:
     port: 1111
     heartBeatTime: 20 # 20秒没有心跳就关闭对应客户端连接
