@@ -51,6 +51,7 @@ public abstract class MessageHandler<T extends BaseMessage> implements EventHand
             BaseMessage baseMessage = param == null ? (BaseMessage) ReflectUtil.newInstance(actualTypeArgument) : (BaseMessage) param.toBean(actualTypeArgument);
             baseMessage.setRequestNo(event.getRequestNo());
             baseMessage.setClientId(event.getClientId());
+            baseMessage.setConfigIds(typeMessageDTO.getConfigIds());
 
             // 最后调用实际消息处理的方法
             handle((T) baseMessage);
