@@ -277,7 +277,7 @@ public class AgentTextMessageHandler extends MessageHandler<TextMessageDTO> {
 }
 ```
 这里有以下需要关心的点：
-* 接口上的泛型填低3步定义的类
+* 接口上的泛型填第3步定义的类
 * 实现`messageType`方法，返回当前类要处理的消息类型
 * 实现`handle`方法，写发消息的代码，里面的参数是自动解析到这个方法的，直接使用即可
 
