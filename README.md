@@ -192,6 +192,7 @@ public enum MessageType {
 这里拿“企业微信-应用的文本类型”的消息举例。假设现在要在Rpush实现这个类型的消息，步骤如下：
 
 1. 定义企业微信的配置类，如下：
+
 ```java
 /**
  * 企业微信配置
@@ -213,13 +214,16 @@ public class WechatWorkAgentConfig extends Config {
 
 }
 ```
-里面的字段就按对应平台需要的字段去定义就行，比如这里的企业微信就只有三个字段需要配置。而每个字段上的`@ConfigValue`注解，是用来自动生成页面的，也就是说，只需要打上这个注解，就可以自动在页面上生成对应的增删改查的界面和交互（无需写一行前端代码）。
+
+里面的字段就按对应平台需要的字段去定义就行，比如这里的企业微信就只有三个字段需要配置。而每个字段上的`@ConfigValue`
+注解，是用来自动生成页面的，也就是说，只需要打上这个注解，就可以自动在页面上生成对应的增删改查的界面和交互（无需写一行前端代码）。
 
 2. 在`MessagePlatformEnum`和`MessageType`
    里加上对应的枚举，即`WECHAT_WORK_AGENT(WechatWorkAgentConfig.class, "企业微信-应用消息", "", "", true)`
    和`WECHAT_WORK_AGENT_TEXT("文本", MessagePlatformEnum.WECHAT_WORK_AGENT),`。这里要注意下平台枚举的第一个参数就是第一步定义的配置类的Class。
-   
+
 3. 定义企业微信-应用-文本消息的参数，如下：
+
 ```java
 /**
  * 企业微信消息发送DTO
@@ -230,34 +234,37 @@ public class WechatWorkAgentConfig extends Config {
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextMessageDTO extends BaseMessage {
-  private static final long serialVersionUID = -3289428483627765265L;
+    private static final long serialVersionUID = -3289428483627765265L;
 
-  /**
-   * 接收人分组列表
-   */
-  @SchemeValue(type = SchemeValueType.RECEIVER_GROUP)
-  private List<Long> receiverGroupIds;
+    /**
+     * 接收人分组列表
+     */
+    @SchemeValue(type = SchemeValueType.RECEIVER_GROUP)
+    private List<Long> receiverGroupIds;
 
-  /**
-   * 接收人列表
-   */
-  @SchemeValue(type = SchemeValueType.RECEIVER)
-  private List<String> receiverIds;
+    /**
+     * 接收人列表
+     */
+    @SchemeValue(type = SchemeValueType.RECEIVER)
+    private List<String> receiverIds;
 
-  @SchemeValue(description = "PartyID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
-  private String toParty;
+    @SchemeValue(description = "PartyID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
+    private String toParty;
 
-  @SchemeValue(description = "TagID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
-  private String toTag;
+    @SchemeValue(description = "TagID列表，非必填，多个接受者用‘|’分隔。当touser为@all时忽略本参数")
+    private String toTag;
 
-  @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入内容...")
-  private String content;
+    @SchemeValue(type = SchemeValueType.TEXTAREA, description = "请输入内容...")
+    private String content;
 
 }
 ```
-同样的，里面的字段根据该消息类型需要的字段去定义就行。比如企业微信-应用-文本消息就只需要一个`content`内容字段以及接收人相关的字段。这里涉及到的`@SchemeValue`注解，同样也是用来自动生成页面交互的，即只需要打上这个注解，就能自动在发消息页面生成对应的ui和交互。同时可以使用`com.regent.rpush.route.utils.sdk.SdkGenerator`类自动生成sdk代码。
+
+同样的，里面的字段根据该消息类型需要的字段去定义就行。比如企业微信-应用-文本消息就只需要一个`content`内容字段以及接收人相关的字段。这里涉及到的`@SchemeValue`
+注解，同样也是用来自动生成页面交互的，即只需要打上这个注解，就能自动在发消息页面生成对应的ui和交互。同时可以使用`com.regent.rpush.route.utils.sdk.SdkGenerator`类自动生成sdk代码。
 
 4. 实现`com.regent.rpush.route.handler.MessageHandler`接口，正式写发消息的代码。
+
 ```java
 /**
  * 企业微信文本消息handler
@@ -276,12 +283,15 @@ public class AgentTextMessageHandler extends MessageHandler<TextMessageDTO> {
     }
 }
 ```
+
 这里有以下需要关心的点：
+
 * 接口上的泛型填第3步定义的类
 * 实现`messageType`方法，返回当前类要处理的消息类型
 * 实现`handle`方法，写发消息的代码，里面的参数是自动解析到这个方法的，直接使用即可
 
 到这里，就不需要多做任何其它的事了。也就是说，做完以上四个步骤，就已经完成了一个消息类型的扩展。事做的少，获得的功能并不少：
+
 1. 自动获得对应平台配置的增删改交互和ui
    ![配置](https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_e5aacc90607acce8b0aefe318247cdd2_%E9%85%8D%E7%BD%AE.png "配置")
 2. 自动获得对应平台接收人和接收人分组的增删改交互和ui（包括导入功能）
@@ -292,7 +302,54 @@ public class AgentTextMessageHandler extends MessageHandler<TextMessageDTO> {
 4. 执行`com.regent.rpush.route.utils.sdk.SdkGenerator`，自动完成该消息类型的sdk代码
 5. 自动获得该消息类型的定时任务的增删改交互和ui
    ![定时任务](https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_d4c4cd123a5aba52c9baaed3de85bf4c_定时任务.png "定时任务")
-而且增加一个消息类型，不会对业务服务之前正在使用的消息类型有任何影响，是纯粹的叠加”能力“。
+   而且增加一个消息类型，不会对业务服务之前正在使用的消息类型有任何影响，是纯粹的叠加”能力“。
+
+#### 2. 可自由扩展的即时通讯实现
+
+在rpush的架构里，投递一个消息的流程大致可以概括为：调用统一的接口向路由服务投递消息-》路由服务查出消息目标所在的服务器地址-》路由服务向对应的服务器传递消息-》对应的服务找到对应的会话发送消息。
+这里的扩展点在最后一步，即用户和服务器的会话维护。要实现服务端向客户端推送消息，会有比较多的解决方案，比如用netty起一个nio服务器，客户端去连netty服务器或者服务端用socketio提供websocket实现，客户端按websocket的方式连服务器或者用comet实现长连接让客户端连等等。
+> 这里做成扩展点的一个比较重要的考虑点就是要实现不同端之间的消息通信，比如上面例子里的命令行和网页之间的聊天，或者实现移动端和网页之间的聊天。
+
+##### RpushClient
+
+不管是什么技术实现的服务端推送，都会有一个“客户端”性质的类，比如netty会有`Channel`，socketio提供的websocket会有`SocketIOClient`
+。而对于rpush来说，只关心它们的一个共有的能力：消息投递。即`RpushClient`接口：
+
+```java
+/**
+ * 客户端
+ **/
+public interface RpushClient {
+
+    /**
+     * 推送消息
+     */
+    void pushMessage(NormalMessageDTO message);
+
+    void close();
+}
+```
+
+只要实现了这个接口的类，不管是什么技术的实现，都被认为是rpush的客户端。也就是说，netty也好，websocket也好，只要提供给rpush这个接口的能力即可，从而达到解耦具体实现的目的。
+目前rpush已经做了netty和socketio两个实现，分别对应`com.regent.rpush.server.socket.nio.NioSocketChannelClient`
+和`com.regent.rpush.server.socket.websocket.WebSocketClient`两个类。
+
+##### netty客户端sdk
+
+rpush提供了netty对应的客户端的sdk，项目依赖`rpush-client`即可，使用也非常简单，只需要几行代码即可。
+```java
+public class Main {
+    public static void main(String[] args) {
+        RpushClient rpushClient = new RpushClient(servicePath, registrationId); // 填上rpush服务地址和id
+        rpushClient.addMsgProcessor(new PingIgnoreMsgProcessor()); // 忽略心跳消息
+        rpushClient.start(); // 向服务端发起连接
+        rpushClient.addMsgProcessor(msg -> {
+            // 处理接收到的消息
+            return false;
+        });
+    }
+}
+```
 
 ### 关于架构
 
