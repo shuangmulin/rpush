@@ -129,7 +129,7 @@ Rpush对即时通讯的实现方式比较`包容`
 ，即对具体的连接实现做了解耦，不局限于某一种连接方式，可以netty，可以websocket，可以comet，当然也可以用原始的bio来做。这里展示websocke的网页端和netty实现的命令行客户端之间互相单聊和群聊的效果（该示例的相关代码：[客户端示例代码地址](https://github.com/shuangmulin/rpush-client-sample)）：
 <img alt="单个消息类型发送示例" src="https://image3.myjuniu.com/1d02b5b0c103403d8025852a3158161f_pro_304939d3d7c870cc9bd1f04172385a87_%E5%8D%B3%E6%97%B6%E9%80%9A%E8%AE%AF%E6%95%88%E6%9E%9C.gif">
 
-### 一些比较核心的扩展点
+## 一些比较核心的扩展点
 
 #### 1. 可自由扩展的消息平台和消息类型
 
@@ -337,6 +337,7 @@ public interface RpushClient {
 ##### netty客户端sdk
 
 rpush提供了netty对应的客户端的sdk，项目依赖`rpush-client`即可，使用也非常简单，只需要几行代码即可。
+
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -353,7 +354,165 @@ public class Main {
 
 ### 关于架构
 
-// TODO...
+rpush目前主要提供两大功能，一个是消息分发，另一个是即时通讯功能。消息分发由路由服务`rpush-route`提供，即时通讯的长连接维护由socket服务`rpush-server`服务提供。
+
+##### 1. 可自由集群的路由服务
+
+为了保证消息投递的统一性以及解耦消息分发和即时通讯之间的关系，路由服务只做一件事，即`负责将消息分发到各个平台`，也就是说rpush提供的即时通讯功能，对路由服务来说和其他第三方平台没什么区别，都被视为一个`平台`。
+所以在架构层面，如果只需要用到消息分发的功能，就不需要部署`rpush-server`
+服务，只需要部署eureka、zuul和路由服务即可。zuul作为系统对外的入口，隔离掉了路由服务器和用户端，同时路由服务又是无状态的，这样就使得路由服务可以根据实际业务情况自由集群，即想加一台路由服务就加，想减一台就减。
+
+##### 2. 可自由集群的socket服务
+
+`rpush-server`作为socket服务，主要功能就是维护客户端的长连接。这个服务的承载能力直接决定了即时通讯功能一次可以在线多少用户，所以这个服务毫无疑问必须要是可集群部署的。
+假设部署5台socket服务，都正常配置eureka为注册中心。 为了实现socket服务的集群，一个客户端连接rpush服务的流程为：
+
+1. 客户端问路由服务要一个可用的socket服务器ip和端口
+2. 路由服务通过合适的负载均衡算法得到一个可用的socket服务器ip和端口并返回给客户端
+3. 客户端向拿到的socket服务发起长连接
+4. 连接成功后，对应的socket服务器维护服务级别的session信息，然后向路由服务汇报该客户端，路由服务保存该客户端和socket服务的对应关系
+5. 客户端与对应的socket服务保持一定频率的心跳，并在心跳失败判定连接断开后重新发起以上流程，直到再次连接成功
+
+客户端基于以上步骤上线之后，其他客户端向该客户端投递消息的流程为：
+
+1. 客户端请求路由服务提供的消息投递接口（这个就是前面说到的消息投递接口，因为socket服务维护的长连接对路由服务来说和其他第三方平台没什么区别，所以消息投递的方式也是一样的）
+2. 路由服务实现的socket服务消息处理器（`com.regent.rpush.route.handler.RpushMessageHandler`），根据消息上的目标客户端id找到对应的socket服务，并向该服务投递消息
+3. socket服务从自己维护的session里找到目标客户端，最终完成消息投递
+
+实现以上流程之后，socket服务就可以做到自由集群了。
+
+上面说的流程偏理论化，有几个技术实现点这里做一下详细说明：
+
+1. 路由服务如果通过合适的负载均衡算法得到一个可用的socket服务器ip和端口？
+
+实现的手段其实非常的简单暴力。首先由socket服务提供一个查询本机ip和端口的接口，路由服务直接通过ribbon去请求这个接口，然后自定义一个负载均衡规则类，来实现socket服务的选择：
+
+```java
+/**
+ * 路由->Socket服务端请求的实例选择
+ */
+public class ServerBalancer extends ZoneAvoidanceRule {
+
+    @Override
+    public Server choose(Object o) {
+        // ...
+        // 用默认的负载均衡算法选出一个可用的socket服务（这里的算法可以根据实际业务更改）
+        return super.choose(o);
+        // ...
+    }
+
+}
+```
+
+在配置文件里配置这个“规则类”：
+
+```yml
+rpush-server:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.regent.rpush.route.loadbalancer.ServerBalancer
+```
+
+路由服务在向socket服务请求的时候会”经过“这个”规则类“，然后由这个“规则类”来选出一个可用的socket服务。最终socket服务的端口和ip信息，也是由选中的socket服务通过这次请求返回给路由服务的。
+当然这个规则类不是只做这一件事，还有一个问题也需要这个类来完成。
+
+2. 消息投递的时候，路由服务如何根据消息上的目标客户端id找到对应的socket服务？
+
+首先，在客户端与某一个socket服务连接成之后，客户端与socket服务之间的关系需要保存起来（mysql或redis）。然后新增一个feign的请求拦截器（`com.regent.rpush.route.loadbalancer.MessageRequestInterceptor`
+）：
+
+```java
+
+@Component
+public class MessageRequestInterceptor implements RequestInterceptor {
+
+    /**
+     * 存放本次消息投递的目标socket服务id
+     */
+    static final ThreadLocal<String> SERVER_ID = new ThreadLocal<>();
+
+    @Autowired
+    private IRpushServerOnlineService rpushServerOnlineService;
+
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @Override
+    public void apply(RequestTemplate requestTemplate) {
+        String url = requestTemplate.url();
+        String method = requestTemplate.method();
+        if (!"/push".equals(url) || !"POST".equals(method)) {
+            // 只处理消息投递接口
+            return;
+        }
+
+        // 如果是消息推送，需要给接收端连接的服务端投放消息，在服务端集群的情况下，要找到对应的服务端
+        String body = new String(requestTemplate.body());
+        JSONObject jsonObject = new JSONObject(body);
+        String sendTo = jsonObject.getStr("sendTo"); // 拿到目标客户端的id
+        String serverId = ""; // 从redis或mysql查到该客户端对应的socket服务id
+        SERVER_ID.set(serverId); // 添加到当前线程里
+    }
+
+}
+```
+
+这个“拦截类”配合上面的”规则类“，就能在路由服务向socket服务传递消息时准确的找到对应的socket服务。 完整的”规则类“：
+
+```java
+/**
+ * 路由->Socket服务端请求的实例选择
+ */
+public class ServerBalancer extends ZoneAvoidanceRule {
+
+    @Override
+    public Server choose(Object o) {
+        try {
+            // 从拦截类里看有没有指定服务端实例
+            String serverId = MessageRequestInterceptor.SERVER_ID.get();
+            if (StringUtils.isEmpty(serverId)) {
+                // 如果没有指定服务端实例，用默认的负载均衡算法
+                return super.choose(o);
+            }
+            // 如果指定了服务端实例，说明是消息传递，用指定好的实例向socket服务发请求
+            List<Server> servers = getLoadBalancer().getAllServers();
+            for (Server server : servers) {
+                if (StringUtils.equals(server.getId(), serverId)) {
+                    return server;
+                }
+            }
+            throw new IllegalArgumentException("没有可用的RPUSH_SERVER实例");
+        } finally {
+            MessageRequestInterceptor.SERVER_ID.remove();
+        }
+    }
+}
+```
+
+而且有了这两个类，路由服务向socket服务传递消息的代码也会非常的”干净“：
+
+```java
+
+@Component
+public class RpushMessageHandler extends MessageHandler<RpushMessageDTO> {
+
+    // ...
+    @Override
+    public void handle(RpushMessageDTO param) {
+        List<String> sendTos = param.getReceiverIds();
+
+        for (String sendTo : sendTos) {
+            // ...
+            messagePushService.push(build); // 路由服务直接调用接口请求即可，”规则类“和”拦截类“屏蔽掉了其它逻辑，所以这里不需要关心会不会发给错误socket服务
+        }
+    }
+}
+```
+
+##### 架构图
+
+
+##### 其它
+1. 队列。路由服务内部用`Disruptor`环形队列做了异步处理，尽可能地让消息推送接口更快地返回。如果是并发量较高的情况，可以加入kafka，路由服务直接监听kafka的消息，以此来提升服务整体性能。
+2. 缓存。客户端的上线信息可根据情况做多级缓存。即路由服务内部缓存+redis缓存，当然加的缓存越多，缓存一致性的问题就越复杂，需要考虑的情况也会更多。redis也是需要根据实际情况来决定是否要集群部署。
+4. 监控。可使用Spring Boot Admin做服务状态监控。
 
 ## 用docker-compose快速部署一个Rpush服务
 
