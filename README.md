@@ -506,10 +506,7 @@ public class RpushMessageHandler extends MessageHandler<RpushMessageDTO> {
 }
 ```
 
-##### 架构图
-
-
-##### 其它
+##### 3. 其它
 1. 队列。路由服务内部用`Disruptor`环形队列做了异步处理，尽可能地让消息推送接口更快地返回。如果是并发量较高的情况，可以加入kafka，路由服务直接监听kafka的消息，以此来提升服务整体性能。
 2. 缓存。客户端的上线信息可根据情况做多级缓存。即路由服务内部缓存+redis缓存，当然加的缓存越多，缓存一致性的问题就越复杂，需要考虑的情况也会更多。redis也是需要根据实际情况来决定是否要集群部署。
 4. 监控。可使用Spring Boot Admin做服务状态监控。
