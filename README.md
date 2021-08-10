@@ -48,6 +48,14 @@ admin admin
 
 > Rpush的架构决定了扩展一个消息平台的消息类型会非常简单，所以如果要扩展一个消息平台，大部分时间都会花在查找该平台的对接文档上。后续会在工作之余加上其它的平台或消息类型。当然，欢迎参与扩展（扩展一个消息平台的消息类型，只需要几个java类即可，不需要写任何前端代码，即可获得包括ui交互内的所有功能）。
 
+## 本地如何快速部署一个简单的体验版
+本地数据库执行`sql/表结构.sql`初始化数据库，初始化好数据库之后，到`rpush-route/src/main/resources/application.yml`把数据库连接配置改成自己的数据库。然后分别启动以下3个类：
+1. com.regent.rpush.eureka.EurekaServerApplication
+2. com.regent.rpush.zuul.App
+3. com.regent.rpush.route.RouteApplication
+   
+启动完成之后，浏览器打开`http://localhost:8124`就能显示界面并得到一个完整的`消息分发功能`
+
 ## 效果展示
 
 #### 单个消息类型发送示例
