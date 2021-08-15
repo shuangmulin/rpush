@@ -99,6 +99,66 @@ public class RpushMessage {
     }
 
     /**
+     * 钉钉-群机器人卡片-多按钮
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.ActionCardMultiMessageDTO.ActionCardMultiMessageDTOBuilder<?, ?> DING_TALK_ROBOT_ACTION_CARD_MULTI() {
+        return com.regent.rpush.dto.message.dingtalk.robot.ActionCardMultiMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.ActionCardMultiMessageDTO.class, MessageType.DING_TALK_ROBOT_ACTION_CARD_MULTI);
+    }
+
+    /**
+     * 钉钉-群机器人卡片-单按钮
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.ActionCardSingleMessageDTO.ActionCardSingleMessageDTOBuilder<?, ?> DING_TALK_ROBOT_ACTION_CARD_SINGLE() {
+        return com.regent.rpush.dto.message.dingtalk.robot.ActionCardSingleMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.ActionCardSingleMessageDTO.class, MessageType.DING_TALK_ROBOT_ACTION_CARD_SINGLE);
+    }
+
+    /**
+     * 钉钉-群机器人FeedCard
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.FeedCardMessageDTO.FeedCardMessageDTOBuilder<?, ?> DING_TALK_ROBOT_FEED_CARD() {
+        return com.regent.rpush.dto.message.dingtalk.robot.FeedCardMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.FeedCardMessageDTO.class, MessageType.DING_TALK_ROBOT_FEED_CARD);
+    }
+
+    /**
+     * 钉钉-群机器人链接消息
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.LinkMessageDTO.LinkMessageDTOBuilder<?, ?> DING_TALK_ROBOT_LINK() {
+        return com.regent.rpush.dto.message.dingtalk.robot.LinkMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.LinkMessageDTO.class, MessageType.DING_TALK_ROBOT_LINK);
+    }
+
+    /**
+     * 钉钉-群机器人Markdown
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.MarkdownMessageDTO.MarkdownMessageDTOBuilder<?, ?> DING_TALK_ROBOT_MARKDOWN() {
+        return com.regent.rpush.dto.message.dingtalk.robot.MarkdownMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.MarkdownMessageDTO.class, MessageType.DING_TALK_ROBOT_MARKDOWN);
+    }
+
+    /**
+     * 钉钉-群机器人文本
+     */
+    public static com.regent.rpush.dto.message.dingtalk.robot.TextMessageDTO.TextMessageDTOBuilder<?, ?> DING_TALK_ROBOT_TEXT() {
+        return com.regent.rpush.dto.message.dingtalk.robot.TextMessageDTO.builder();
+    }
+    static {
+        MESSAGE_TYPE_PARAM_MAP.put(com.regent.rpush.dto.message.dingtalk.robot.TextMessageDTO.class, MessageType.DING_TALK_ROBOT_TEXT);
+    }
+
+    /**
      * 微信公众号图文消息
      */
     public static com.regent.rpush.dto.message.wechatofficialaccount.NewsMessageDTO.NewsMessageDTOBuilder<?, ?> WECHAT_OFFICIAL_ACCOUNT_NEWS() {
