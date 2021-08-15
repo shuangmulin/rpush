@@ -45,7 +45,7 @@ public class RpushMessageSchemeServiceImpl extends ServiceImpl<RpushMessageSchem
 
         // 名称查重
         QueryWrapper<RpushMessageScheme> wrapper = Qw.newInstance(RpushMessageScheme.class)
-                .eq("clientId", clientId)
+                .eq("client_id", clientId)
                 .eq("name", scheme.getName())
                 .eq("message_type", scheme.getMessageType());
         if (scheme.getId() != null) {

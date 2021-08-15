@@ -39,6 +39,14 @@ public enum MessageType {
     DING_TALK_COPR_ACTION_CARD_MULTI("卡片-多按钮", MessagePlatformEnum.DING_TALK_CORP),
     DING_TALK_COPR_OA("OA消息", MessagePlatformEnum.DING_TALK_CORP),
 
+    // ================================钉钉-群机器人====================================
+    DING_TALK_ROBOT_TEXT("文本", MessagePlatformEnum.DING_TALK_ROBOT),
+    DING_TALK_ROBOT_MARKDOWN("Markdown", MessagePlatformEnum.DING_TALK_ROBOT),
+    DING_TALK_ROBOT_LINK("链接消息", MessagePlatformEnum.DING_TALK_ROBOT),
+    DING_TALK_ROBOT_ACTION_CARD_SINGLE("卡片-单按钮", MessagePlatformEnum.DING_TALK_ROBOT),
+    DING_TALK_ROBOT_ACTION_CARD_MULTI("卡片-多按钮", MessagePlatformEnum.DING_TALK_ROBOT),
+    DING_TALK_ROBOT_FEED_CARD("FeedCard", MessagePlatformEnum.DING_TALK_ROBOT),
+
     ;
 
 
